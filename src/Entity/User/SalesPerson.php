@@ -42,7 +42,7 @@ class SalesPerson extends User
 
     public function getRole(): string
     {
-        return '<span class="badge me-2 bg-warning bg-opacity-15 text-warning">Sales</span>';
+        return 'Sales';
     }
 
     public function getCrossRoleName(): string

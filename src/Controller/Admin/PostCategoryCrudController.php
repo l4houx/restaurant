@@ -34,6 +34,7 @@ class PostCategoryCrudController extends AbstractCrudController
     {
         yield FormField::addPanel(t('Information'));
         yield IdField::new('id')->onlyOnIndex();
+
         yield TextField::new('name', t('Name'))
             ->setFormTypeOption('constraints', [
                 new NotBlank(),
@@ -57,7 +58,10 @@ class PostCategoryCrudController extends AbstractCrudController
         yield BooleanField::new('isOnline', t('Published'));
 
         yield FormField::addPanel(t('Association'));
-        yield AssociationField::new('posts', t('Posts'))->setFormTypeOption('by_reference', false);
+        yield AssociationField::new('posts', t('Posts'))
+            ->autocomplete()
+            ->setFormTypeOption('by_reference', false)
+        ;
 
         yield FormField::addPanel(t('Date'))->hideOnForm();
         yield DateTimeField::new('createdAt', t('Creation date'))->hideOnForm()->onlyOnDetail();

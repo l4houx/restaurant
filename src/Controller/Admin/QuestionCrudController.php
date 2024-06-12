@@ -9,6 +9,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -33,12 +34,21 @@ class QuestionCrudController extends AbstractCrudController
                 new NotBlank(),
             ])
         ;
-        yield TextEditorField::new('answer', t('Answer'))
-            ->setFormTypeOption('constraints', [
-                new NotBlank(),
-            ])
-            ->hideOnIndex()
-        ;
+        if (Crud::PAGE_NEW === $pageName) {
+            yield TextEditorField::new('answer', t('Answer'))
+                ->setFormTypeOption('constraints', [
+                    new NotBlank(),
+                ])
+                ->hideOnIndex()
+            ;
+        } else {
+            yield TextareaField::new('answer', t('Answer'))
+                ->setFormTypeOption('constraints', [
+                    new NotBlank(),
+                ])
+                ->renderAsHtml()->hideOnIndex()
+            ;
+        }
 
         yield FormField::addPanel(t('Date'))->hideOnForm();
         yield DateTimeField::new('createdAt', t('Creation date'))->hideOnForm();

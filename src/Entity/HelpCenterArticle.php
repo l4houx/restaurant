@@ -34,6 +34,11 @@ class HelpCenterArticle
     #[ORM\JoinColumn(nullable: false)]
     private ?HelpCenterCategory $category = null;
 
+    public function __toString(): string
+    {
+        return sprintf('#%d %s', $this->getId(), $this->getName());
+    }
+
     public function getCategory(): ?HelpCenterCategory
     {
         return $this->category;

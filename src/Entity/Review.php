@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Shop\Product;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ReviewRepository;
@@ -24,9 +25,9 @@ class Review
     use HasTimestampableTrait;
     use HasDeletedAtTrait;
 
-    //#[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
     // #[ORM\JoinColumn(nullable: false)]
-    //private ?Product $product = null;
+    private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
@@ -41,7 +42,7 @@ class Review
         $this->isVisible = true;
     }
 
-    /*public function getProduct(): ?Product
+    public function getProduct(): ?Product
     {
         return $this->product;
     }
@@ -51,7 +52,7 @@ class Review
         $this->product = $product;
 
         return $this;
-    }*/
+    }
 
     public function getAuthor(): ?User
     {

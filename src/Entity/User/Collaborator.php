@@ -29,7 +29,7 @@ class Collaborator extends User
 
     public function getRole(): string
     {
-        return '<span class="badge me-2 bg-secondary bg-opacity-15 text-secondary">Collabarator</span>';
+        return 'Collabarator';
     }
 
     public function getCrossRoleName(): string

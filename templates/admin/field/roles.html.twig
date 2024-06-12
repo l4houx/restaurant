@@ -1,1 +1,13 @@
-<span class="badge badge-info" style="font-size: 80% !important;">{{ field.value }}</span>
+<span class="badge badge-info" style="font-size: 80% !important;">{{ field.value|raw }}</span>
+
+{# 
+{% if field.value == collabarator %}
+    <span class="badge me-2 bg-secondary bg-opacity-15 text-secondary">{{ field.value.name }}</span>
+{% elseif field.value == manager %}
+    <span class="badge me-2 bg-danger bg-opacity-15 text-danger">{{ field.value }}</span>
+{% elseif field.value == sales_person %}
+    <span class="badge me-2 bg-warning bg-opacity-15 text-warning">{{ field.value }}</span>
+{% elseif field.value == customer %}
+    <span class="badge me-2 bg-success bg-opacity-15 text-success">{{ field.value }}</span>
+{% endif %}
+#}

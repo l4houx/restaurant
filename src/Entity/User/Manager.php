@@ -32,7 +32,7 @@ class Manager extends User
 
     public function getRole(): string
     {
-        return '<span class="badge me-2 bg-danger bg-opacity-15 text-danger">Manager</span>';
+        return 'Manager';
     }
 
     public function getCrossRoleName(): string

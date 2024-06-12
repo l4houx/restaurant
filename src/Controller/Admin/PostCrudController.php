@@ -2,12 +2,14 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\Traits\CreateReadDeleteTrait;
 use App\Entity\Post;
 use App\Entity\Traits\HasRoles;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -18,7 +20,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -28,8 +32,6 @@ use function Symfony\Component\Translation\t;
 
 class PostCrudController extends AbstractCrudController
 {
-    use CreateReadDeleteTrait;
-
     public static function getEntityFqcn(): string
     {
         return Post::class;
@@ -58,12 +60,27 @@ class PostCrudController extends AbstractCrudController
             ])
             ->setHelp('')
         ;
-        yield TextareaField::new('content', t('Content'))
-            ->setFormTypeOption('constraints', [
-                new NotBlank(),
-                new Length(['min' => 2000]),
-            ])->hideOnIndex()
-        ;
+
+        if (Crud::PAGE_NEW === $pageName) {
+            yield TextEditorField::new('content', t('Content'))
+                ->setFormTypeOption('constraints', [
+                    new NotBlank(),
+                    new Length(['min' => 2000]),
+                ])
+                ->hideOnIndex()
+            ;
+        } else {
+            yield TextareaField::new('content', t('Content'))
+                ->setFormTypeOption('constraints', [
+                    new NotBlank(),
+                    new Length(['min' => 2000]),
+                ])
+                ->renderAsHtml()->hideOnIndex()
+            ;
+        }
+
+        yield IntegerField::new('views', t('Views'))->hideOnForm()->hideOnIndex();
+        yield IntegerField::new('readtime', t('Reading time'))->hideOnIndex();
 
         yield FormField::addPanel(t('Image'));
         yield ImageField::new('imageName')
@@ -73,41 +90,12 @@ class PostCrudController extends AbstractCrudController
         ;
         yield TextField::new('imageFile')->setFormType(VichFileType::class)->onlyOnForms();
 
-        yield IntegerField::new('views', t('Views'))->hideOnForm()->hideOnIndex();
-        yield IntegerField::new('readtime', t('Reading time'))->hideOnIndex();
-
         yield FormField::addPanel(t('SEO'));
         yield TextField::new('metaTitle', t('Title'))->hideOnIndex();
         yield TextareaField::new('metaDescription', t('Description'))->renderAsHtml()->hideOnIndex();
 
         yield FormField::addPanel(t('Actived'));
         yield BooleanField::new('isOnline', t('Published'));
-        // yield StateField::new('state', 'State')->setWorkflowName('post')->hideOnForm();
-
-        yield FormField::addPanel(t('Collection'))->onlyWhenUpdating()->hideOnForm();
-        /*
-        yield CollectionField::new('comments')
-            ->setEntryType(CommentType::class)
-            ->allowAdd(false)
-            ->allowDelete(false)
-            ->onlyOnForms()
-            ->hideWhenCreating()
-        ;
-        */
-
-        yield FormField::addPanel(t('Association'));
-        yield AssociationField::new('type', t('Post Type'))->hideOnIndex();
-        yield AssociationField::new('author', t('Author'));
-        // yield AssociationField::new('category', t('Category'));
-
-        /*
-        yield AssociationField::new('category', t('Category'))
-            ->autocomplete()
-            ->hideOnIndex()
-            ->setFormTypeOptions(['by_reference' => false])
-        ;*/
-
-        yield AssociationField::new('comments', t('Comments'))->onlyOnDetail();
 
         yield FormField::addPanel(t('Publication date'));
         yield DateTimeField::new('publishedAt', t('Published At'))
@@ -116,6 +104,12 @@ class PostCrudController extends AbstractCrudController
                 new GreaterThan(new \DateTimeImmutable()),
             ])
         ;
+
+        yield FormField::addPanel(t('Association'));
+        yield AssociationField::new('type', t('Post Type'))->autocomplete()->hideOnIndex();
+        yield AssociationField::new('author', t('Author'))->autocomplete();
+        yield AssociationField::new('category', t('Category'))->autocomplete()->hideOnIndex();
+        yield AssociationField::new('comments', t('Comments'))->onlyOnDetail();
 
         yield FormField::addPanel(t('Date'))->hideOnForm();
         yield DateTimeField::new('createdAt', t('Creation date'))->hideOnForm()->onlyOnDetail();
@@ -150,5 +144,32 @@ class PostCrudController extends AbstractCrudController
         $entity->setAuthor($this->getUser());
 
         parent::persistEntity($entityManager, $entity);
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $viewArticle = Action::new('viewArticle', t('See the article'))
+            ->setHtmlAttributes([
+                'target' => '_blank',
+            ])
+            ->linkToCrudAction('viewArticle')
+        ;
+
+        return $actions
+            ->add(Crud::PAGE_EDIT, $viewArticle)
+            ->add(Crud::PAGE_INDEX, $viewArticle)
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->remove(Crud::PAGE_DETAIL, Action::DELETE)
+        ;
+    }
+
+    public function viewArticle(AdminContext $context): Response
+    {
+        /** @var Post $entity */
+        $entity = $context->getEntity()->getInstance();
+
+        return $this->redirectToRoute('post', [
+            'slug' => $entity->getSlug(),
+        ]);
     }
 }

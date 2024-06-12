@@ -1,0 +1,35 @@
+<div class="card">
+	<div class="card-header">{{ 'Order lines'|trans }}</div>
+	<table class="table table-bordered bg-white mb-0">
+		<thead>
+			<tr>
+				<th class="text-center">{{ 'Product'|trans }}</th>
+				<th class="text-center">{{ 'Unit amount'|trans }}</th>
+				<th class="text-center">{{ 'Quantity'|trans }}</th>
+				<th class="text-center">{{ 'Total'|trans }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for line in field.value %}
+				<tr>
+					<td class="text-center">
+						{{ line.product.name }}
+					</td>
+					<td class="text-center">
+						{{ line.amount }}
+					</td>
+					<td class="text-center">
+						{{ line.quantity }}
+					</td>
+					<td class="text-center">
+						{{ line.total }}
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td class="text-center" colspan="4">{{ 'No result'|trans }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

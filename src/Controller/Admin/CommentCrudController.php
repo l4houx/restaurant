@@ -31,11 +31,13 @@ class CommentCrudController extends AbstractCrudController
     {
         yield FormField::addPanel(t('Information'));
         yield IdField::new('id')->onlyOnIndex();
+
         yield TextareaField::new('content', t('Content'))->onlyOnDetail();
 
         yield FormField::addPanel(t('Association'));
-        yield AssociationField::new('post', t('Post'));
-        yield AssociationField::new('author', t('Author'));
+        yield AssociationField::new('parent', t('Parent'))->hideOnIndex();
+        yield AssociationField::new('post', t('Post'))->autocomplete();
+        yield AssociationField::new('author', t('Author'))->autocomplete();
 
         yield FormField::addPanel(t('Actived'));
         yield BooleanField::new('isApproved', t('Approved'));

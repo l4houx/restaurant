@@ -2,17 +2,18 @@
 
 namespace App\Entity;
 
-use App\Entity\Traits\HasIdTrait;
-use App\Entity\Traits\HasTimestampableTrait;
-use App\Repository\HomepageHeroSettingRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Shop\Product;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\HasIdTrait;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Traits\HasTimestampableTrait;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Repository\HomepageHeroSettingRepository;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: HomepageHeroSettingRepository::class)]
 #[Vich\Uploadable]
@@ -82,20 +83,20 @@ class HomepageHeroSetting
     private ?bool $show_search_box = null;
 
     /**
-     * //@var Collection<int, Product>
+     * @var Collection<int, Product>
      */
-    //#[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'isonhomepageslider', cascade: ['persist'])]
-    //private Collection $products;
+    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'isonhomepageslider', cascade: ['persist'])]
+    private Collection $products;
 
     public function __construct()
     {
-        //$this->products = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
-    /*public function clearProducts(): void
+    public function clearProducts(): void
     {
         $this->products->clear();
-    }*/
+    }
 
     public function getTitle(): ?string
     {
@@ -347,9 +348,9 @@ class HomepageHeroSetting
     }
 
     /**
-     * //@return Collection<int, Product>
+     * @return Collection<int, Product>
      */
-    /*public function getProducts(): Collection
+    public function getProducts(): Collection
     {
         return $this->products;
     }
@@ -374,5 +375,5 @@ class HomepageHeroSetting
         }
 
         return $this;
-    }*/
+    }
 }

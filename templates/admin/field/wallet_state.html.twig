@@ -1,0 +1,5 @@
+{% if field.value %}
+	<span class="badge badge-danger">{{ 'Expired'|trans }}</span>
+{% else %}
+	<span class="badge badge-success">{{ 'Active'|trans }}</span>
+{% endif %}

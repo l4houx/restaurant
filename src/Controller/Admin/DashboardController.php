@@ -12,12 +12,23 @@ use App\Entity\Currency;
 use App\Entity\PostType;
 use App\Entity\Question;
 use App\Entity\Testimonial;
+use App\Entity\Data\Account;
 use App\Entity\PostCategory;
+use App\Entity\User\Manager;
+use App\Entity\HelpCenterFaq;
+use App\Entity\User\Customer;
+use App\Entity\Company\Client;
+use App\Entity\Company\Member;
 use App\Entity\Traits\HasRoles;
 use App\Entity\AppLayoutSetting;
+use App\Entity\User\SalesPerson;
 use App\Entity\HelpCenterArticle;
+use App\Entity\User\Collaborator;
 use App\Entity\HelpCenterCategory;
 use App\Entity\HomepageHeroSetting;
+use App\Entity\Company\Organization;
+
+use App\Entity\User\SuperAdministrator;
 use function Symfony\Component\Translation\t;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +37,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use Symfony\Component\Security\Core\User\UserInterface;
-
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -83,6 +93,67 @@ class DashboardController extends AbstractDashboardController
                 MenuItem::linkToCrud(t('Add'), 'fas fa-plus', HomepageHeroSetting::class)->setAction(Crud::PAGE_NEW),
                 MenuItem::linkToCrud(t('Currency settings'), 'fas fa-money-check-dollar', Currency::class),
                 MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Currency::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('All pages'), 'fas fa-file', Page::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Page::class)->setAction(Crud::PAGE_NEW),
+            ]);
+
+            yield MenuItem::section(t('Shop Settings'));
+            yield MenuItem::subMenu(t('Shop'), 'fas fa-shop')->setSubItems([
+                MenuItem::linkToCrud(t('Account'), 'fa fa-balance-scale', Account::class),
+            ]);
+
+            yield MenuItem::section(t('Review Settings'));
+            yield MenuItem::subMenu(t('Testimonial Settings'), 'fas fa-star')->setSubItems([
+                // MenuItem::linkToCrud(t('Review'), 'fas fa-star', Review::class),
+                // MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Review::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('Testimonial'), 'fab fa-delicious', Testimonial::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Testimonial::class)->setAction(Crud::PAGE_NEW),
+            ]);
+
+            yield MenuItem::section(t('Help Center Settings'));
+            yield MenuItem::subMenu(t('Help Center'), 'fas fa-newspaper')->setSubItems([
+                MenuItem::linkToCrud(t('All articles'), 'fas fa-newspaper', HelpCenterArticle::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', HelpCenterArticle::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('All categories'), 'fab fa-delicious', HelpCenterCategory::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', HelpCenterCategory::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('All faqs'), 'fa fa-question-circle', HelpCenterFaq::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', HelpCenterFaq::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('All questions'), 'fa fa-question-circle', Question::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Question::class)->setAction(Crud::PAGE_NEW),
+            ]);
+
+            //yield MenuItem::section(t('Contact Settings'));
+            //yield MenuItem::linkToCrud(t('Contact'), 'fas fa-message', Contact::class);
+
+            yield MenuItem::section(t('Clients Settings'));
+            yield MenuItem::subMenu(t('All accounts'), 'fas fa-user')->setSubItems([
+                MenuItem::linkToCrud(t('Companies'), 'fa fa-building', Client::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Client::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('Users'), 'fa fa-users', Customer::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Customer::class)->setAction(Crud::PAGE_NEW),
+            ]);
+
+            yield MenuItem::section(t('Members Settings'));
+            yield MenuItem::subMenu(t('All accounts'), 'fas fa-user')->setSubItems([
+                MenuItem::linkToCrud(t('Groups'), 'fa fa-building', Organization::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Organization::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('Members'), 'fa fa-building', Member::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Member::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('Managers'), 'fa fa-users', Manager::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Manager::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('Sales Persons'), 'fa fa-users', SalesPerson::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', SalesPerson::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('Collaborators'), 'fa fa-users', Collaborator::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Collaborator::class)->setAction(Crud::PAGE_NEW),
+            ]);
+
+            yield MenuItem::section(t('Users Settings'));
+            yield MenuItem::subMenu(t('All accounts'), 'fas fa-user')->setSubItems([
+                MenuItem::linkToCrud(t('Teams'), 'fa fa-user-shield', SuperAdministrator::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', SuperAdministrator::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('Users'), 'fas fa-user-friends', User::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', User::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToExitImpersonation(t('Stop impersonation'), 'fas fa-door-open'),
             ]);
         }
 
@@ -96,46 +167,11 @@ class DashboardController extends AbstractDashboardController
                 MenuItem::linkToCrud(t('Type'), 'fas fa-bars', PostType::class),
                 MenuItem::linkToCrud(t('Add'), 'fas fa-plus', PostType::class)->setAction(Crud::PAGE_NEW),
             ]);
+        }
 
+        if ($this->isGranted(HasRoles::ADMINAPPLICATION)) {
             yield MenuItem::section(t('Comment Settings'));
             yield MenuItem::linkToCrud(t('Comments'), 'fas fa-comment', Comment::class);
-
-            yield MenuItem::section(t('Review Settings'));
-            yield MenuItem::subMenu(t('Testimonial Settings'), 'fas fa-star')->setSubItems([
-                // MenuItem::linkToCrud(t('Review'), 'fas fa-star', Review::class),
-                // MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Review::class)->setAction(Crud::PAGE_NEW),
-                MenuItem::linkToCrud(t('Testimonial'), 'fab fa-delicious', Testimonial::class),
-                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Testimonial::class)->setAction(Crud::PAGE_NEW),
-            ]);
-
-            yield MenuItem::section(t('Pages Settings'));
-            yield MenuItem::subMenu(t('Pages'), 'fas fa-file')->setSubItems([
-                MenuItem::linkToCrud(t('All pages'), 'fas fa-file', Page::class),
-                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Page::class)->setAction(Crud::PAGE_NEW),
-            ]);
-
-            yield MenuItem::section(t('Question Settings'));
-            yield MenuItem::subMenu(t('Question'), 'fa fa-question-circle')->setSubItems([
-                MenuItem::linkToCrud(t('All questions'), 'fa fa-question-circle', Question::class),
-                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Question::class)->setAction(Crud::PAGE_NEW),
-            ]);
-
-            /*
-            yield MenuItem::section(t('Help Center Settings'));
-            yield MenuItem::subMenu(t('Help Center'), 'fas fa-question')->setSubItems([
-                MenuItem::linkToCrud(t('All articles'), 'fas fa-question', HelpCenterArticle::class),
-                MenuItem::linkToCrud(t('All categories'), 'fas fa-list', HelpCenterCategory::class),
-            ]);
-            */
-
-            yield MenuItem::section(t('Users Settings'));
-            yield MenuItem::subMenu(t('All accounts'), 'fas fa-user')->setSubItems([
-                MenuItem::linkToCrud(t('Users'), 'fas fa-user-friends', User::class),
-                MenuItem::linkToExitImpersonation(t('Stop impersonation'), 'fas fa-door-open'),
-            ]);
-
-            //yield MenuItem::section(t('Contact Settings'));
-            //yield MenuItem::linkToCrud(t('Contact'), 'fas fa-message', Contact::class);
         }
 
         yield MenuItem::section();

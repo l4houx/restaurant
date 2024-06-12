@@ -23,7 +23,7 @@ class Customer extends User
 
     public function getRole(): string
     {
-        return '<span class="badge me-2 bg-success bg-opacity-15 text-success">Customer</span>';
+        return 'Customer';
     }
 
     public function getCrossRoleName(): string

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Data\Account;
+use App\Entity\Shop\Product;
 use App\Entity\User\Manager;
 use App\Entity\User\Customer;
 use Doctrine\DBAL\Types\Types;
@@ -13,8 +14,8 @@ use App\Entity\Traits\HasIdTrait;
 use App\Entity\User\Collaborator;
 use App\Repository\UserRepository;
 use App\Entity\Traits\HasIsTeamTrait;
-use App\Entity\User\SuperAdministrator;
 
+use App\Entity\User\SuperAdministrator;
 use App\Entity\Traits\HasDeletedAtTrait;
 use function Symfony\Component\String\u;
 use Doctrine\Common\Collections\Collection;
@@ -84,10 +85,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     private ?string $password = null;
 
     /**
-     * //@var collection<int, Product>
+     * @var collection<int, Product>
      */
-    //#[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'addedtofavoritesby', fetch: 'LAZY', cascade: ['remove'])]
-    //private Collection $favorites;
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'addedtofavoritesby', fetch: 'LAZY', cascade: ['remove'])]
+    private Collection $favorites;
 
     /**
      * @var collection<int, Comment>
@@ -114,7 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function __construct()
     {
         $this->isVerified = false;
-        //$this->favorites = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->testimonials = new ArrayCollection();
@@ -367,9 +368,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     }
 
     /**
-     * //@return Collection<int, Product>
+     * @return Collection<int, Product>
      */
-    /*
     public function getFavorites(): Collection
     {
         return $this->favorites;
@@ -393,7 +393,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
         return $this;
     }
-    */
 
     /**
      * @return Collection<int, Comment>

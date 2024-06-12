@@ -1,0 +1,9 @@
+{% if field.value == "pending" %}
+	<span class="badge badge-warning">{{ 'Waiting for treatment'|trans }}</span>
+{% elseif field.value == "canceled" %}
+	<span class="badge badge-danger">{{ 'Canceled'|trans }}</span>
+{% elseif field.value == "refused" %}
+	<span class="badge badge-danger">{{ 'Refused'|trans }}</span>
+{% else %}
+	<span class="badge badge-success">{{ 'Accepted'|trans }}</span>
+{% endif %}
