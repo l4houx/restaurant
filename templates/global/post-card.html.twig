@@ -1,0 +1,24 @@
+{% if post.isOnline %}
+    {# {% set runtimeConfig = {"thumbnail": {"size": thumbnailsize } } %} #}
+    {% set link = path('post', { slug : post.slug }) %}
+    <div class="col-md-6 col-lg-4">
+        <article class="card bg-transparent h-100 p-0">
+            {% if post.category %}
+                <div class="badge position-absolute top-0 start-0 m-3" style="background-color: {{ post.category.color }}">
+                    {{ post.category.name }}
+                </div>
+            {% endif %}
+            <img src="{{ post.imageName ? (post.getImagePath) : post.getImagePlaceholder }}" class="card-img" alt="{{ post.name }}">
+            <div class="card-body px-2 pb-4">
+                <h6 class="card-title mb-2"><a href="{{ link }}">{{ post.name | html_markdown_excerpt(39) }}</a></h6>
+                <p class="small mb-0">{{ post.content | html_markdown_excerpt(95) }}</p>
+            </div>
+            <div class="card-footer bg-transparent d-flex justify-content-between px-2 py-0">
+                <span class="heading-color fw-semibold mb-0">{{ 'Author'|trans }} {# {{ post.author.username }} #}</span>
+                <a class="icon-link icon-link-hover stretched-link" href="{{ link }}">
+                    {{ 'Read more'|trans }}<i class="fas fa-arrow-right"></i> 
+                </a>
+            </div>
+        </article>
+    </div>
+{% endif %}

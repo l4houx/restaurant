@@ -1,0 +1,4 @@
+<div {{ attributes.defaults({class: 'd-flex alert-icon alert alert-' ~ type})}} role="alert">
+    <i class="fas fa-{{ this.icon}} me-2"></i>
+    {% block content %}{% endblock %}
+</div>

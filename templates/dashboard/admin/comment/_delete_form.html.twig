@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('dashboard_admin_comment_delete', {'id': comment.id}) }}" onsubmit="return confirm('{{ "Are you sure you want to delete this item?"|trans }}');">
+    <input type="hidden" name="_token" value="{{ csrf_token('comment_deletion_' ~ comment.id) }}">
+    <button class="btn btn-danger btn-sm">
+        <i class="fas fa-trash fa-fw"></i>
+    </button>
+</form>

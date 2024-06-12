@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Search'|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ "posts": ('Blog'|trans), "current":(pagetitle) }] %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+    <section class="pt-0">
+        <div class="container">
+            <h1 class="mb-0 lh-base text-center">
+                {{'Search for posts'|trans }}
+            </h1>
+            {{ component('post-searched', {
+                query: query
+            }) }}
+        </div>
+    </section>
+{% endblock %}

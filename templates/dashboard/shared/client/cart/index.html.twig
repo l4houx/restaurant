@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'My cart'|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+    {% set breadcrumb = [{ "current":(pagetitle) }] %}
+    {% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+
+{% endblock %}

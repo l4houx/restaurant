@@ -1,0 +1,21 @@
+{% if testimonial.isOnline %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card card-body card-hover-shadow border p-4 mb-4">
+            {% include "global/rating.html.twig" with {'rating' : testimonial.rating} %}
+            <p class="heading-color mb-4">“{{ testimonial.content | html_markdown_excerpt() }}”</p>
+            {% if showuser is defined %}
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-xs flex-shrink-0">
+                        {% include "global/user-avatar.html.twig" with { user: testimonial.author, type: "xs", class: 'avatar-img' } %}
+                    </div>
+                    <div class="ms-2">
+                        <h6 class="mb-0">{{ testimonial.author.getFullName | lower | capitalize }}</h6>
+                        {% if testimonial.author.getRole %}
+                            <p class="mb-0 small">{{ testimonial.author.getRole|trans|raw }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

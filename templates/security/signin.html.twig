@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Sign in'|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ "current":(pagetitle) }] %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+    <section class="pt-0">
+        <div class="container">
+            <div class="row w-100 m-auto">
+                <div class="col-sm-10 my-5 m-auto">
+                    <a href="">
+                        <img src="" class="h-50px mb-4" alt="logo">
+                    </a>
+                    <h2 class="mb-0">{{ 'Welcome back'|trans }}</h2>
+                    <p class="mb-0">{{ 'Welcome back, please enter your detail'|trans }}</p>
+                    <div class="row mt-5">
+                        <div class="col-xxl-6 d-grid">
+                            <a href="#" class="btn border bg-light mb-2 mb-xxl-0">
+                                <i class="fab fa-fw fa-google text-google-icon me-2"></i>{{ "Signup with Google"|trans }}
+                            </a>
+                        </div>
+                        <div class="col-xxl-6 d-grid">
+                            <a href="#" class="btn border bg-light mb-0">
+                                <i class="fab fa-fw fa-facebook-f text-facebook me-2"></i>{{ "Signup with Facebook"|trans }}
+                            </a>
+                        </div>
+                        <div class="position-relative my-5">
+                            <hr>
+                            <p class="small position-absolute top-50 start-50 translate-middle bg-body px-4">{{ "Or"|trans }}</p>
+                        </div>
+                    </div>
+                    <form class="needs-validation" method="post">
+                        {% if error %}
+                            {% include "global/message.html.twig" with { message: (error.messageKey|trans(error.messageData, 'security')), type: "danger", icon: "fas fa-exclamation" } %}
+                        {% endif %}
+                        <div class="mb-3">
+                            <label for="text" class="form-label required">{{ 'User name or email'|trans }}</label>
+                            <input type="text" id="text" class="form-control" name="username" placeholder="{{ 'Email address here'|trans }}" value="{{ last_username }}"  autocomplete="username" required autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label required">{{ 'Password'|trans }}</label>
+                            <input type="password" id="password" class="form-control" name="password" placeholder="**************" autocomplete="current-password" required>
+                        </div>
+                        <div class="mb-4 d-flex justify-content-between">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="_remember_me" id="rememberme" checked>
+                                <label class="form-check-label" for="rememberme">{{ 'Remember me'|trans }}</label>
+                            </div>
+                            <a href="{{ path('app_forgot_password_request') }}" class="link-underline-primary"> {{ 'Forgot password?'|trans }}</a>
+                        </div>
+                        <input type="hidden" id="csrf_token" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        <div class="align-items-center mt-0">
+                            <div class="d-grid">
+                                <button class="btn btn-dark mb-0" type="submit">{{ pagetitle }}</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% if '1' == settings['users_can_register'] %}
+                        <div class="mt-4 text-center">
+                            <span>{{ 'You do not have an account?'|trans }}<a href="{{ path('signup') }}"> {{ 'Sign up'|trans }}</a></span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

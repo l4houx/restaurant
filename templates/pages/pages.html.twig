@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'All pages'|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ "current":(pagetitle) }] %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+    <section class="pt-0">
+        <div class="container">
+            <div class="row g-4 g-xxl-5">
+                <div class="col-lg-8 col-xl-6">
+                    <h1 class="mb-4 h2">{{ "Sorry, we're not ready yet"|trans }}</h1>
+                    <p class="mb-0">{{ "Something is coming very soon"|trans }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="pt-0">
+        <div class="container">
+            <div class="row g-4 g-xl-6">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border p-4 h-100">
+                        <div class="card-body p-0">
+                            <div class="icon-md bg-primary text-white rounded flex-shrink-0 mb-3">
+                                <i class="fas fa-boxes-packing fs-6"></i>
+                            </div>
+                            <h6 class="card-title mb-3">{{ 'Quick links'|trans }}</h6>
+                            <ul class="nav flex-column">
+                                {% if '1' == settings['show_about_page'] %}
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex" href="{{ path('page', { slug : settings['about_page_slug'] }) }}">
+                                            <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                            {{ 'About us'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex" href="{{ path('contact') }}">
+                                        <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                        {{ 'Contact'|trans }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex" href="{{ path('testimonial') }}">
+                                        <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                        {{ 'Testimonial'|trans }}
+                                    </a>
+                                </li>
+                                {% if '1' == settings['show_cookie_policy_page'] %}
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex" href="{{ path('page', { slug : settings['cookie_policy_page_slug'] }) }}">
+                                            <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                            {{ 'Cookie Notice'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex" href="{{ path('contact') }}">
+                                        <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                        {{ 'Become a partner'|trans }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border p-4 h-100">
+                        <div class="card-body p-0">
+                            <div class="icon-md bg-primary text-white rounded flex-shrink-0 mb-3">
+                                <i class="fas fa-layer-group fs-6"></i>
+                            </div>
+                            <h6 class="card-title mb-3">{{ 'Community'|trans }}</h6>
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex" href="{{ path('help_center') }}">
+                                        <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                        {{ 'Help center'|trans }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex" href="{{ path('help_center_support') }}">
+                                        <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                        {{ 'Support'|trans }} <i class="bi bi-box-arrow-up-right small ms-1"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex" href="{{ path('help_center_faq') }}">
+                                        <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                        {{ 'Faqs'|trans }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    {% if '1' == settings['show_privacy_policy_page'] %}
+                                        <a class="nav-link d-flex" href="{{ path('page', { slug : settings['privacy_policy_page_slug'] }) }}">
+                                            <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                            {{ 'Privacy'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex" href="{{ path('posts') }}">
+                                        <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                        {{ 'News and blogs'|trans }}
+                                    </a>
+                                </li>
+                                {% if '1' == settings['show_terms_of_service_page'] %}
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex" href="{{ path('page', { slug : settings['terms_of_service_page_slug'] }) }}">
+                                            <i class="fa-solid fa-angle-right pt-1 me-2"></i>
+                                            {{ 'Terms'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

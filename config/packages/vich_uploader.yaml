@@ -1,0 +1,53 @@
+vich_uploader:
+    db_driver: orm
+
+    metadata:
+        type: attribute
+
+    mappings:
+
+        product_image:
+            uri_prefix: /uploads/product
+            upload_destination: '%kernel.project_dir%/public/uploads/product'
+            namer: vich_uploader.namer_uniqid
+
+        post_image:
+            uri_prefix: /uploads/post
+            upload_destination: '%kernel.project_dir%/public/uploads/post'
+            namer: vich_uploader.namer_uniqid
+
+        homepage_hero_custom_background:
+            uri_prefix: /uploads/home
+            upload_destination: '%kernel.project_dir%/public/uploads/home'
+            namer: vich_uploader.namer_uniqid
+
+        homepage_hero_custom_block_one:
+            uri_prefix: /uploads/home/block
+            upload_destination: '%kernel.project_dir%/public/uploads/home/block'
+            namer: vich_uploader.namer_uniqid
+
+        homepage_hero_custom_block_two:
+            uri_prefix: /uploads/home/block
+            upload_destination: '%kernel.project_dir%/public/uploads/home/block'
+            namer: vich_uploader.namer_uniqid
+
+        homepage_hero_custom_block_three:
+            uri_prefix: /uploads/home/block
+            upload_destination: '%kernel.project_dir%/public/uploads/home/block'
+            namer: vich_uploader.namer_uniqid
+
+        app_layout:
+            uri_prefix: /uploads/layout
+            upload_destination: '%kernel.project_dir%/public/uploads/layout'
+            namer: vich_uploader.namer_uniqid
+            inject_on_load: true
+            delete_on_update: true
+            delete_on_remove: true
+
+        icon:
+            uri_prefix: /uploads/icon
+            upload_destination: '%kernel.project_dir%/public/uploads/icon'
+            namer:
+                service: Vich\UploaderBundle\Naming\PropertyNamer
+                options: { property: 'slug' }
+

@@ -1,0 +1,40 @@
+<div class="col-lg-4 col-xl-3">
+	<div class="offcanvas-lg offcanvas-start h-100" tabindex="-1" id="offcanvasSidebar">
+		<div class="offcanvas-header bg-light">
+			<h5 class="offcanvas-title" id="offcanvasNavbarLabel">{{ 'My profile'|trans }}</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close">
+            </button>
+		</div>
+		<div class="offcanvas-body p-0">
+			<div class="card border p-3 w-100">
+				<div class="card-header text-center border-bottom">
+					<div class="avatar avatar-xl mb-2">
+                        {% include "global/user-avatar.html.twig" with { user: user, type: "xl", class: "avatar-img border border-2 border-white" } %}
+					</div>
+					<h6 class="mb-0">{{ user.username | lower | capitalize }}</h6>
+					<p class="heading-color fw-normal small mb-2">
+						<span class="badge me-2 bg-success">{{ 'Regular account'|trans }}</span>
+						<span class="text-primary d-block">
+							{{ 'Joined the'|trans }}
+							{{ user.createdAt ? user.createdAt | format_date('long') : '' }}
+						</span>
+					</p>
+				</div>
+				<div class="card-body p-0 mt-4">
+					<ul class="nav nav-pills-primary-border-start flex-column nav-responsive" role="tablist">
+						<li class="nav-item" role="presentation">
+							<button class="nav-link active" id="pills-comments-tab" data-bs-toggle="pill" data-bs-target="#pills-comments" type="button" role="tab" aria-controls="pills-comments" aria-selected="true">
+								<i class="fas fa-comment fa-fw me-2"></i>{{ 'Comments'|trans }}
+                            </button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link" id="pills-reviews-tab" data-bs-toggle="pill" data-bs-target="#pills-reviews" type="button" role="tab" aria-controls="pills-reviews" aria-selected="false" tabindex="-1">
+								<i class="fas fa-star fa-fw me-2"></i>{{ 'Reviews'|trans }}
+                            </button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,9 @@
+{% set products = results.products %}
+
+{% if results.products|length > 0 %}
+    {% for product in results.products %}
+        <a class="dropdown-item" href="{{ product.value }}">{{ product.label }}</a>
+    {% endfor %}
+{% else %}
+    <a class="dropdown-item" href="#">{{ "Aucun résultat"|trans }}</a>
+{% endif %}

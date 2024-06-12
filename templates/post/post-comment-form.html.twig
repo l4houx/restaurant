@@ -1,0 +1,10 @@
+<h5 id="add-comment" class="mb-4 fw-semibold">{{ 'Leave a comment'|trans }}</h5>
+{{ form_start(form, {method: 'post', action: path('post_comment_add', {'slug': post.slug}), attr: {novalidate: 'novalidate', class: 'needs-validation', id: 'add-comment'} }) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.content) }}
+    {{ form_row(form.isRGPD) }}
+    <button class="btn btn-primary mb-0" type="submit">
+        {{ 'Post It'|trans }}
+        <i class="fas fa-arrow-right ms-2"></i>
+    </button>
+{{ form_end(form) }}

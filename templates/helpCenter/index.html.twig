@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Help center'|trans %}
+{% block title pagetitle %}
+
+{% block body %}
+    <section class="position-relative pt-md-8 pb-0">
+        <div class="container position-relative z-index-1 pt-4 pt-md-0">
+            <div class="row g-4 g-xxl-5">
+                <div class="col-lg-8 col-xl-6">
+                    <div class="d-flex position-relative mb-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb breadcrumb-dots pb-0 mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ path('home') }}">{{ 'Home'|trans }}</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ pagetitle }}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <h1 class="mb-4 h2">{{ 'How can we help you?'|trans }}</h1>
+                    <form class="bg-light border rounded-2 position-relative p-2">
+                        <div class="input-group">
+                            <input class="form-control focus-shadow-none bg-light border-0 me-1" type="search" name="keyword" value="{{ app.request.get('keyword') }}" placeholder="{{ 'Search for answer...'|trans }}">
+                        </div>
+                    </form>
+                    {% if app.request.get('keyword') %}
+                        {% set searchresults = setting.getHelpCenterArticles({"keyword":app.request.get('keyword')}).getQuery().getResult() %}
+                        <ul class="list-inline small mb-0 mt-3">
+                            <li class="list-inline-item"> 
+                                <span class="text-secondary">
+                                    {{ "%resultsCount% result(s) found"|trans({'%resultsCount%': searchresults|length}) ~ " " ~ "for"|trans ~ ' "' ~ app.request.get('keyword') ~ '"' }}:
+                                </span>
+                            </li>
+                            {% if searchresults|length %}
+                                <li class="list-inline-item">
+                                    {% for article in searchresults %}
+                                        <a class="text-primary-hover heading-color text-decoration-underline mb-lg-0" href="{{ path('help_center_article', {slug: article.slug}) }}">
+                                            {{ article.name }}?
+                                        </a>
+                                    {% endfor %}
+                                </li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row g-4 g-xl-6">
+                {% if app.request.get('keyword') %}
+                    {% set searchresults = setting.getHelpCenterArticles({"keyword":app.request.get('keyword')}).getQuery().getResult() %}
+                    <div class="col-12">
+                        <article class="card border p-4 h-100">
+                            <div class="card-body p-0">
+                                <h6 class="card-title mb-3">
+                                    {{ "%resultsCount% result(s) found"|trans({'%resultsCount%': searchresults|length}) ~ " " ~ "for"|trans ~ ' "' ~ app.request.get('keyword') ~ '"' }}
+                                </h6>
+                            </div>
+                            {% if searchresults|length %}
+                                <div class="card-footer p-0 pt-3">
+                                    {% for article in searchresults %}
+                                        <a class="icon-link icon-link-hover" href="{{ path('help_center_article', {slug: article.slug}) }}">
+                                            {{ article.category.name }} <i class="fas fa-arrow-right"></i> {{ article.name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </article>
+                    </div>
+                {% else %}
+                    {% for category in setting.getHelpCenterCategories({"parent": "none"}).getQuery().getResult() %}
+                        <div class="col-md-6 col-lg-4">
+                            <article class="card border p-4 h-100">
+                                <div class="card-body p-0">
+                                    <div class="icon-md bg-primary text-white rounded flex-shrink-0 mb-3">
+                                        <i class="{{ category.icon }} fs-6"></i>
+                                    </div>
+                                    <h6 class="card-title mb-3">{{ category.name }}</h6>
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            {% for article in setting.getHelpCenterArticles({"category":category.slug, "featured": true}).getQuery().getResult() %}
+                                                <a class="nav-link d-flex" href="{{ path('help_center_article', {slug: article.slug}) }}">
+                                                <i class="fa-solid fa-angle-right pt-1 me-2"></i>{{ article.name }}</a>
+                                            {% endfor %}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-footer p-0 pt-3">
+                                    <a class="icon-link icon-link-hover" href="{{ path('help_center_category', { slug: category.slug }) }}">
+                                        {{ 'See more articles'|trans }}<i class="fas fa-arrow-right"></i> 
+                                    </a>
+                                </div>
+                            </article>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    <section class="pt-0">
+        <div class="container inner-container">
+            <h3 class="text-center">{{ 'Frequently Asked Questions'|trans }}</h3>
+            {% set faqs = setting.getHelpCenterFaqs({"isOnline": "all", "limit": 6}).getQuery().getResult() %}
+            {% if faqs | length > 0 %}
+                <div class="accordion accordion-icon accordion-border-bottom mt-5" id="accordionFaq">
+                    {% for faq in faqs %}
+                        <div class="accordion-item mb-3">
+                            <div class="accordion-header font-base" id="heading-{{ faq.id }}">
+                                <button class="accordion-button fw-bold d-inline-block collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ faq.id }}" aria-expanded="true" aria-controls="collapse-{{ faq.id }}">
+                                    {{ faq.question }}?
+                                </button>
+                            </div>
+                            <div id="collapse-{{ faq.id }}" class="accordion-collapse collapse {{ (loop.first ) ? 'show' : '' }}" aria-labelledby="heading-{{ faq.id }}" data-bs-parent="#accordionFaq">
+                                <div class="accordion-body">
+                                    {{ faq.answer | html_markdown }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% include "global/message.html.twig" with { type: "dark", message: ('No faqs found'|trans), icon: "fas fa-exclamation" } %}
+            {% endif %}
+        </div>
+    </section>
+    <section class="pt-0">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4 g-lg-6">
+                <div class="col">
+                    <div class="card card-body card-hover-shadow border p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex">
+                                <h4 class="mb-0 text-primary"><i class="fas fa-headset"></i></h4>
+                                <div class="mx-3">
+                                    <h6 class="mb-0">{{ 'Contact Support'|trans }}</h6>
+                                    <small>{{ 'Not finding the help you need?'|trans }}</small>
+                                </div>
+                            </div>
+                            <a class="icon-link icon-link-hover text-body stretched-link" href="{{ path('help_center_support') }}">
+                                <i class="fas fa-arrow-right fs-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card card-body card-hover-shadow border p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex">
+                                <h4 class="mb-0 text-primary"><i class="fas fa-ticket"></i></h4>
+                                <div class="mx-3">
+                                    <h6 class="mb-0">{{ 'Submit a Ticket'|trans }}</h6>
+                                    <small>{{ 'Prosperous impression had delay'|trans }}</small>
+                                </div>
+                            </div>
+                            <a class="icon-link icon-link-hover text-body stretched-link" href="#">
+                                <i class="fas fa-arrow-right fs-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card card-body card-hover-shadow border p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex">
+                                <h4 class="mb-0 text-primary"><i class="fas fa-envelope-open"></i></h4>
+                                <div class="mx-3">
+                                    <h6 class="mb-0">{{ 'Email us'|trans }}</h6>
+                                    <small>
+                                        {{ 'Reach us at'|trans }} <a href="javascript:void;" class="heading-color">{{ email }}</a>
+                                    </small>
+                                </div>
+                            </div>
+                            <a class="icon-link icon-link-hover text-body stretched-link" href="{{ path('contact') }}">
+                                <i class="fas fa-arrow-right fs-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

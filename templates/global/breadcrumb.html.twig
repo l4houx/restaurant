@@ -1,0 +1,27 @@
+<section class="pb-5 pb-sm-7">
+	<div class="container">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb breadcrumb-dots pb-0 mb-0">
+				<li class="breadcrumb-item">
+					<a href="{{ path('home') }}">{{ 'Home'|trans }}</a>
+				</li>
+				{% for li in breadcrumb%}
+					{% for routename, pagetitle in li %}
+						{% if routename != "current" %}
+							{% if '/' in routename %}
+								{% set href = routename %}
+							{% else %}
+								{% set href = path(routename) %}
+							{% endif %}
+							<li class="breadcrumb-item">
+								<a href="{{ href }}" class="">{{ pagetitle }}</a>
+							</li>
+						{% endif %}
+					{% endfor %}
+				{% endfor %}
+				<li class="breadcrumb-item active" aria-current="page">{{ breadcrumb|last['current'] }}</li>
+			</ol>
+		</nav>
+		<h1 class="h3 mb-0 mt-3">{{ breadcrumb|last['current'] }}</h1>
+	</div>
+</section>

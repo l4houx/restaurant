@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Search for posts'|trans %}
+{% block title pagetitle %}
+
+{% block body %}
+    <section class="py-lg-8 py-6">
+        <div class="container my-lg-8">
+            {% if searchKeyword %}
+                <div class="row">
+                    <div class="offset-xl-2 col-xl-8 offset-lg-1 col-lg-10 col-md-12 col-12">
+                        <div class="text-center mb-5">
+                            <h1 class="display-2 fw-bold">
+                                <i class="fas fa-search"></i>
+                                {{ results | length }} {{ "posts containing"|trans }}
+                                <u class="text-warning"><span class="text-primary">{{ searchKeyword }}</span></u>
+                            </h1>
+                            <p class="lead"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {% for post in results %}
+                        {% set link = path('post', { slug : post.slug }) %}
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                            <div class="card mb-4 shadow-lg card-lift {{ loop.index is odd ? 'bg-light' : '' }}">
+                                <div class="card-body">
+                                    <h3>
+                                        <a href="{{ link }}" class="text-inherit">
+                                            {{ post._formatted.name | html_markdown }}
+                                        </a>
+                                    </h3>
+                                    {{ post._formatted.content | html_markdown }}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="offset-xl-2 col-xl-8 offset-lg-1 col-lg-10 col-md-12 col-12">
+                            {% include "global/message.html.twig" with { type: "dark", message: ('There are no results for your keyword.'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+                        </div>
+                    {% endfor %}
+                    <div class="offset-xl-2 col-xl-8 offset-lg-1 col-lg-10 col-md-12 col-12 text-center mt-4">
+                        <a href="{{ path('search_post', { 'fetch_last_query': true }) }}" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                            {{ "Do another search"|trans }}
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row">
+                    <div class="offset-xl-2 col-xl-8 offset-lg-1 col-lg-10 col-md-12 col-12">
+                        <div class="text-center mb-5">
+                            <h1 class="display-2 fw-bold">{{ pagetitle }}</h1>
+                            <p class="lead"></p>
+                        </div>
+                        {{ form_start(searchForm, {'attr': {'novalidate': 'novalidate', 'class': 'row px-md-8 mx-md-8 needs-validation'} }) }}
+                            <div class="mb-3 col ps-0 ms-2 ms-md-0">
+                                {{ form_widget(searchForm) }}
+                            </div>
+                            <div class="mb-3 col-auto ps-0">
+                                <button class="btn btn-primary" type="submit">{{ 'Search'|trans }}</button>
+                            </div>
+                        {{ form_end(searchForm) }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

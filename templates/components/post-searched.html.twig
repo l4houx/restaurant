@@ -1,0 +1,26 @@
+<div {{ attributes }}>
+    <div class="col-md-7 bg-light border rounded-2 mx-auto p-2 mt-4 mt-md-5">
+        <div class="input-group">
+            <input type="search"
+                class="form-control focus-shadow-none bg-light border-0 me-1"
+                placeholder="{{ 'Search for...'|trans }}"
+                autocomplete="off"
+                data-model="query"
+                autofocus
+            >
+        </div>
+    </div>
+    {% if this.posts %}
+        <div class="row g-4 g-sm-5 g-xl-7 mt-0">
+            {% for post in this.posts %}
+                {% include "global/post-card.html.twig" with {post: post, thumbnailsize: [397, 397], showdate: 1} %}
+            {% endfor %}
+        </div>
+    {% else %}
+        {% if query is not empty %}
+            <div class="col-md-7 mx-auto mt-3 mt-md-3">
+                {% include "global/message.html.twig" with { type: "light", message: ('No results found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+            </div>
+        {% endif %}
+    {% endif %}
+</div>

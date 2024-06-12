@@ -1,17 +1,91 @@
+{% set settings = setting.findAll %}
+{% set routename = app.request.get('_route') %}
+{% set random = setting.generateReference(5) %}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale }}">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title website_name %} | {{ website_name }}</title>
+        <meta name="csrf-token" content="">
+        <meta name="robots" content="noindex, nofollow">
+        {# <meta name="turbo-visit-control" content="reload"> #}
+
+        <meta property="og:site_name" content="{{ settings['website_name'] }}">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ app.request.schemeAndHttpHost ~ app.request.requestUri }}">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@{{ settings['website_slug'] }}">
+        <meta name="apple-mobile-web-app-title" content="{{ settings['website_name'] }}">
+        <meta name="twitter:site" content="@{{ settings['website_name'] }}">
+        <meta name="application-name" content="{{ settings['website_name'] }}">
+        <meta name="msapplication-tooltip" content="{{ settings['website_description_' ~ app.request.locale] }}">
+
+        {% block meta_dynamic_seo %}
+            <meta name="description" content="{{ settings['website_description_' ~ app.request.locale] }}">
+            <meta name="keywords" content="{{ settings['website_keywords_' ~ app.request.locale] }}">
+            <meta property="og:title" content="{{ settings['website_name'] }}">
+            {# <meta property="og:image" content="{{ absolute_url(asset(setting.getAppLayoutSettings.getOgImagePath)) }}"> #}
+            <meta property="og:description" content="{{ settings['website_description_' ~ app.request.locale] }}">
+            <meta name="twitter:title" content="{{ settings['website_name'] }}">
+            {# <meta name="twitter:image" content="{{ absolute_url(asset(setting.getAppLayoutSettings.getOgImagePath)) }}"> #}
+            <meta name="twitter:image:alt" content="{{ settings['website_description_' ~ app.request.locale] }}">
+            <meta name="twitter:description" content="{{ settings['website_description_' ~ app.request.locale] }}">
         {% endblock %}
+
+        {# <link rel="shortcut icon" href="{{ absolute_url(asset(setting.getAppLayoutSettings.getFaviconPath)) }}">#}
+        <link rel="canonical" href="{{ app.request.schemeAndHttpHost ~ app.request.requestUri }}">
+
+        {# Google analytics code added in the app parameters #}
+        {% if settings['google_analytics_code'] != "" and settings['google_analytics_code'] is not null %}
+            <!-- Global site tag (gtag.js) - Google Analytics -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings['google_analytics_code'] }}"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag() {
+                    dataLayer.push(arguments);
+                }
+                gtag('js', new Date());
+
+                gtag('config', '{{ settings['google_analytics_code'] }}');
+            </script>
+        {% endif %}
+
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        {% block stylesheets '' %}
+
+        {# Custom css code added in the app parameters #}
+        {% if settings['custom_css'] != "" and settings['custom_css'] is not null %}
+            <style>
+                {{ settings['custom_css'] | raw }}
+            </style>
+        {% endif %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body 
+        class="
+            {{ bodyClass is defined ? bodyClass : '' }}"
+            data-timezone="{{ date_timezone }}"
+            data-currency-ccy="{{ settings['currency_ccy'] }}" data-currency-symbol="{{ settings['currency_symbol'] }}" data-currency-position="{{ settings['currency_position'] }}"
+            {% if settings['show_cookie_policy_bar'] == "1" %} data-cookie-bar-page-link="{{ path('page', { slug : settings['cookie_policy_page_slug'] }) }}"{% endif %}
+            {% if setting.getEnv('DEMO_MODE') == "1" %}data-demo-mode="1"{% endif %}
+        >
+        {% block header %}
+            {% include "global/_header.html.twig" %}
+        {% endblock %}
+        <main>
+            {% block cover '' %}
+            {% block pageheader '' %}
+            {% block breadcrumb '' %}
+            {% block body '' %}
+        </main>
+        {% block footer %}
+            {% include "global/_footer.html.twig" %}
+        {% endblock %}
+        {{ component('flash_messages') }}
     </body>
 </html>

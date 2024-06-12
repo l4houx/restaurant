@@ -1,0 +1,67 @@
+<div class="col-lg-4 col-xl-3">
+	<div class="offcanvas-lg offcanvas-start h-100" tabindex="-1" id="offcanvasSidebar">
+		<div class="offcanvas-header bg-light">
+			<h5 class="offcanvas-title" id="offcanvasNavbarLabel">{{ 'My profile'|trans }}</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close">
+            </button>
+		</div>
+		<div class="offcanvas-body p-0">
+			<div class="card border p-3 w-100">
+				<div class="card-header text-center border-bottom">
+					<div class="avatar avatar-xl mb-2">
+                        {% include "global/user-avatar.html.twig" with { user: app.user, type: "xl", class: "avatar-img border border-2 border-white" } %}
+					</div>
+					<h6 class="mb-0">{{ app.user.getFullName | lower | capitalize }}</h6>
+					<a href="#" class="text-reset text-primary-hover small">{{ app.user.email }}</a>
+				</div>
+				<div class="card-body p-0 mt-4">
+					<ul class="nav nav-pills-primary-border-start flex-column">
+						<li class="nav-item">
+							<a class="nav-link {% if activerd == 'client_index' %}active{% endif %}" href="{{ path('dashboard_user_client_index') }}">
+								<i class="fas fa-user fa-fw me-2"></i>{{ 'My profile'|trans }}
+                            </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% if activerd == 'change_password' %}active{% endif %}" href="{{ path('dashboard_change_password') }}">
+								<i class="fas fa-user-lock fa-fw me-2"></i>{{ 'Password'|trans }}
+                            </a>
+						</li>
+						{% if is_granted("ROLE_ADMIN_APPLICATION") %}
+							<li class="nav-item">
+								<a class="nav-link {% if activerd == 'testimonial_index' %}active{% endif %}" href="{{ path('dashboard_admin_testimonial_index') }}">
+									<i class="fas fa-star fa-fw me-2"></i>{{ 'Manage testimonials'|trans }}
+								</a>
+							</li>
+						{% elseif is_granted('ROLE_USER') %}
+							<li class="nav-item">
+								<a class="nav-link {% if activerd == 'testimonial_index' %}active{% endif %}" href="{{ path('dashboard_user_testimonial_index') }}">
+									<i class="fas fa-star fa-fw me-2"></i>{{ 'My testimonial'|trans }}
+								</a>
+							</li>
+						{% endif %}
+						<li class="nav-item">
+							<a class="nav-link" href="">
+								<i class="fas fa-wallet fa-fw me-2"></i>{{ 'Payment details'|trans }}
+                            </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="">
+								<i class="fas fa-basket-shopping fa-fw me-2"></i>{{ 'Order history'|trans }}
+                            </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="">
+								<i class="fas fa-heart fa-fw me-2"></i>{{ 'Wishlist'|trans }}
+                            </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link text-danger" href="{{ path('signout') }}">
+								<i class="fas fa-sign-out-alt fa-fw me-2"></i>{{ 'Sign Out'|trans }}
+                            </a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

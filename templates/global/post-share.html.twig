@@ -1,0 +1,32 @@
+<ul class="dropdown-menu min-w-auto" aria-labelledby="cardFeedAction">
+    <li>
+        <a class="dropdown-item" href="https://www.facebook.com/sharer/sharer.php?u={{ absolute_url(path('post', {slug: post.slug})) }}" target="_blank">
+            <i class="fab fa-facebook fa-fw me-2"></i>{{ 'Facebook'|trans }}
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item" href="https://twitter.com/intent/tweet?text={{ post.name|url_encode }}%20{{ absolute_url(path('post', {slug: post.slug})) }}%20@{{ website_name }}" target="_blank"> 
+            <i class="fab fa-twitter fa-fw me-2"></i>{{ 'Twitter'|trans }}
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item" href="https://www.linkedin.com/shareArticle?mini=true&amp;{{ post.name|url_encode }}%20{{ absolute_url(path('post', {slug: post.slug})) }}%20@{{ website_name }}" target="_blank"> 
+            <i class="fab fa-linkedin fa-fw me-2"></i>{{ 'Linkedin'|trans }}
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item" href="{# {{ path('post_shared', {slug: post.slug}) }} #}" target="_blank"> 
+            <i class="fas fa-envelope fa-fw me-2"></i>{{ 'Email'|trans }}
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item" href="#" target="_blank"> 
+            <i class="fab fa-whatsapp fa-fw me-2"></i>{{ 'Whatsapp'|trans }}
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item" href="#"> 
+            <i class="fa-regular fa-paste fa-fw me-2"></i>{{ 'Copy link'|trans }}
+        </a>
+    </li>
+</ul>

@@ -1,0 +1,68 @@
+{# 
+{% set runtimeConfig = {"thumbnail": {"size": thumbnailsize } } %} 
+#}
+{% if customLink is defined %}
+    {% set link = customLink %}
+{% else %}
+    {% set link = path('product', { id : product.id }) %} 
+{% endif %}
+<div class="col-sm-6 col-lg-4 col-xl-3">
+	<div class="card border bg-transparent overflow-hidden p-0 h-100">
+		<div class="position-absolute top-0 start-0 p-3">
+			<span class="badge" style="background-color: {{ product.subCategories[0].color }}">
+                {{ product.subCategories[0].name }}
+            </span>
+			{% if product.tax %}
+				<span class="badge text-bg-danger ms-2">{{ product.tax * 100 }}% {{ 'off'|trans }}</span>
+			{% endif %}
+		</div>
+		<div class="card-header bg-light rounded m-2">
+			<img src="{{ product.imageName ? (product.getImagePath) : product.getImagePlaceholder }}" alt="{{ product.brand.name }} - {{ product.name }}">
+		</div>
+		<div class="card-body pb-0">
+			<h6 class="card-title">
+				<a href="{{ link }}" class="stretched-link">{{ product.name }}</a>
+			</h6>
+			<ul class="list-inline">
+				<li class="list-inline-item me-0 small">
+					<i class="fas fa-star text-warning"></i>
+				</li>
+				<li class="list-inline-item me-0 small">
+					<i class="fas fa-star text-warning"></i>
+				</li>
+				<li class="list-inline-item me-0 small">
+					<i class="fas fa-star text-warning"></i>
+				</li>
+				<li class="list-inline-item me-0 small">
+					<i class="fas fa-star text-warning"></i>
+				</li>
+				<li class="list-inline-item me-0 small">
+					<i class="fas fa-star-half-alt text-warning"></i>
+				</li>
+			</ul>
+		</div>
+		<div class="card-footer border-0 bg-transparent d-flex justify-content-between align-items-center pt-0">
+			<div class="d-flex align-items-center gap-2 justify-content-center">
+				{% if product.discount > 0 %}
+					<p class="fw-bold text-success mb-0">
+						{{ (settings['currency_position']  == 'left' ? settings['currency_symbol'] : '') ~ product.salePrice ~ (settings['currency_position'] == 'right' ? settings['currency_symbol'] : '') }}
+					</p>
+					<small class="text-decoration-line-through">
+						{{ (settings['currency_position']  == 'left' ? settings['currency_symbol'] : '') ~ product.price ~ (settings['currency_position'] == 'right' ? settings['currency_symbol'] : '') }}
+					</small>
+				{% else %}
+					<p class="fw-bold text-success mb-0">
+						{{ (settings['currency_position']  == 'left' ? settings['currency_symbol'] : '') ~ product.price ~ (settings['currency_position'] == 'right' ? settings['currency_symbol'] : '') }}
+					</p>
+				{% endif %}
+			</div>
+			{% if product.stock > 0 %}
+				<a href="{{ path('cart_add', { id : product.id }) }}" class="btn btn-dark mb-0 z-index-2">
+					<i class="fas fa-cart-shopping"></i>
+				</a>
+			{% else %}
+				<p class="fw-bold text-danger mb-0">{{ 'Temporarily out of stock'|trans }}</p>
+			{% endif %}
+		</div>
+	</div>
+</div>

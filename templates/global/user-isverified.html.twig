@@ -1,0 +1,13 @@
+{% if app.user and app.user.isVerified == false %}
+    <div class="alert py-2 m-0 bg-primary border-0 rounded-0 alert-dismissible fade show text-center overflow-hidden"
+        role="alert">
+        <p class="text-white small m-0">
+            <i class="fa-solid fa-info-circle me-2"></i> {{ 'Your account is not activated'|trans }}
+            <a href="#" class="btn btn-xs btn-white ms-2 mb-0">
+                {{ 'Resend activation link'|trans }}
+            </a>
+            {{ 'to return to your homepage'|trans }}
+        </p>
+        <button type="button" class="btn-close btn-close-white opacity-5 p-3" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif %}

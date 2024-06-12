@@ -1,0 +1,13 @@
+<img src="{{ user.avatar }}" class="avatar avatar-{{ type }} rounded-circle {{ class is defined ? class : '' }}" alt="avatar" {% if showusernametooltip is defined %}data-bs-toggle="tooltip" title="{{ user.username }}" data-container="body"{% endif %}>
+
+{#  
+{% if user.hasRole('ROLE_CREATOR') %}
+
+{% elseif user.hasRole('ROLE_RESTAURANT') %}
+
+{% elseif user.hasRole('ROLE_POINTOFSALE') %}
+
+{% elseif user.hasRole('ROLE_SCANNER') %}
+
+{% endif %}
+#}

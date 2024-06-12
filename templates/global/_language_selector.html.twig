@@ -1,0 +1,36 @@
+{% macro render_language_selector(display_current_language = false) %}
+<div class="dropdown dropup text-center text-md-end mt-3 mt-md-0">
+    <a class="dropdown-toggle btn btn-sm btn-light mb-0" href="#" role="button" id="languageSwitcher" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-globe me-2"></i>
+        {{ 'Language'|trans }}
+        {% if display_current_language %}
+            <span class="current-language">{{ app.request.locale | locale_name }}</span>
+        {% endif %}
+    </a>
+    <ul class="dropdown-menu min-w-auto" aria-labelledby="languageSwitcher" style="">
+        {% for locale in locales() %}
+            {% set is_active = app.request.locale == locale.code %}
+            {% set is_rtl = locale.code in ['ar', 'fa', 'he'] %}
+            <li class="{{ is_active ? 'active' }} {{ is_rtl ? 'rtl' }}" translate="no">
+                <a 
+                    class="dropdown-item me-4" 
+                    lang="{{ locale.code }}" 
+                    hreflang="{{ locale.code }}" 
+                    href="{{ path(app.request.get('_route', 'home'), app.request.get('_route_params', [])|merge({_locale: locale.code})) }}"
+                >
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="avatar avatar-xxs me-2">
+                            <img class="avatar-img rounded-circle me-2" src="{{ asset('images/svg/flags/' ~ locale.code ~ '.svg') }}" alt="avatar">
+                        </div>
+                        <span class="heading-color fw-semibold mb-0">{{ locale.name | capitalize }}</span>
+                    </div>
+                    {#  
+                    <span class="flag flag-{{ locale.code }} me-2" width="16" height="13"></span>
+                    {{ locale.name | capitalize }}
+                    #}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endmacro %}

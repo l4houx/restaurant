@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = page.name %}
+{% block title pagetitle %}
+
+{% block body %}
+	<section class="pt-lg-8 pt-xl-9">
+		<div class="container pt-4 pt-lg-0">
+			<div class="row">
+				<div class="col-xl-8 mx-auto">
+					<div class="text-center mb-6">
+						<h1>{{ pagetitle }}</h1>
+						<p class="lead mb-0">{{ 'Last update on'|trans }} {{ page.updatedAt | date('m/Y') }}</p>
+					</div>
+					{{ page.content | html_markdown }}
+					<h6 class="mb-3 mt-5">{{ 'Views'|trans }}</h6>
+					<p>{{ page.views }}</p>
+				</div>
+			</div>
+		</div>	
+	</section>
+{% endblock %}

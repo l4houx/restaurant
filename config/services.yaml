@@ -5,11 +5,86 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
+    # The above parameters are declared here to be catched by the related event subscriber
+    #is_website_configured: '%env(IS_WEBSITE_CONFIGURED)%'
+    maintenance_mode:        '%env(MAINTENANCE_MODE)%'
+
+    # Name
+    website_name:            '%env(WEBSITE_NAME)%'
+    website_slug:            '%env(WEBSITE_SLUG)%'
+
+    # Support
+    website_support:         '%env(WEBSITE_SUPPORT)%'
+    website_marketing:       '%env(WEBSITE_MARKETING)%'
+    website_compta:          '%env(WEBSITE_COMPTA)%'
+
+    # Contact
+    website_no_reply_email:  '%env(WEBSITE_NO_REPLY_EMAIL)%'
+    website_sav:             '%env(WEBSITE_SAV)%'
+    website_contact_name:    '%env(WEBSITE_CONTACT_NAME)%'
+    website_contact_email:   '%env(WEBSITE_CONTACT_EMAIL)%'
+    website_contact_phone:   '%env(WEBSITE_CONTACT_PHONE)%'
+    website_contact_fax:     '%env(WEBSITE_CONTACT_FAX)%'
+    website_contact_address: '%env(WEBSITE_CONTACT_ADDRESS)%'
+
+    # URL
+    website_root_url:        '%env(WEBSITE_ROOT_URL)%'
+    website_url:             '%env(WEBSITE_URL)%'
+    website_dashboard_path:  '%env(WEBSITE_DASHBOARD_PATH)%'
+    website_admin_dashboard_path:  '%env(WEBSITE_ADMIN_DASHBOARD_PATH)%'
+
+    # Social
+    website_facebook_url:    '%env(WEBSITE_FACEBOOK_URL)%'
+    website_instagram_url:   '%env(WEBSITE_INSTAGRAM_URL)%'
+    website_youtube_url:     '%env(WEBSITE_YOUTUBE_URL)%'
+    website_twitter_url:     '%env(WEBSITE_TWITTER_URL)%'
+    website_github_url:      '%env(WEBSITE_GITHUB_URL)%'
+    website_linkedin_url:    '%env(WEBSITE_LINKEDIN_URL)%'
+
+    # Company
+    website_company:         '%env(WEBSITE_COMPANY)%'
+    website_siret:           '%env(WEBSITE_SIRET)%'
+    website_ape:             '%env(WEBSITE_APE)%'
+    website_vat:             '%env(WEBSITE_VAT)%'
+    website_code:            '%env(WEBSITE_FLAGS)%'
+
+    # Date and time
+    date_format:           '%env(DATE_FORMAT)%'
+    date_format_simple:    '%env(DATE_FORMAT_SIMPLE)%'
+    date_format_date_only: '%env(DATE_FORMAT_DATE_ONLY)%'
+    date_timezone:         '%env(DATE_TIMEZONE)%'
+
+    # Language
+    locale: '%env(DEFAULT_LOCALE)%'
+
+    router.request_context.host: "%website_root_url%"
+    router.request_context.scheme: 'https'
+    asset.request_context.secure: true
+
+    container.dumper.inline_factories: true
+    container.dumper.inline_class_loader: true
+
+    # Google Map & Google Recaptcha
+    #google_maps_api_key: '%env(GOOGLE_MAPS_API_KEY)%'
+    #google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+
+    absolute_image_directory: '/uploads/images'
+    image_directory: '%kernel.project_dir%/public/uploads/images'
+
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+        public: false
+        bind:
+            # Website locales
+            array $enabledLocales: '%kernel.enabled_locales%'
+            string $defaultLocale: '%locale%'
+
+            # Website patch
+            $dashboardPath: '%website_admin_dashboard_path%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -22,3 +97,14 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # IntlExtension
+    Twig\Extra\Intl\IntlExtension:
+        alias: twig.extension.intl
+
+    # Logout
+    Symfony\Component\Security\Http\Logout\LogoutUrlGenerator: '@security.logout_url_generator'
+
+    # Setting
+    app.setting:
+        alias: App\Service\SettingService

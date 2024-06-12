@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'There was an error publishing your comment'|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+    {% set breadcrumb = [{ (path('post', { slug: post.slug })): post.name, "current" : (pagetitle) }] %}
+    {% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+	<section class="pt-0">
+		<div class="container my-lg-4">
+            <div class="row">
+                <div class="offset-md-2 col-md-8 col-12">
+                    <div class="mb-3">
+                        <p class="lead mb-8">{{ post.name }}</p>
+                        <div class="d-flex justify-content-between">
+                            <span>{{ 'Contact Information'|trans }}</span>
+                            <div class="text-end">
+                                <span>{{ phone }}</span>
+                                <a href="javascript:void;">{{ email }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="card border">
+                            <div class="card-body p-5">
+                                {% include "global/comment.html.twig" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</section>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = "Check your email inbox"|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ "current":(pagetitle) }] %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+    <section class="pt-0">
+        <div class="container">
+            <div class="row w-100 m-auto">
+                <div class="col-lg-10 my-5 m-auto">
+                    <div class="text-center">
+                        <span class="display-2 text-success">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </div>
+                    <h2 class="mb-1 mt-4">{{ pagetitle }}</h2>
+                    <p class="mb-2">
+                        {{ 'If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.'|trans }}
+                        {{ 'This link will expire in'|trans }}
+                        {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                    </p>
+                    <p class="mb-4">
+                        {{ "If you don't receive an email please check your spam folder or"|trans }} 
+                        <a href="{{ path('app_forgot_password_request') }}">{{ 'try again'|trans }}</a>.
+                    </p>
+                    <div class="d-grid text-center">
+                        <a href="{{ path('signin') }}" class="btn btn-dark mb-0">
+                            {{ 'Back to login'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

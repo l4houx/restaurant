@@ -1,0 +1,9 @@
+{% if field.value is null %}
+    <span class="badge badge-secondary">{{ 'None'|trans }}</span>
+{% elseif field.value == "rejected" %}
+    <span class="badge badge-danger">{{ field.value }}</span>
+{% elseif field.value == "draft" %}
+    <span class="badge badge-primary">{{ field.value }}</span>
+{% elseif field.value == "published" %}
+    <span class="badge badge-success">{{ field.value }}</span>
+{% endif %}

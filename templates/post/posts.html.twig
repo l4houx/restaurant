@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Blog'|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ "current":(pagetitle) }] %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+    <section class="pt-0">
+        <div class="container">
+            <div class="d-lg-flex justify-content-between align-items-center">
+                <h4 class="mb-3 mb-lg-0">{{ 'Our Blog'|trans }}</h4>
+                <ul class="nav nav-pills gap-1 nav-pills-light">
+                    <li class="nav-item">
+                        <a href="{{ path('posts') }}" class="nav-link {% if routename == "posts" %}active{% endif %}">
+                            {{ 'All blog'|trans }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('post_searched') }}" class="nav-link {% if routename == "post_searched" %}active{% endif %}">
+                            {{ 'Search for posts'|trans }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% if posts.getTotalItemCount > 0 %}
+                <div class="row g-4 g-sm-5 g-xl-7 mt-0">
+                    {% for post in posts %}
+                        {% include "global/post-card.html.twig" with {post: post, thumbnailsize: [397, 397], showdate: 1} %}
+                    {% endfor %}
+                </div>
+                <div class="row mt-7">
+                    <div class="col-12 mx-auto">
+                        {{ knp_pagination_render(posts, null, {}, {'align': 'center'}) }}
+                    </div>
+                </div>
+            {% else %}
+                {% include "global/message.html.twig" with { type: "dark", message: ('No posts found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

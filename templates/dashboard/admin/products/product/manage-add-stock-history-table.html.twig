@@ -1,0 +1,24 @@
+<div class="table-responsive overflow-y-hidden">
+    <table class="table mb-0 text-nowrap table-hover table-centered">
+        <thead class="">
+            <tr>
+                <th>#</th>
+                <th>{{ 'Quantity'|trans }}</th>
+                <th>{{ 'Published the'|trans }}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for addProductHistory in rows %}
+                <tr>
+                    <td>{{ addProductHistory.id }}</td>
+                    <td>{{ addProductHistory.quantity }}</td>
+                    <td>{{ addProductHistory.createdAt ? addProductHistory.createdAt | format_date('long') : '' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="card-footer bg-transparent text-end p-0">
+        {# {{ knp_pagination_render(rows, null, {}, {'align': 'center'}) }} #}
+    </div>
+</div>

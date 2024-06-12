@@ -1,0 +1,338 @@
+{#  {% set routename = app.request.get('_route') %}
+{% set random = setting.generateReference(5) %} #}
+
+<header class="header-sticky header-absolute">
+    {% include "global/user-isverified.html.twig" with { user: app.user } %}
+    <nav class="navbar navbar-expand-xl">
+        <div class="container">
+            <a href="{{ path('home') }}" class="navbar-brand me-5">
+                {# <img class="navbar-brand-item" src="{{ asset('images/logo-light.svg') }}" alt="logo"> #}
+                {{ website_name }}
+            </a>
+            <div class="navbar-collapse collapse" id="navbarCollapse">
+                <ul class="navbar-nav navbar-nav-scroll dropdown-hover mx-auto">
+                    {#
+                    <li class="nav-item">
+                        <a class="nav-link {% if routename == "products" or routename == "product" %}active{% endif %}" href="{{ path('products') }}">{{ 'Browse Products'|trans }}</a>
+                    </li>
+                    {% if categories()|length > 0 %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                                {{ 'Explore'|trans }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% for category in categories() %}
+                                    <li class="dropdown dropend">
+                                        <a class="nav-link dropdown-link dropdown-toggle" data-bs-toggle="dropdown" href="#">
+                                            {{ category.name }}
+                                        </a>
+                                        {% for subCategory in category.subCategories %}
+                                            <ul class="dropdown-menu" data-bs-popper="none">
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ path('subcategory_filter', { id : subCategory.id}) }}">
+                                                        {{ subCategory.name }}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        {% endfor %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                    #}
+                    <li class="nav-item">
+                        <a class="nav-link {% if routename == "contact" %}active{% endif %}" href="{{ path('contact') }}">
+                            {{ 'Contact'|trans }}
+                        </a>
+                    </li>
+                    {% if is_granted('ROLE_USER') %}
+                        {% if is_granted('ROLE_TEAM') %}
+                            {% if is_granted('ROLE_EDITOR') %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle  {% if routename == "dashboard_admin_product_category_index" or routename == "dashboard_admin_product_category_new" or routename == "dashboard_admin_product_category_edit" or routename == "dashboard_admin_product_sub_category_index" or routename == "dashboard_admin_product_sub_category_new" or routename == "dashboard_admin_product_sub_category_edit" or routename == "dashboard_admin_product_index" or routename == "dashboard_admin_product_new" or routename == "dashboard_admin_product_edit" or routename == "dashboard_admin_product_brand_index" or routename == "dashboard_admin_product_brand_new" or routename == "dashboard_admin_product_brand_edit" or routename == "dashboard_admin_product_color_index" or routename == "dashboard_admin_product_color_new" or routename == "dashboard_admin_product_color_edit" or routename == "dashboard_admin_product_size_index" or routename == "dashboard_admin_product_size_new" or routename == "dashboard_admin_product_size_edit" or routename == "dashboard_admin_product_shipping_index" or routename == "dashboard_admin_product_shipping_new" or routename == "dashboard_admin_product_shipping_edit" or routename == "dashboard_admin_user_index" or routename == "dashboard_admin_user_new" or routename == "dashboard_admin_user_suspended" or routename == "dashboard_admin_user_verified" or routename == "dashboard_admin_user_information" or routename == "dashboard_admin_setting_regional" or routename == "dashboard_admin_post_index" or routename == "dashboard_admin_post_new" or routename == "dashboard_admin_post_edit" or routename == "dashboard_admin_post_category_index" or routename == "dashboard_admin_post_category_new" or routename == "dashboard_admin_post_category_edit" or routename == "dashboard_admin_post_type_index" or routename == "dashboard_admin_post_type_new" or routename == "dashboard_admin_post_type_edit" or routename == "dashboard_admin_comment_index" or routename == "dashboard_admin_help_center_article_index" or routename == "dashboard_admin_help_center_article_new" or routename == "dashboard_admin_help_center_article_edit" or routename == "dashboard_admin_help_center_category_index" or routename == "dashboard_admin_help_center_category_new" or routename == "dashboard_admin_help_center_category_edit" or routename == "dashboard_admin_help_center_faq_index" or routename == "dashboard_admin_help_center_faq_new" or routename == "dashboard_admin_help_center_faq_edit" or routename == "dashboard_admin_page_index" or routename == "dashboard_admin_page_new" or routename == "dashboard_admin_page_edit" or routename == "dashboard_admin_testimonial_index" or routename == "dashboard_admin_testimonial_new" or routename == "dashboard_admin_testimonial_edit" %}active{% endif %}" href="#" data-bs-toggle="dropdown"
+                                        data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                                        {% if is_granted("ROLE_ADMIN") %}
+                                            {{ 'Administrator'|trans }}
+                                        {% else %}
+                                            {{ 'Editor'|trans }}
+                                        {% endif %}
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% if is_granted('ROLE_EDITOR') or is_granted('ROLE_ADMIN') %}
+                                            <li class="dropdown dropend">
+                                                <a class="nav-link dropdown-link dropdown-toggle {% if routename == "dashboard_admin_product_category_index" or routename == "dashboard_admin_product_category_new" or routename == "dashboard_admin_product_category_edit" or routename == "dashboard_admin_product_sub_category_index" or routename == "dashboard_admin_product_sub_category_new" or routename == "dashboard_admin_product_sub_category_edit" or routename == "dashboard_admin_product_index" or routename == "dashboard_admin_product_new" or routename == "dashboard_admin_product_edit" or routename == "dashboard_admin_product_brand_index" or routename == "dashboard_admin_product_brand_new" or routename == "dashboard_admin_product_brand_edit" or routename == "dashboard_admin_product_color_index" or routename == "dashboard_admin_product_color_new" or routename == "dashboard_admin_product_color_edit" or routename == "dashboard_admin_product_size_index" or routename == "dashboard_admin_product_size_new" or routename == "dashboard_admin_product_size_edit" or routename == "dashboard_admin_product_shipping_index" or routename == "dashboard_admin_product_shipping_new" or routename == "dashboard_admin_product_shipping_edit" %}active{% endif %}" data-bs-toggle="dropdown"
+                                                    href="#">
+                                                    {{ 'Shop'|trans }}
+                                                </a>
+                                                <ul class="dropdown-menu" data-bs-popper="none">
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_product_category_index" or routename == "dashboard_admin_product_category_new" or routename == "dashboard_admin_product_category_edit" %}active{% endif %}" href="{{ path('dashboard_admin_product_category_index') }}">
+                                                            {{ 'Categories'|trans }}
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_product_sub_category_index" or routename == "dashboard_admin_product_sub_category_new" or routename == "dashboard_admin_product_sub_category_edit" %}active{% endif %}" href="{{ path('dashboard_admin_product_sub_category_index') }}">
+                                                            {{ 'Sub Categories'|trans }}
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_product_index" or routename == "dashboard_admin_product_new" or routename == "dashboard_admin_product_edit" %}active{% endif %}" href="{{ path('dashboard_admin_product_index') }}">
+                                                            {{ "Products"|trans }}
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_product_brand_index" or routename == "dashboard_admin_product_brand_new" or routename == "dashboard_admin_product_brand_edit" %}active{% endif %}" href="{{ path('dashboard_admin_product_brand_index') }}">
+                                                            {{ "Brand"|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_product_color_index" or routename == "dashboard_admin_product_color_new" or routename == "dashboard_admin_product_color_edit" %}active{% endif %}" href="{{ path('dashboard_admin_product_color_index') }}">
+                                                            {{ "Color"|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_product_size_index" or routename == "dashboard_admin_product_size_new" or routename == "dashboard_admin_product_size_edit" %}active{% endif %}" href="{{ path('dashboard_admin_product_size_index') }}">
+                                                            {{ "Size"|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item  {% if routename == "dashboard_admin_product_shipping_index" or routename == "dashboard_admin_product_shipping_new" or routename == "dashboard_admin_product_shipping_edit" %}active{% endif %}" href="{{ path('dashboard_admin_product_shipping_index') }}">
+                                                            {{ "Shipping"|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                            <li>
+                                                <a class="dropdown-item {% if routename == "dashboard_admin_page_index" or routename == "dashboard_admin_page_new" or routename == "dashboard_admin_page_edit" %}active{% endif %}" href="{{ path('dashboard_admin_page_index') }}">
+                                                    {{ 'Pages'|trans }}
+                                                    <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item  {% if routename == "dashboard_admin_user_index" or routename == "dashboard_admin_user_new" or routename == "dashboard_admin_user_suspended" or routename == "dashboard_admin_user_verified" or routename == "dashboard_admin_user_information" %}active{% endif %}" href="{{ path('dashboard_admin_user_index') }}">
+                                                    {{ "Users"|trans }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item {% if routename == "dashboard_admin_setting_regional" %}active{% endif %}" href="{{ path('dashboard_admin_setting_regional') }}">
+                                                    {{ "Regional Configuration"|trans }}
+                                                    <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item " href="">
+                                                    {{ 'Reviews'|trans }}
+                                                    <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item {% if routename == "dashboard_admin_testimonial_index" or routename == "dashboard_admin_testimonial_new" or routename == "dashboard_admin_testimonial_edit" %}active{% endif %}" href="{{ path('dashboard_admin_testimonial_index') }}">
+                                                    {{ 'Testimonials'|trans }}
+                                                    <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                </a>
+                                            </li>
+                                            <li class="dropdown dropend">
+                                                <a class="dropdown-item dropdown-toggle {% if routename == "dashboard_admin_post_index" or routename == "dashboard_admin_post_new" or routename == "dashboard_admin_post_edit" or routename == "dashboard_admin_post_category_index" or routename == "dashboard_admin_post_category_new" or routename == "dashboard_admin_post_category_edit" or routename == "dashboard_admin_post_type_index" or routename == "dashboard_admin_post_type_new" or routename == "dashboard_admin_post_type_edit" or routename == "dashboard_admin_comment_index" %}active{% endif %}" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                                                    {{ 'Blog'|trans }}
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_post_index" or routename == "dashboard_admin_post_new" or routename == "dashboard_admin_post_edit" %}active{% endif %}" href="{{ path('dashboard_admin_post_index') }}">
+                                                            {{ 'Articles'|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_post_category_index" or routename == "dashboard_admin_post_category_new" or routename == "dashboard_admin_post_category_edit" %}active{% endif %}" href="{{ path('dashboard_admin_post_category_index') }}">
+                                                            {{ 'Categories'|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item % {% if routename == "dashboard_admin_post_type_index" or routename == "dashboard_admin_post_type_new" or routename == "dashboard_admin_post_type_edit" %}active{% endif %}" href="{{ path('dashboard_admin_post_type_index') }}">
+                                                            {{ 'Types'|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_comment_index" %}active{% endif %}" href="{{ path('dashboard_admin_comment_index') }}">
+                                                            {{ 'Comments'|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="dropdown dropend">
+                                                <a class="dropdown-item dropdown-toggle {% if routename == "dashboard_admin_help_center_article_index" or routename == "dashboard_admin_help_center_article_new" or routename == "dashboard_admin_help_center_article_edit" or routename == "dashboard_admin_help_center_category_index" or routename == "dashboard_admin_help_center_category_new" or routename == "dashboard_admin_help_center_category_edit" or routename == "dashboard_admin_help_center_faq_index" or routename == "dashboard_admin_help_center_faq_new" or routename == "dashboard_admin_help_center_faq_edit" %}active{% endif %}" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                                                    {{'Help center' | trans}}
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_help_center_article_index" or routename == "dashboard_admin_help_center_article_new" or routename == "dashboard_admin_help_center_article_edit" %}active{% endif %}" href="{{ path('dashboard_admin_help_center_article_index') }}">
+                                                            {{ 'Articles'|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_help_center_category_index" or routename == "dashboard_admin_help_center_category_new" or routename == "dashboard_admin_help_center_category_edit" %}active{% endif %}" href="{{ path('dashboard_admin_help_center_category_index') }}">
+                                                            {{ 'Categories'|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item {% if routename == "dashboard_admin_help_center_faq_index" or routename == "dashboard_admin_help_center_faq_new" or routename == "dashboard_admin_help_center_faq_edit" %}active{% endif %}" href="{{ path('dashboard_admin_help_center_faq_index') }}">
+                                                            {{ 'Faqs'|trans }}
+                                                            <span class="badge text-bg-success ms-2">{{ "New"|trans }}</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="dropdown dropend">
+                                                <a class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                                                    {{'Setting' | trans}}
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li> <a class="dropdown-item" href=""></a></li>
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {% if routename == "dashboard_admin_index" or routename == "dashboard_editor_index" or routename == "dashboard_team_index" or routename == "dashboard_user_index" or routename == "dashboard_main" or routename == "dashboard_user_my_dashboard" or routename == "dashboard_user_client_index" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                                {{ app.user.getFullName | lower | capitalize }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item {% if routename == "dashboard_admin_index" or routename == "dashboard_editor_index" or routename == "dashboard_team_index" or routename == "dashboard_user_index" or routename == "dashboard_main" or routename == "dashboard_user_my_dashboard" %}active{% endif %}" href="{{ path('dashboard_main') }}">
+                                        {% if is_granted("ROLE_ADMIN") %}
+                                            {{ 'Dashboard'|trans }}
+                                        {% elseif is_granted('ROLE_EDITOR')  %}
+                                            {{ 'Product List'|trans }}
+                                        {% elseif is_granted("ROLE_TEAM") %}
+                                            {{ 'Dashboard'|trans }}
+                                        {% else %}
+                                            {{ 'My Dashboard'|trans }}
+                                        {% endif %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {% if routename == "dashboard_user_client_index" %}active{% endif %}" href="{{ path('dashboard_user_client_index') }}">
+                                        {{ 'My Profile'|trans }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('signout') }}">{{ 'Sign Out'|trans }}</a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+                {#
+                <div class="d-flex gap-2" role="search">
+                    <div class="dropdown">
+                        <input aria-label="{{ "Search"|trans }}"
+                            autocomplete="off"
+                            class="form-control dropdown-toggle me-2"
+                            data-bs-toggle="dropdown"
+                            hx-get="{{ path('search_index') }}"
+                            hx-target="#searchDropdownMenu"
+                            name="keyword"
+                            placeholder="{{ "Search"|trans }}"
+                            type="text"
+                        >
+                        <div class="dropdown-menu" id="searchDropdownMenu" style="top: 50px; width: 460px;"></div>
+                    </div>
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ app.user }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('dashboard_main') }}">
+                                        {% if is_granted("ROLE_TEAM") %}
+                                            {{ 'Dashboard'|trans }}
+                                        {% else %}
+                                            {{ 'My dashboard'|trans }}
+                                        {% endif %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('dashboard_user_client_index') }}">
+                                        {{ 'My profile'|trans }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('signout') }}">{{ 'Sign out'|trans }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ 'Account'|trans }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('signin', {redirect: app.request.pathInfo}) }}">
+                                        {{ 'Sign in'|trans }}
+                                    </a>
+                                </li>
+                                {% if '1' == settings['users_can_register'] %}
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('signup') }}">
+                                            {{ 'Sign up'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                #}
+            </div>
+			<ul class="nav align-items-center dropdown-hover ms-sm-2">
+                {% include "global/dropdown-item-bs-theme-text.html.twig" %}
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <li class="nav-item me-2">
+                        <a href="{{ path('signout') }}" class="btn btn-sm btn-danger mb-0">
+                            <i class="fas fa-sign-out-alt me-1"></i>{{ 'Sign Out'|trans }}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item me-2">
+                        <a href="{{ path('signin', {redirect: app.request.pathInfo}) }}" class="btn btn-sm btn-light mb-0">
+                            <i class="fas fa-user me-1"></i>{{ 'Sign In'|trans }}
+                        </a>
+                    </li>
+                    {% if '1' == settings['users_can_register'] %}
+                        <li class="nav-item d-none d-sm-block">
+                            <a href="{{ path('signup') }}" class="btn btn-sm btn-primary mb-0">
+                                <i class="fas fa-user-plus me-1"></i>{{ 'Sign Up'|trans }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+				<li class="nav-item">
+					<button class="navbar-toggler ms-sm-3 p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-animation">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</button>
+				</li>	
+			</ul>
+        </div>
+    </nav>
+</header>

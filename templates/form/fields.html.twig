@@ -1,0 +1,30 @@
+{% block date_time_picker_widget %}
+    <div class="input-group date">
+        {{ block('datetime_widget') }}
+        <div class="input-group-append">
+            <button type="button" class="btn btn-outline-secondary">
+                <span class="fas fa-calendar"></span>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block tags_input_widget %}
+    <div class="input-group">
+        {{ form_widget(form, {'attr': {'data-toggle': 'tagsinput', 'data-tags': tags|json_encode} }) }}
+        <div class="input-group-append">
+            <span class="input-group-text">
+                <span class="fas fa-tags"></span>
+            </span>
+        </div>
+    </div>
+{% endblock %}
+
+{# Collection #}
+
+{%- block collection_widget -%}
+    {% if prototype is defined and not prototype.rendered %}
+        {%- set attr = attr|merge({'data-prototype': form_row(prototype), 'data-controller': 'form-collection' }) -%}
+    {% endif %}
+    {{- block('form_widget') -}}
+{%- endblock collection_widget -%}

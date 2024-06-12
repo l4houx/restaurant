@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Contact us'|trans %}
+{% block title pagetitle %}
+
+{% block body %}
+    <section class="pt-xl-8">
+        <div class="container">
+            <div class="row g-4 g-xxl-5">
+                <div class="col-xl-9 mx-auto">
+                    <img src="{{ asset('images/bg/02.jpg') }}" class="rounded" alt="contact-bg">
+                    <div class="row mt-n5 mt-sm-n7 mt-md-n8">
+                        <div class="col-11 col-lg-9 mx-auto">
+                            <div class="card shadow p-4 p-sm-5 p-md-6">
+                                <div class="card-header border-bottom px-0 pt-0 pb-5">
+                                    <nav class="mb-3" aria-label="breadcrumb">
+                                        <ol class="breadcrumb breadcrumb-dots pt-0">
+                                            <li class="breadcrumb-item">
+                                                <a href="{{ path('home') }}">{{ 'Home'|trans }}</a>
+                                            </li>
+                                            <li class="breadcrumb-item active" aria-current="page">{{ 'Contact us'|trans }}</li>
+                                        </ol>
+                                    </nav>
+                                    <h1 class="mb-3 h3">{{ "Let's level up your brand, together"|trans }}</h1>
+                                    <p class="mb-0">{{ 'You can reach us anytime via'|trans }} <a href="javascript:void;">{{ email }}</a></p>
+                                </div>
+                                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'card-body px-0 pb-0 pt-5 needs-validation'} }) }}
+                                    <div class="input-floating-label form-floating mb-4">
+                                        {{ form_widget(form.name) }}
+                                        {{ form_label(form.name) }}
+                                    </div>
+                                    <div class="input-floating-label form-floating mb-4">
+                                        {{ form_widget(form.email) }}
+                                        {{ form_label(form.email) }}
+                                    </div>
+                                    <div class="input-floating-label form-floating mb-4">
+                                        {{ form_widget(form.service) }}
+                                        {{ form_label(form.service) }}
+                                    </div>
+                                    <div class="input-floating-label form-floating mb-4">
+                                        {{ form_widget(form.message) }}
+                                        {{ form_label(form.message) }}
+                                    </div>
+                                    <button type="submit" class="btn btn-lg btn-primary mb-0">{{ 'Send a message'|trans }}</button>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-0">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-lg-3 g-4">
+                <div class="col">
+                    <div class="card card-body bg-light border p-sm-5">
+                        <div class="mb-4"><i class="fas fa-map-location-dot fa-xl text-primary"></i></div>
+                        <h6 class="mb-4">{{ 'Office Address'|trans }}</h6>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="avatar avatar-xxs me-2">
+                                <img class="avatar-img rounded-circle" src="{{ asset('images/svg/flags/' ~ code ~ '.svg') }}" alt="avatar">
+                            </div>
+                            <span class="heading-color fw-semibold mb-0">{{ 'US office'|trans }}:</span>
+                        </div>
+                        <address class="mb-0">{{ address | raw | nl2br }}</address>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card card-body bg-light border p-sm-5">
+                        <div class="mb-4"><i class="fas fa-envelope fa-xl text-primary"></i></div>
+                        <h6 class="mb-3">{{ 'Email us'|trans }}</h6>
+                        <p>{{ "We're on top of things and aim to respond to all inquiries within 24 hours."|trans }}</p>
+                        <a href="javascript:void;" class="heading-color text-primary-hover text-decoration-underline mb-0">
+                            {{ email }}
+                        </a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card card-body bg-light border p-sm-5">
+                        <div class="mb-4"><i class="fas fa-phone fa-xl text-primary"></i></div>
+                        <h6 class="mb-3">{{ 'Call us'|trans }}</h6>
+                        <p>{{ "Let's work together towards a common goal - get in touch!"|trans }}</p>
+                        <a href="javascript:void;" class="heading-color text-primary-hover text-decoration-underline mb-0">
+                            {{ phone }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <iframe class="w-100 h-200px h-lg-400px grayscale d-block mt-8" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9663095343008!2d-74.00425878428698!3d40.74076684379132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259bf5c1654f3%3A0xc80f9cfce5383d5d!2sGoogle!5e0!3m2!1sen!2sin!4v1586000412513!5m2!1sen!2sin" style="margin-bottom: -5px;" aria-hidden="false" tabindex="0"></iframe>	
+    </section>
+{% endblock %}

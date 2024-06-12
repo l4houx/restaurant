@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Help Center Support'|trans %}
+{% block title pagetitle %}
+
+{% block body %}
+    <section class="pt-8">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 col-xl-8 mx-auto">
+                    <div class="text-center mb-5">
+                        <div class="d-flex justify-content-center mb-2">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb breadcrumb-dots mb-1">
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ path('home') }}">{{ 'Home'|trans }}</a>
+                                    </li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ path('help_center') }}" class="">{{ 'Help center'|trans }}</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">{{ pagetitle }}</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <h2>{{ pagetitle }}</h2>
+                    </div>
+                    <div class="row mt-5">
+                        <p>
+                            {{ "Can't find the answer you're looking for? Don't worry! Get in touch with the Docs Support team, we will be glad to assist you."|trans }}
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <span>{{ 'Contact Information'|trans }}</span>
+                            <div class="text-end">
+                                <span>{{ phone }}</span>
+                                <a href="javascript:void;">{{ email }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-body bg-light border p-sm-5 mt-5" id="support-form">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'row g-4 needs-validation'} }) }}
+                            <div class="col-md-6">
+                                {{ form_row(form.name) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.email) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.service) }}
+                            </div>
+                            <div class="col-12">
+                                {{ form_row(form.message) }}
+                            </div>
+                            {#  
+                            {% if '1' == settings['google_recaptcha_enabled'] %}
+                                <div class="col-12">
+                                    {{ form_widget(form.recaptcha) }}
+                                    {{ form_errors(form.recaptcha) }}
+                                </div>
+                            {% endif %}
+                            #}
+                            <div class="col-12 d-grid">
+                                <button class="btn btn-lg btn-primary mb-0" type="submit">{{ 'Send a message'|trans }}</button>
+                            </div>	
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
