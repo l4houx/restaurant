@@ -136,17 +136,17 @@
                                 {% endif %}
                                 {% if is_granted("ROLE_MANAGER") %}
                                     <li>
-                                        <a class="dropdown-item {% if routename == "dashboard_member_access_new, {role: "collaborator"}" %}active{% endif %}" href="{{ path("dashboard_member_access_new", {role: "collaborator"}) }}">
+                                        <a class="dropdown-item" href="{{ path("dashboard_member_access_new", {role: "collaborator"}) }}">
                                             {{ 'Create collaborator access'|trans }}
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item {% if routename == "dashboard_member_access_new, {role: "salesperson"}" %}active{% endif %}" href="{{ path("dashboard_member_access_new", {role: "salesperson"}) }}">
+                                        <a class="dropdown-item" href="{{ path("dashboard_member_access_new", {role: "salesperson"}) }}">
                                             {{ 'Create sales person access'|trans }}
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item {% if routename == "dashboard_member_access_new, {role: "manager"}" %}active{% endif %}" href="{{ path("dashboard_member_access_new", {role: "manager"}) }}">
+                                        <a class="dropdown-item" href="{{ path("dashboard_member_access_new", {role: "manager"}) }}">
                                             {{ 'Create manager access'|trans }}
                                         </a>
                                     </li>
@@ -328,12 +328,8 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item {% if routename == "dashboard_main" or routename == "admin_dashboard_index" or routename == "dashboard_user_index" or routename == "dashboard_user_my_dashboard" %}active{% endif %}" href="{{ path('dashboard_main') }}">
-                                        {% if is_granted("ROLE_ADMIN") %}
-                                            {{ 'Dashboard'|trans }}
-                                        {% elseif is_granted('ROLE_EDITOR')  %}
-                                            {{ 'Product List'|trans }}
-                                        {% elseif is_granted("ROLE_TEAM") %}
+                                    <a class="dropdown-item {% if routename == "dashboard_main" or routename == "admin_dashboard_index" or routename == "dashboard_account_index" or routename == "dashboard_account_main" %}active{% endif %}" href="{{ path('dashboard_main') }}">
+                                        {% if is_granted("ROLE_TEAM") %}
                                             {{ 'Dashboard'|trans }}
                                         {% else %}
                                             {{ 'My Dashboard'|trans }}
@@ -341,8 +337,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item {% if routename == "dashboard_user_client_index" %}active{% endif %}" href="{{ path('dashboard_user_client_index') }}">
-                                        {{ 'My Profile'|trans }}
+                                    <a class="dropdown-item {% if routename == "dashboard_account_main" %}active{% endif %}" href="{{ path('dashboard_account_main') }}">
+                                        {{ 'My Account'|trans }}
                                     </a>
                                 </li>
                                 {% if not is_granted('IS_IMPERSONATOR') %}

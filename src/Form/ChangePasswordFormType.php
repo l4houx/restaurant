@@ -46,7 +46,7 @@ class ChangePasswordFormType extends AbstractType
                     'attr' => [
                         // 'purify_html' => true,
                         'autocomplete' => 'new-password',
-                        'toggle' => true,
+                        //'toggle' => true,
                         'translation_domain' => 'messages',
                     ],
                 ],

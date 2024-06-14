@@ -25,7 +25,7 @@ class ProductRepository extends ServiceEntityRepository
 
     public function findForPagination(
         int $page,
-        // int $limit,
+        int $limit,
         string $sort,
         ?Category $category,
         Filter $filter
@@ -40,8 +40,8 @@ class ProductRepository extends ServiceEntityRepository
             ->setParameter('min', $filter->min)
             ->andWhere('p.amount <= :max')
             ->setParameter('max', $filter->max)
-            // ->setMaxResults($limit)
-            // ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->setFirstResult(($page - 1) * $limit)
         ;
 
         if (null !== $category) {
@@ -90,12 +90,7 @@ class ProductRepository extends ServiceEntityRepository
         return $this->paginator->paginate(
             $builder,
             $page,
-            HasLimit::PRODUCT_LIMIT,
-            [
-                'wrap-queries' => true,
-                'distinct' => false,
-                'sortFieldAllowList' => ['p.id', 'p.name'],
-            ]
+            $limit
         );
     }
 
@@ -121,7 +116,7 @@ class ProductRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->select('p.amount')
-            ->where('p.active = true')
+            ->where('p.isOnline = true')
             ->orderBy('p.amount', 'asc')
             ->setMaxResults(1)
             ->getQuery()
@@ -133,7 +128,7 @@ class ProductRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->select('p.amount')
-            ->where('p.active = true')
+            ->where('p.isOnline = true')
             ->orderBy('p.amount', 'desc')
             ->setMaxResults(1)
             ->getQuery()

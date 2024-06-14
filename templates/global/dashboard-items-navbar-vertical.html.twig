@@ -11,42 +11,38 @@
 					<div class="avatar avatar-xl mb-2">
                         {% include "global/user-avatar.html.twig" with { user: app.user, type: "xl", class: "avatar-img border border-2 border-white" } %}
 					</div>
-					<h6 class="mb-0">{{ app.user.getFullName | lower | capitalize }}</h6>
-					<a href="#" class="text-reset text-primary-hover small">{{ app.user.email }}</a>
+					<h6 class="mb-0">
+						{{ 'Hello'|trans }} {{ app.user.getFullName | lower | capitalize }}
+					</h6>
+					<a href="javascript:void;" class="text-reset text-primary-hover small">
+						{{ 'Your keys :'|trans }} {{ app.user.account.balance }}
+					</a>
 				</div>
 				<div class="card-body p-0 mt-4">
 					<ul class="nav nav-pills-primary-border-start flex-column">
 						<li class="nav-item">
-							<a class="nav-link {% if activerd == 'client_index' %}active{% endif %}" href="{{ path('dashboard_user_client_index') }}">
-								<i class="fas fa-user fa-fw me-2"></i>{{ 'My profile'|trans }}
+							<a class="nav-link {% if activerd == 'account_main' %}active{% endif %}" href="{{ path('dashboard_account_main') }}">
+								<i class="fas fa-user-check fa-fw me-2"></i>{{ 'My Account'|trans }}
                             </a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link {% if activerd == 'change_password' %}active{% endif %}" href="{{ path('dashboard_change_password') }}">
-								<i class="fas fa-user-lock fa-fw me-2"></i>{{ 'Password'|trans }}
+							<a class="nav-link {% if activerd == 'account_edit' %}active{% endif %}" href="{{ path('dashboard_account_edit') }}">
+								<i class="fas fa-edit fa-fw me-2"></i>{{ 'Edit Profile'|trans }}
                             </a>
 						</li>
-						{% if is_granted("ROLE_ADMIN_APPLICATION") %}
-							<li class="nav-item">
-								<a class="nav-link {% if activerd == 'testimonial_index' %}active{% endif %}" href="{{ path('dashboard_admin_testimonial_index') }}">
-									<i class="fas fa-star fa-fw me-2"></i>{{ 'Manage testimonials'|trans }}
-								</a>
-							</li>
-						{% elseif is_granted('ROLE_USER') %}
-							<li class="nav-item">
-								<a class="nav-link {% if activerd == 'testimonial_index' %}active{% endif %}" href="{{ path('dashboard_user_testimonial_index') }}">
-									<i class="fas fa-star fa-fw me-2"></i>{{ 'My testimonial'|trans }}
-								</a>
-							</li>
-						{% endif %}
 						<li class="nav-item">
-							<a class="nav-link" href="">
-								<i class="fas fa-wallet fa-fw me-2"></i>{{ 'Payment details'|trans }}
+							<a class="nav-link {% if activerd == 'change_password' %}active{% endif %}" href="{{ path('dashboard_account_change_password') }}">
+								<i class="fas fa-user-lock fa-fw me-2"></i>{{ 'Change Password'|trans }}
                             </a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="">
-								<i class="fas fa-basket-shopping fa-fw me-2"></i>{{ 'Order history'|trans }}
+								<i class="fas fa-wallet fa-fw me-2"></i>{{ 'Payment Details'|trans }}
+                            </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="">
+								<i class="fas fa-basket-shopping fa-fw me-2"></i>{{ 'Order History'|trans }}
                             </a>
 						</li>
 						<li class="nav-item">

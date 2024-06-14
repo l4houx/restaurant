@@ -7,6 +7,7 @@ use App\Entity\Shop\Product;
 use App\Entity\Shop\Category;
 use App\Entity\Traits\HasRoles;
 use App\Entity\Shop\SubCategory;
+use App\Entity\Traits\HasLimit;
 use Doctrine\ORM\Mapping\Entity;
 use App\Form\Shop\FilterFormType;
 use App\Repository\Shop\ProductRepository;
@@ -24,8 +25,8 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\expr;
 class ShopController extends AbstractController
 {
     #[Route('/{subcategory}/{category}', name: 'index', methods: ['GET'], defaults: ['category' => null, 'subcategory'=> null])]
-    #[Entity('subcategory', expr: 'repository.findOneBySlug(subcategory)')]
-    #[Entity('category', expr: 'repository.findOneBySlug(category)')]
+    //#[Entity('subcategory', SubCategory::class)]
+    //#[Entity('category', Category::class)]
     public function index(
         Request $request,
         ?SubCategory $subCategory,
@@ -44,12 +45,12 @@ class ShopController extends AbstractController
 
         $products = $productRepository->findForPagination(
             $request->query->getInt("page", 1),
-            //$request->query->getInt("limit", 18),
+            $request->query->getInt("limit", 18),
             $request->query->get("sort", "new-products"),
             $category,
             $filter
         );
-        $pages = ceil(count($products) / $request->query->getInt("limit", 9));
+        $pages = ceil(count($products) / $request->query->getInt("limit", HasLimit::PRODUCT_LIMIT));
 
         return $this->render('shop/index.html.twig', [
             'subCategory' => $subCategory,

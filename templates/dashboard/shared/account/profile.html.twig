@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% set pagetitle = 'Client account settings'|trans %}
+{% set pagetitle = 'Edit Profile'|trans %}
 {% block title pagetitle %}
 
 {% block body %}
     <section class="pt-sm-7">
         <div class="container pt-3 pt-xl-5">
             <div class="row">
-                {% include "global/dashboard-items-navbar-vertical.html.twig" with {activerd: 'client_index'} %}
+                {% include "global/dashboard-items-navbar-vertical.html.twig" with {activerd: 'account_edit'} %}
                 <div class="col-lg-8 col-xl-9 ps-lg-4 ps-xl-6">
                     <div class="d-flex justify-content-between align-items-center mb-5 mb-sm-6">
                         <h1 class="h3 mb-0">{{ 'My profile'|trans }}</h1>
@@ -66,6 +66,11 @@
                                     <div class="mb-3 col-12 col-md-4">
                                         {{ form_row(form.lastname) }}
                                     </div>
+                                    {% if form.phone is defined %}
+                                        <div class="mb-3 col-12 col-md-6">
+                                            {{ form_row(form.phone) }}
+                                        </div>
+                                    {% endif %}
                                     <div class="col-12 text-end">
                                         <button type="submit" class="btn btn-primary mb-0">{{ 'Apply changes'|trans }}</button>
                                     </div>

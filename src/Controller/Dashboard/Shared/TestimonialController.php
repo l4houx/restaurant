@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[Route(path: '/%website_dashboard_path%')]
+#[Route(path: '/%website_dashboard_path%/account', name: 'dashboard_account_')]
 #[IsGranted(HasRoles::DEFAULT)]
 class TestimonialController extends BaseController
 {
@@ -35,8 +35,7 @@ class TestimonialController extends BaseController
     ) {
     }
 
-    #[Route(path: '/user/my-testimonials', name: 'dashboard_user_testimonial_index', methods: ['GET'])]
-    #[Route(path: '/admin/manage-testimonials', name: 'dashboard_admin_testimonial_index', methods: ['GET'])]
+    #[Route(path: '/my-testimonials', name: 'testimonial_index', methods: ['GET'])]
     public function index(Request $request, #[CurrentUser] User $user, PaginatorInterface $paginator): Response
     {
         $keyword = '' == $request->query->get('keyword') ? 'all' : $request->query->get('keyword');
@@ -67,9 +66,7 @@ class TestimonialController extends BaseController
     }
     */
 
-    #[Route(path: '/user/my-testimonials/new', name: 'dashboard_user_testimonial_new', methods: ['GET', 'POST'])]
-    #[Route(path: '/admin/manage-testimonials/new', name: 'dashboard_admin_testimonial_new', methods: ['GET', 'POST'])]
-    #[Route(path: '/admin/manage-testimonials/{slug}/edit', name: 'dashboard_admin_testimonial_edit', methods: ['GET', 'POST'], requirements: ['slug' => Requirement::ASCII_SLUG])]
+    #[Route(path: '/my-testimonials/new', name: 'testimonial_new', methods: ['GET', 'POST'])]
     public function newedit(Request $request, #[CurrentUser] User $user, ?string $slug = null): Response
     {
         if (!$slug) {
@@ -134,56 +131,9 @@ class TestimonialController extends BaseController
         return $this->render('dashboard/shared/testimonials/new-edit.html.twig', compact('form', 'testimonial', 'user'));
     }
 
-    #[Route(path: '/user/my-testimonials/{slug}', name: 'dashboard_user_testimonial_view', methods: ['GET'], requirements: ['slug' => Requirement::ASCII_SLUG])]
-    #[Route(path: '/admin/manage-testimonials/{slug}', name: 'dashboard_admin_testimonial_view', methods: ['GET'], requirements: ['slug' => Requirement::ASCII_SLUG])]
+    #[Route(path: '/my-testimonials/{slug}', name: 'testimonial_view', methods: ['GET'], requirements: ['slug' => Requirement::ASCII_SLUG])]
     public function view(Testimonial $testimonial): Response
     {
         return $this->render('dashboard/shared/testimonials/view.html.twig', compact('testimonial'));
-    }
-
-    #[Route(path: '/admin/manage-testimonials/{slug}/show', name: 'dashboard_admin_testimonial_show', methods: ['GET'], requirements: ['slug' => Requirement::ASCII_SLUG])]
-    #[Route(path: '/admin/manage-testimonials/{slug}/hide', name: 'dashboard_admin_testimonial_hide', methods: ['GET'], requirements: ['slug' => Requirement::ASCII_SLUG])]
-    public function showhide(string $slug): Response
-    {
-        /** @var Testimonial $testimonial */
-        $testimonial = $this->settingService->getTestimonials(['slug' => $slug, 'isOnline' => 'all'])->getQuery()->getOneOrNullResult();
-        if (!$testimonial) {
-            $this->addFlash('danger', $this->translator->trans('The testimonial can not be found'));
-
-            return $this->redirectToRoute('dashboard_admin_testimonial_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        if (false === $testimonial->getIsOnline()) {
-            $testimonial->setIsOnline(true);
-            $this->addFlash('success', $this->translator->trans('Content is online'));
-        } else {
-            $testimonial->setIsOnline(false);
-            $this->addFlash('danger', $this->translator->trans('Content is offline'));
-        }
-
-        $this->em->persist($testimonial);
-        $this->em->flush();
-
-        return $this->redirectToRoute('dashboard_admin_testimonial_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route(path: '/admin/manage-testimonials/{slug}/delete', name: 'dashboard_admin_testimonial_delete', methods: ['POST'], requirements: ['slug' => Requirement::ASCII_SLUG])]
-    #[IsGranted('manage', subject: 'testimonial')]
-    public function delete(Request $request, Testimonial $testimonial): Response
-    {
-        if ($this->isCsrfTokenValid('testimonial_deletion_'.$testimonial->getId(), $request->getPayload()->get('_token'))) {
-            $this->em->remove($testimonial);
-            $this->em->flush();
-
-            $this->addFlash(
-                'danger',
-                sprintf(
-                    $this->translator->trans('Content %s was deleted successfully.'),
-                    $testimonial->getAuthor()->getFullName()
-                )
-            );
-        }
-
-        return $this->redirectToRoute('dashboard_admin_testimonial_index', [], Response::HTTP_SEE_OTHER);
     }
 }
