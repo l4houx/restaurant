@@ -25,6 +25,7 @@ class CommentVoter extends Voter
      */
     protected function voteOnAttribute(string $attribute, $comment, TokenInterface $token): bool
     {
+        /** @var User $user */
         $user = $token->getUser();
 
         // the user must be logged in; if not, deny permission

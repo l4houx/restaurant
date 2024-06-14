@@ -6,13 +6,13 @@ use App\Entity\HomepageHeroSetting;
 use App\Entity\Review;
 use App\Entity\Traits\HasContentTrait;
 use App\Entity\Traits\HasDeletedAtTrait;
-use App\Entity\Traits\HasIdNameSlugTrait;
+use App\Entity\Traits\HasGedmoTimestampTrait;
+use App\Entity\Traits\HasIdGedmoNameSlugAssertTrait;
 use App\Entity\Traits\HasIsOnlineTrait;
 use App\Entity\Traits\HasLimit;
 use App\Entity\Traits\HasMetaTrait;
 use App\Entity\Traits\HasSocialNetworksTrait;
 use App\Entity\Traits\HasTagTrait;
-use App\Entity\Traits\HasTimestampableTrait;
 use App\Entity\Traits\HasViewsTrait;
 use App\Entity\User;
 use App\Repository\Shop\ProductRepository;
@@ -27,19 +27,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[UniqueEntity('name')]
-#[UniqueEntity('slug')]
+// #[UniqueEntity('name')]
+// #[UniqueEntity('slug')]
 #[Vich\Uploadable]
 class Product
 {
-    use HasIdNameSlugTrait;
+    use HasIdGedmoNameSlugAssertTrait;
     use HasContentTrait;
     use HasMetaTrait;
     use HasIsOnlineTrait;
     use HasViewsTrait;
     use HasTagTrait;
     use HasSocialNetworksTrait;
-    use HasTimestampableTrait;
+    use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 
     public const PRODUCT_LIMIT = HasLimit::PRODUCT_LIMIT;
@@ -187,7 +187,7 @@ class Product
         $this->imageFile = $imageFile;
 
         if (null !== $imageFile) {
-            $this->setUpdatedAt(new \DateTimeImmutable());
+            $this->setUpdatedAt(new \DateTime());
         }
 
         return $this;

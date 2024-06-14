@@ -32,10 +32,11 @@ class TestimonialVoter extends Voter
     }
 
     /**
-     * @param Testimonial|null $subject
+     * @param Testimonial|null $testimonial
      */
-    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, $testimonial, TokenInterface $token): bool
     {
+        /** @var User $user */
         $user = $token->getUser();
 
         if (!$user instanceof User) {
@@ -47,7 +48,7 @@ class TestimonialVoter extends Voter
         }
 
         return match ($attribute) {
-            self::MANAGE => $this->canManage($user, $subject),
+            self::MANAGE => $this->canManage($user, $testimonial),
             self::EDIT => $this->canEdit(),
             self::DELETE => $this->canDelete(),
             self::CREATE, => true,

@@ -3,10 +3,10 @@
 namespace App\Entity\Shop;
 
 use App\Entity\Traits\HasDeletedAtTrait;
+use App\Entity\Traits\HasGedmoTimestampTrait;
 use App\Entity\Traits\HasIdNameTrait;
 use App\Entity\Traits\HasIsOnlineTrait;
 use App\Entity\Traits\HasMetaTrait;
-use App\Entity\Traits\HasTimestampableTrait;
 use App\Repository\Shop\BrandRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -20,6 +20,6 @@ class Brand
     use HasIdNameTrait;
     use HasMetaTrait;
     use HasIsOnlineTrait;
-    use HasTimestampableTrait;
+    use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 }

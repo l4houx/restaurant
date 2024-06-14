@@ -2,44 +2,48 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Page;
-use App\Entity\Post;
-use App\Entity\User;
-use App\Entity\Review;
+use App\Entity\AppLayoutSetting;
 use App\Entity\Comment;
-use App\Entity\Setting;
-use App\Entity\Currency;
-use App\Entity\PostType;
-use App\Entity\Question;
-use App\Entity\Testimonial;
-use App\Entity\Data\Account;
-use App\Entity\PostCategory;
-use App\Entity\User\Manager;
-use App\Entity\HelpCenterFaq;
-use App\Entity\User\Customer;
 use App\Entity\Company\Client;
 use App\Entity\Company\Member;
-use App\Entity\Traits\HasRoles;
-use App\Entity\AppLayoutSetting;
-use App\Entity\User\SalesPerson;
-use App\Entity\HelpCenterArticle;
-use App\Entity\User\Collaborator;
-use App\Entity\HelpCenterCategory;
-use App\Entity\HomepageHeroSetting;
 use App\Entity\Company\Organization;
-
+use App\Entity\Currency;
+use App\Entity\Data\Account;
+use App\Entity\HelpCenterArticle;
+use App\Entity\HelpCenterCategory;
+use App\Entity\HelpCenterFaq;
+use App\Entity\HomepageHeroSetting;
+use App\Entity\Order\Order;
+use App\Entity\Page;
+use App\Entity\Post;
+use App\Entity\PostCategory;
+use App\Entity\PostType;
+use App\Entity\Question;
+use App\Entity\Review;
+use App\Entity\Setting;
+use App\Entity\Shop\Brand;
+use App\Entity\Shop\Category;
+use App\Entity\Shop\Product;
+use App\Entity\Testimonial;
+use App\Entity\Traits\HasRoles;
+use App\Entity\User;
+use App\Entity\User\Collaborator;
+use App\Entity\User\Customer;
+use App\Entity\User\Manager;
+use App\Entity\User\SalesPerson;
 use App\Entity\User\SuperAdministrator;
-use function Symfony\Component\Translation\t;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+
+use function Symfony\Component\Translation\t;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -97,8 +101,12 @@ class DashboardController extends AbstractDashboardController
                 MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Page::class)->setAction(Crud::PAGE_NEW),
             ]);
 
-            yield MenuItem::section(t('Shop Settings'));
-            yield MenuItem::subMenu(t('Shop'), 'fas fa-shop')->setSubItems([
+            yield MenuItem::section(t('Shoppings Settings'));
+            yield MenuItem::subMenu(t('Shoppings'), 'fas fa-shop')->setSubItems([
+                // MenuItem::linkToCrud(t('Products'), 'fa fa-shopping-cart', Product::class),
+                // MenuItem::linkToCrud(t('Brands'), 'fas fa-b', Brand::class),
+                // MenuItem::linkToCrud(t('Categories'), 'fa fa-tags', Category::class),
+                MenuItem::linkToCrud(t('Orders'), 'fa fa-bell', Order::class),
                 MenuItem::linkToCrud(t('Account'), 'fa fa-balance-scale', Account::class),
             ]);
 
@@ -106,7 +114,7 @@ class DashboardController extends AbstractDashboardController
             yield MenuItem::subMenu(t('Testimonial Settings'), 'fas fa-star')->setSubItems([
                 // MenuItem::linkToCrud(t('Review'), 'fas fa-star', Review::class),
                 // MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Review::class)->setAction(Crud::PAGE_NEW),
-                MenuItem::linkToCrud(t('Testimonial'), 'fab fa-delicious', Testimonial::class),
+                MenuItem::linkToCrud(t('Testimonial'), 'fas fa-star', Testimonial::class),
                 MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Testimonial::class)->setAction(Crud::PAGE_NEW),
             ]);
 
@@ -122,8 +130,8 @@ class DashboardController extends AbstractDashboardController
                 MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Question::class)->setAction(Crud::PAGE_NEW),
             ]);
 
-            //yield MenuItem::section(t('Contact Settings'));
-            //yield MenuItem::linkToCrud(t('Contact'), 'fas fa-message', Contact::class);
+            // yield MenuItem::section(t('Contact Settings'));
+            // yield MenuItem::linkToCrud(t('Contact'), 'fas fa-message', Contact::class);
 
             yield MenuItem::section(t('Clients Settings'));
             yield MenuItem::subMenu(t('All accounts'), 'fas fa-user')->setSubItems([

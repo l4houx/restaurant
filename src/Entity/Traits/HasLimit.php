@@ -20,9 +20,9 @@ final class HasLimit
 
     public const BRAND_LIMIT = 10;
 
-    public const COLOR_LIMIT = 10;
+    public const CLIEN_LIMIT = 10;
 
-    public const SIZE_LIMIT = 10;
+    public const CUSTOMER_LIMIT = 10;
 
     public const SHIPPING_LIMIT = 10;
 

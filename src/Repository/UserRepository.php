@@ -2,17 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
-use Doctrine\ORM\QueryBuilder;
-use App\Entity\Traits\HasLimit;
+use App\Entity\Company\Member;
 use App\Entity\HomepageHeroSetting;
-use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\PaginatorInterface;
-use Knp\Component\Pager\Pagination\PaginationInterface;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use App\Entity\Traits\HasLimit;
+use App\Entity\User;
+use App\Entity\User\Collaborator;
+use App\Entity\User\Manager;
+use App\Entity\User\SalesPerson;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -26,24 +30,52 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
-    public function findForPagination(int $page): PaginationInterface
+    public function findForPagination(Manager $manager, int $page, int $limit, mixed $keywords): PaginationInterface
     {
-        $builder = $this->createQueryBuilder('u')
-            ->orderBy('u.updatedAt', 'DESC')
-            ->setParameter('now', new \DateTimeImmutable())
-            ->where('u.updatedAt <= :now')
-            ->orWhere('u.isVerified = true')
+        $collaboratorsQB = $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->from(Collaborator::class, 'c')
+            ->where('c.member IN (:members)')
+            ->getDQL()
         ;
+        $managersQB = $this->createQueryBuilder('m')
+            ->select('m.id')
+            ->from(Manager::class, 'm')
+            ->where('m.member IN (:members)')
+            ->getDQL()
+        ;
+        $salesPersonsQB = $this->createQueryBuilder('s')
+            ->select('s.id')
+            ->from(SalesPerson::class, 's')
+            ->where('s.member IN (:members)')
+            ->getDQL()
+        ;
+        $builder = $this->createQueryBuilder('u')
+            ->select('u')
+            ->from(User::class, 'u')
+            ->andWhere("CONCAT(u.firstname, ' ', u.lastname) LIKE :keywords")
+            ->andWhere('u != :manager')
+            ->setParameter('manager', $manager)
+            ->setParameter('keywords', '%'.($keywords ?? '').'%')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->orderBy('u.firstname', 'asc')
+            ->addOrderBy('u.lastname', 'asc')
+        ;
+        $builder->andWhere(
+            $builder->expr()->orX(
+                $builder->expr()->in('u.id', $collaboratorsQB),
+                $builder->expr()->in('u.id', $salesPersonsQB),
+                $builder->expr()->in('u.id', $managersQB)
+            )
+        )->setParameter('members', $manager->getMembers()->map(fn (Member $member) => $member->getId())->toArray());
+
+        // return new Paginator($builder);
 
         return $this->paginator->paginate(
             $builder,
             $page,
-            HasLimit::USER_LIMIT,
-            [
-                'wrap-queries' => true,
-                'distinct' => false,
-                'sortFieldAllowList' => ['u.id', 'u.username', 'u.lastname', 'u.firstname'],
-            ]
+            $limit
         );
     }
 
@@ -141,7 +173,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * List suspended users
+     * List suspended users.
      */
     public function querySuspended(): QueryBuilder
     {
@@ -180,8 +212,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             $qb->select('u');
         }
 
-        if ($role !== "all") {
-            $qb->andWhere("u.roles LIKE :role")->setParameter("role", "%ROLE_" . strtoupper($role) . "%");
+        if ('all' !== $role) {
+            $qb->andWhere('u.roles LIKE :role')->setParameter('role', '%ROLE_'.strtoupper($role).'%');
         }
 
         if ('all' !== $keyword) {
@@ -216,8 +248,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             $qb->andWhere('u.slug = :slug')->setParameter('slug', $slug);
         }
 
-        if ($followedby !== "all") {
-            $qb->andWhere(":followedby MEMBER OF restaurant.followedby")->setParameter("followedby", $followedby);
+        if ('all' !== $followedby) {
+            $qb->andWhere(':followedby MEMBER OF restaurant.followedby')->setParameter('followedby', $followedby);
         }
 
         if (true === $isOnHomepageSlider) {

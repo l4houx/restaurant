@@ -6,11 +6,13 @@ use App\Entity\User;
 use App\Entity\Address;
 use App\Entity\Shop\Product;
 use Doctrine\DBAL\Types\Types;
+use App\Entity\Data\Transaction;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\HasIdTrait;
 use App\Repository\Order\OrderRepository;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\HasTimestampableTrait;
+use App\Entity\Traits\HasGedmoTimestampTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
@@ -18,7 +20,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Order
 {
     use HasIdTrait;
-    use HasTimestampableTrait;
+    use HasGedmoTimestampTrait;
 
     #[ORM\Column(type: Types::STRING)]
     private string $state = 'cart';
@@ -36,10 +38,17 @@ class Order
     #[ORM\ManyToOne(cascade: ['persist'])]
     private ?Address $address = null;
 
+    /**
+     * @var Collection<int, Transaction>
+     */
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'order')]
+    private Collection $transactions;
+
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTime();
         $this->lines = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function getState(): string
@@ -122,4 +131,36 @@ class Order
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    /*
+    public function addTransaction(Transaction $transaction): static
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions->add($transaction);
+            $transaction->setOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transaction->getOrder() === $this) {
+                $transaction->setOrder(null);
+            }
+        }
+
+        return $this;
+    }
+    */
 }

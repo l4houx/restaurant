@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = "Rules"|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ "current":(pagetitle) }] %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+	<section class="pt-0">
+		<div class="container">
+			<div class="row w-100 m-auto">
+				<div class="col-lg-10 my-5 m-auto">
+					<div class="text-center">
+						<span class="display-2 text-success">
+							<i class="fas fa-check"></i>
+						</span>
+					</div>
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation '} }) }}
+                        <h2 class="mb-1 mt-4">{{ pagetitle }}</h2>
+                        <p class="mb-2">
+                            {% include "global/message.html.twig" with { type: 'success', icon: 'fas fa-calendar', message: ('Last updated on "%rules%'|trans({'%rules%' : rules.publishedAt | format_date('long')})) } %}
+                        </p>
+                        {{ form_errors(form) }}
+                        <div class="mb-3">
+                            {{ rules.content | html_markdown }}
+                        </div>
+                        <div class="align-items-center mt-0">
+                            <div class="d-grid">
+                                {{ form_widget(form.refuse) }}
+                                {{ form_widget(form.accept) }}
+                            </div>
+                        </div>
+                    {{ form_end(form) }}
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

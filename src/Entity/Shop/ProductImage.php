@@ -2,8 +2,8 @@
 
 namespace App\Entity\Shop;
 
+use App\Entity\Traits\HasGedmoTimestampTrait;
 use App\Entity\Traits\HasIdTrait;
-use App\Entity\Traits\HasTimestampableTrait;
 use App\Repository\Shop\ProductImageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,7 +17,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class ProductImage
 {
     use HasIdTrait;
-    use HasTimestampableTrait;
+    use HasGedmoTimestampTrait;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
     private ?Product $product = null;
@@ -74,7 +74,7 @@ class ProductImage
         $this->imageFile = $imageFile;
 
         if (null !== $imageFile) {
-            $this->setUpdatedAt(new \DateTimeImmutable());
+            $this->setUpdatedAt(new \DateTime());
         }
 
         return $this;

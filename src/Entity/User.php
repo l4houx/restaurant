@@ -20,6 +20,7 @@ use App\Entity\Traits\HasDeletedAtTrait;
 use function Symfony\Component\String\u;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\HasTimestampableTrait;
+use App\Entity\Traits\HasRulesAgreementsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Traits\HasRegistrationDetailsTrait;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,13 +35,16 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discr', type: 'string')]
 #[ORM\DiscriminatorMap(['superadministrator' => SuperAdministrator::class, 'manager' => Manager::class, 'customer' => Customer::class, 'collaborator' => Collaborator::class, 'sales_person' => SalesPerson::class])]
+//#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
     use HasIdTrait;
     use HasRegistrationDetailsTrait;
+    use HasRulesAgreementsTrait;
     use HasIsTeamTrait;
     use HasTimestampableTrait;
     use HasDeletedAtTrait;
+    // use SoftDeleteableEntity;
 
     #[Assert\Length(min: 2, max: 20)]
     #[Assert\NotBlank]
@@ -115,6 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function __construct()
     {
         $this->isVerified = false;
+        $this->rulesAgreements = new ArrayCollection();
         $this->favorites = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->reviews = new ArrayCollection();

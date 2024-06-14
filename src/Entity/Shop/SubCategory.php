@@ -3,7 +3,7 @@
 namespace App\Entity\Shop;
 
 use App\Entity\Traits\HasBackgroundColorTrait;
-use App\Entity\Traits\HasIdNameSlugTrait;
+use App\Entity\Traits\HasIdGedmoNameSlugAssertTrait;
 use App\Repository\Shop\SubCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,18 +11,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: SubCategoryRepository::class)]
-#[UniqueEntity('name')]
-#[UniqueEntity('slug')]
+// #[UniqueEntity('name')]
+// #[UniqueEntity('slug')]
 class SubCategory
 {
-    use HasIdNameSlugTrait;
+    use HasIdGedmoNameSlugAssertTrait;
     use HasBackgroundColorTrait;
 
     /**
      * @var Collection<int, Category>
      */
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'subCategories')]
-    #[ORM\JoinTable(name: 'subCategorie_categories')]
+    #[ORM\JoinTable(name: 'subCategory_categories')]
     private Collection $categories;
 
     public function __construct()

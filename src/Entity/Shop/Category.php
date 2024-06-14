@@ -2,7 +2,7 @@
 
 namespace App\Entity\Shop;
 
-use App\Entity\Traits\HasIdNameSlugTrait;
+use App\Entity\Traits\HasIdGedmoNameSlugAssertTrait;
 use App\Repository\Shop\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,12 +12,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-#[UniqueEntity('name')]
-#[UniqueEntity('slug')]
+// #[UniqueEntity('name')]
+// #[UniqueEntity('slug')]
 #[Gedmo\Tree(type: 'nested')]
 class Category
 {
-    use HasIdNameSlugTrait;
+    use HasIdGedmoNameSlugAssertTrait;
 
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]

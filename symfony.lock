@@ -330,6 +330,9 @@
             "config/routes/ux_autocomplete.yaml"
         ]
     },
+    "symfony/ux-dropzone": {
+        "version": "v2.18.0"
+    },
     "symfony/ux-live-component": {
         "version": "2.18",
         "recipe": {
@@ -383,6 +386,18 @@
         "files": [
             "config/packages/web_profiler.yaml",
             "config/routes/web_profiler.yaml"
+        ]
+    },
+    "symfony/workflow": {
+        "version": "7.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "3.3",
+            "ref": "3b2f8ca32a07fcb00f899649053943fa3d8bbfb6"
+        },
+        "files": [
+            "config/packages/workflow.yaml"
         ]
     },
     "symfonycasts/reset-password-bundle": {

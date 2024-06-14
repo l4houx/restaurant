@@ -1,6 +1,3 @@
-{#  {% set routename = app.request.get('_route') %}
-{% set random = setting.generateReference(5) %} #}
-
 <header class="header-sticky header-absolute">
     {% include "global/user-isverified.html.twig" with { user: app.user } %}
     <nav class="navbar navbar-expand-xl">
@@ -11,10 +8,34 @@
             </a>
             <div class="navbar-collapse collapse" id="navbarCollapse">
                 <ul class="navbar-nav navbar-nav-scroll dropdown-hover mx-auto">
-                    {#
-                    <li class="nav-item">
-                        <a class="nav-link {% if routename == "products" or routename == "product" %}active{% endif %}" href="{{ path('products') }}">{{ 'Browse Products'|trans }}</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if routename == "shop_index" or routename == "cart_index" or routename == "order_index" or routename == "sav_index" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">{{ 'Browse Shop'|trans }}</a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item">
+                                <a class="nav-link {% if routename == "shop_index" %}active{% endif %}" href="{{ path("shop_index") }}">
+                                    {{ 'Shop'|trans }}
+                                </a>
+                            </li>
+                            {% if is_granted("ROLE_SHOP") %}
+                                <li class="nav-item">
+                                    <a class="nav-link {% if routename == "cart_index" %}active{% endif %}" href="{{ path("cart_index") }}">
+                                        {{ 'Cart'|trans }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if routename == "order_index" %}active{% endif %}" href="{{ path("order_index") }}">
+                                        {{ 'Order'|trans }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if routename == "sav_index" %}active{% endif %}" href="{{ path("sav_index") }}">
+                                        {{ 'Sav'|trans }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
                     </li>
+                    {#
                     {% if categories()|length > 0 %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
@@ -42,11 +63,104 @@
                     {% endif %}
                     #}
                     <li class="nav-item">
+                        <a class="nav-link {% if routename == "posts" or routename == "post" or routename == "post_searched" %}active{% endif %}" href="{{ path('posts') }}">
+                            {{ 'Blog'|trans }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {% if routename == "contact" %}active{% endif %}" href="{{ path('contact') }}">
                             {{ 'Contact'|trans }}
                         </a>
                     </li>
+                    {% if not is_granted("ROLE_DATA_PURCHASE") %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if routename == "data_index" %}active{% endif %}" href="{{ path("data_index") }}">
+                                {{ 'Key account'|trans }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {% if routename == "data_index" or routename == "data_purchase" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">{{ 'Key account'|trans }}</a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link {% if routename == "data_index" %}active{% endif %}" href="{{ path("data_index") }}">
+                                        {{ 'Key Dashboard'|trans }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {% if routename == "data_purchase" %}active{% endif %}" href="{{ path("data_purchase") }}">
+                                        {{ 'Buy keys'|trans }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if is_granted("ROLE_CLIENT_ACCESS") or is_granted("ROLE_CLIENT_COMPANY") %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {% if routename == "dashboard_client_company_new" or routename == "dashboard_client_company_index" or routename == "dashboard_client_access_new" or routename == "dashboard_client_access_index" or routename == "dashboard_member_access_index" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                                {% if is_granted('ROLE_MANAGER') %}
+                                    {{ 'Access management'|trans }}
+                                {% else %}
+                                    {{ 'Clients'|trans }}
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% if is_granted("ROLE_CLIENT_COMPANY") %}
+                                    <li>
+                                        <a class="dropdown-item {% if routename == "dashboard_client_company_new" %}active{% endif %}" href="{{ path("dashboard_client_company_new") }}">
+                                            {{ 'Create a client company'|trans }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item {% if routename == "dashboard_client_company_index" %}active{% endif %}" href="{{ path("dashboard_client_company_index") }}">
+                                            {{ 'Management of company information'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if is_granted("ROLE_CLIENT_ACCESS") and is_granted("ROLE_CLIENT_COMPANY") %}
+                                    <li><hr class="dropdown-divider"></li>
+                                {% endif %}
+                                {% if is_granted("ROLE_CLIENT_ACCESS") %}
+                                    {% if is_granted("ROLE_CLIENT_ACCESS_CREATE") %}
+                                        <li>
+                                            <a class="dropdown-item {% if routename == "dashboard_client_access_new" %}active{% endif %}" href="{{ path("dashboard_client_access_new") }}">
+                                                {{ 'Create client user access'|trans }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    <li>
+                                        <a class="dropdown-item {% if routename == "dashboard_client_access_index" %}active{% endif %}" href="{{ path("dashboard_client_access_index") }}">
+                                            {{ 'Management client access'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if is_granted("ROLE_MANAGER") %}
+                                    <li>
+                                        <a class="dropdown-item {% if routename == "dashboard_member_access_new, {role: "collaborator"}" %}active{% endif %}" href="{{ path("dashboard_member_access_new", {role: "collaborator"}) }}">
+                                            {{ 'Create collaborator access'|trans }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item {% if routename == "dashboard_member_access_new, {role: "salesperson"}" %}active{% endif %}" href="{{ path("dashboard_member_access_new", {role: "salesperson"}) }}">
+                                            {{ 'Create sales person access'|trans }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item {% if routename == "dashboard_member_access_new, {role: "manager"}" %}active{% endif %}" href="{{ path("dashboard_member_access_new", {role: "manager"}) }}">
+                                            {{ 'Create manager access'|trans }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item {% if routename == "dashboard_member_access_index" %}active{% endif %}" href="{{ path("dashboard_member_access_index") }}">
+                                            {{ 'Access management for my company'|trans }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    {% endif %}
                     {% if is_granted('ROLE_USER') %}
+                        {#
                         {% if is_granted('ROLE_TEAM') %}
                             {% if is_granted('ROLE_EDITOR') %}
                                 <li class="nav-item dropdown">
@@ -207,13 +321,14 @@
                                 </li>
                             {% endif %}
                         {% endif %}
+                        #}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {% if routename == "dashboard_admin_index" or routename == "dashboard_editor_index" or routename == "dashboard_team_index" or routename == "dashboard_user_index" or routename == "dashboard_main" or routename == "dashboard_user_my_dashboard" or routename == "dashboard_user_client_index" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
-                                {{ app.user.getFullName | lower | capitalize }}
+                            <a class="nav-link dropdown-toggle {% if routename == "dashboard_main" or routename == "dashboard_user_my_dashboard" or routename == "dashboard_user_client_index" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                                {{ 'Hello'|trans }} {{ app.user.getFullName | lower | capitalize }}
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item {% if routename == "dashboard_admin_index" or routename == "dashboard_editor_index" or routename == "dashboard_team_index" or routename == "dashboard_user_index" or routename == "dashboard_main" or routename == "dashboard_user_my_dashboard" %}active{% endif %}" href="{{ path('dashboard_main') }}">
+                                    <a class="dropdown-item {% if routename == "dashboard_main" or routename == "admin_dashboard_index" or routename == "dashboard_user_index" or routename == "dashboard_user_my_dashboard" %}active{% endif %}" href="{{ path('dashboard_main') }}">
                                         {% if is_granted("ROLE_ADMIN") %}
                                             {{ 'Dashboard'|trans }}
                                         {% elseif is_granted('ROLE_EDITOR')  %}
@@ -230,85 +345,40 @@
                                         {{ 'My Profile'|trans }}
                                     </a>
                                 </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ path('signout') }}">{{ 'Sign Out'|trans }}</a>
-                                </li>
-                            </ul>
-                        </li>
-                    {% endif %}
-                </ul>
-                {#
-                <div class="d-flex gap-2" role="search">
-                    <div class="dropdown">
-                        <input aria-label="{{ "Search"|trans }}"
-                            autocomplete="off"
-                            class="form-control dropdown-toggle me-2"
-                            data-bs-toggle="dropdown"
-                            hx-get="{{ path('search_index') }}"
-                            hx-target="#searchDropdownMenu"
-                            name="keyword"
-                            placeholder="{{ "Search"|trans }}"
-                            type="text"
-                        >
-                        <div class="dropdown-menu" id="searchDropdownMenu" style="top: 50px; width: 460px;"></div>
-                    </div>
-                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                        <div class="dropdown">
-                            <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                {{ app.user }}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" href="{{ path('dashboard_main') }}">
-                                        {% if is_granted("ROLE_TEAM") %}
-                                            {{ 'Dashboard'|trans }}
-                                        {% else %}
-                                            {{ 'My dashboard'|trans }}
-                                        {% endif %}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ path('dashboard_user_client_index') }}">
-                                        {{ 'My profile'|trans }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ path('signout') }}">{{ 'Sign out'|trans }}</a>
-                                </li>
-                            </ul>
-                        </div>
-                    {% else %}
-                        <div class="dropdown">
-                            <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                {{ 'Account'|trans }}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" href="{{ path('signin', {redirect: app.request.pathInfo}) }}">
-                                        {{ 'Sign in'|trans }}
-                                    </a>
-                                </li>
-                                {% if '1' == settings['users_can_register'] %}
+                                {% if not is_granted('IS_IMPERSONATOR') %}
                                     <li>
-                                        <a class="dropdown-item" href="{{ path('signup') }}">
-                                            {{ 'Sign up'|trans }}
+                                        <a class="dropdown-item" href="{{ path('signout') }}">
+                                            {{ 'Sign Out'|trans }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a class="dropdown-item" href="{{ impersonation_exit_path(path('home')) }}">
+                                            {{ 'Back to my access'|trans }}
                                         </a>
                                     </li>
                                 {% endif %}
                             </ul>
-                        </div>
+                        </li>
                     {% endif %}
-                </div>
-                #}
+                </ul>
             </div>
 			<ul class="nav align-items-center dropdown-hover ms-sm-2">
                 {% include "global/dropdown-item-bs-theme-text.html.twig" %}
                 {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                    <li class="nav-item me-2">
-                        <a href="{{ path('signout') }}" class="btn btn-sm btn-danger mb-0">
-                            <i class="fas fa-sign-out-alt me-1"></i>{{ 'Sign Out'|trans }}
-                        </a>
-                    </li>
+                    {% if not is_granted('IS_IMPERSONATOR') %}
+                        <li class="nav-item me-2">
+                            <a href="{{ path('signout') }}" class="btn btn-sm btn-danger mb-0">
+                                <i class="fas fa-sign-out-alt me-1"></i>{{ 'Sign Out'|trans }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item me-2">
+                            <a href="{{ impersonation_exit_path(path('home')) }}" class="btn btn-sm btn-danger mb-0">
+                                <i class="fas fa-sign-out-alt me-1"></i>{{ 'Back to my access'|trans }}
+                            </a>
+                        </li>
+                    {% endif %}
                 {% else %}
                     <li class="nav-item me-2">
                         <a href="{{ path('signin', {redirect: app.request.pathInfo}) }}" class="btn btn-sm btn-light mb-0">
