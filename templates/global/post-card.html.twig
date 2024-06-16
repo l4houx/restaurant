@@ -14,7 +14,7 @@
                 <p class="small mb-0">{{ post.content | html_markdown_excerpt(95) }}</p>
             </div>
             <div class="card-footer bg-transparent d-flex justify-content-between px-2 py-0">
-                <span class="heading-color fw-semibold mb-0">{{ 'Author'|trans }} {# {{ post.author.username }} #}</span>
+                <span class="heading-color fw-semibold mb-0">{{ 'Author'|trans }} {{ post.author.username }}</span>
                 <a class="icon-link icon-link-hover stretched-link" href="{{ link }}">
                     {{ 'Read more'|trans }}<i class="fas fa-arrow-right"></i> 
                 </a>

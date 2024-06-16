@@ -1,0 +1,98 @@
+<div class="table-responsive overflow-y-hidden">
+	<table class="table mb-0 text-nowrap table-hover table-centered" data-role="accessList">
+		<thead class="">
+			<tr>
+				<th>{{ 'First name'|trans}}</th>
+				<th>{{ 'Last name'|trans }}</th>
+                <th>{{ 'Sales Person'|trans }}</th>
+                {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                    <th>{{ 'Member'|trans }}</th>
+                {% endif %}
+                <th>{{ 'Client'|trans }}</th>
+                <th>{{ 'Registration Date'|trans }}</th>
+                <th>{{ 'Last login / IP'|trans}}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for customer in customers %}
+				<tr class="{{ customer.suspended ? "bg-warning" }}">
+					<td>{{ customer.firstname|lower|capitalize }}</td>
+					<td>{{ customer.lastname|lower|capitalize }}</td>
+					<td>{{ customer.client.salesPerson.getFullName|lower|capitalize }}</td>
+                    {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                        <td>{{ customer.client.member.name }}</td>
+                    {% endif %}
+                    <td>{{ customer.client.name }}</td>
+                    <td>{{ customer.createdAt ? customer.createdAt|format_date('long') : '' }}</td>
+					<td>
+						{% if customer.lastLogin %}
+							{{ customer.lastLogin|format_date('long') }}
+						{% else %}
+							{{ "N/A"|trans }}
+						{% endif %}
+						<br>
+						<a href="https://ipinfo.io/{{ customer.lastLoginIp }}" target="_blank">{{ customer.lastLoginIp }}</a>
+					</td>
+					<td>
+						<div class="dropdown dropstart">
+							<a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#" role="button" id="Dropdown-{{ customer.id }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fas fa-ellipsis-v"></i>
+							</a>
+							<div class="dropdown-menu" aria-labelledby="Dropdown-{{ customer.id }}" style="">
+								<span class="dropdown-header">{{ 'Settings'|trans }}</span>
+                                {% if is_granted("edit", customer) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_client_access_edit', { id: customer.id }) }}">
+                                        <i class="fas fa-pencil fa-fw dropdown-item-icon"></i>
+                                        {{ 'Edit'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("delete", customer) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_client_access_delete', { id: customer.id }) }}">
+                                        <i class="fas fa-trash-restore fa-fw dropdown-item-icon"></i>
+                                        {{ 'Delete'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("suspend", customer) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_client_access_suspend', { id: customer.id }) }}">
+                                        <i class="fas fa-user-lock fa-fw dropdown-item-icon"></i>
+                                        {{ 'Suspend'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("active", customer) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_client_access_active', { id: customer.id }) }}">
+                                        <i class="fas fa-user-check fa-fw dropdown-item-icon"></i>
+                                        {{ 'Enable'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("reset", customer) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_client_access_reset', { id: customer.id }) }}">
+                                        <i class="fas fa-key fa-fw dropdown-item-icon"></i>
+                                        {{ 'Resend password'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("log_as", customer) %}
+                                    <a class="dropdown-item" href="{{ path("home", {_switch_user: customer.email}) }}">
+                                        <i class="fas fa-user-ninja fa-fw dropdown-item-icon"></i>
+                                        {{ 'View his profile'|trans }}
+                                    </a>
+                                {% endif %}
+							</div>
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+    {% if pages > 1 %}
+        <div class="card-footer bg-transparent text-end p-0">
+            {# {{ knp_pagination_render(customers, null, {}, {'align': 'center'}) }} #}
+            {{ include("global/pagination.html.twig", {
+                class: "justify-content-center",
+                route: "dashboard_client_access_index",
+                current_page: app.request.get("page", 1),
+                pages: pages
+            }) }}
+        </div>
+    {% endif %}
+</div>

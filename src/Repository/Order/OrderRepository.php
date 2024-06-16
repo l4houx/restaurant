@@ -2,16 +2,17 @@
 
 namespace App\Repository\Order;
 
-use App\Entity\Company\Member;
 use App\Entity\Order\Order;
-use App\Entity\Traits\HasLimit;
-use App\Entity\User\Customer;
 use App\Entity\User\Manager;
+use App\Entity\User\Customer;
+use App\Entity\Company\Member;
+use App\Entity\Traits\HasLimit;
 use App\Entity\User\SalesPerson;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -25,31 +26,10 @@ class OrderRepository extends ServiceEntityRepository
         parent::__construct($registry, Order::class);
     }
 
-    public function findForPagination(int $page): PaginationInterface
-    {
-        $builder = $this->createQueryBuilder('o')
-            ->orderBy('o.id', 'DESC')
-            ->setParameter('now', new \DateTimeImmutable())
-            ->where('o.updatedAt <= :now')
-            // ->orWhere('s.isOnline = true')
-        ;
-
-        return $this->paginator->paginate(
-            $builder,
-            $page,
-            HasLimit::ORDER_LIMIT,
-            [
-                'wrap-queries' => true,
-                'distinct' => false,
-                'sortFieldAllowList' => ['o.id', 'o.firstname', 'o.lastname', 'o.reference'],
-            ]
-        );
-    }
-
     /**
      * @return array<int, Order>
      */
-    public function getOrdersByMemberEmployee(SalesPerson|Manager $employee): array
+    public function getOrdersByMemberEmployee(SalesPerson|Manager|SuperAdministrator $employee): array
     {
         $qb = $this->createQueryBuilder('o')
             ->join('o.user', 'u')
@@ -57,7 +37,7 @@ class OrderRepository extends ServiceEntityRepository
         ;
 
         if ($employee instanceof SalesPerson) {
-            $subQuery = $this->_em->createQueryBuilder()
+            $subQuery = $this->createQueryBuilder('c')
                 ->select('c.id')
                 ->from(Customer::class, 'c')
                 ->join('c.client', 'cl')
@@ -67,7 +47,7 @@ class OrderRepository extends ServiceEntityRepository
 
             $qb->setParameter('employee', $employee);
         } else {
-            $subQuery = $this->_em->createQueryBuilder()
+            $subQuery = $this->createQueryBuilder('c')
                 ->select('c.id')
                 ->from(Customer::class, 'c')
                 ->join('c.client', 'cl')

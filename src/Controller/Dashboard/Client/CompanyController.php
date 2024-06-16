@@ -2,21 +2,22 @@
 
 namespace App\Controller\Dashboard\Client;
 
-use App\Controller\BaseController;
+use App\Entity\User\Manager;
 use App\Entity\Company\Client;
 use App\Entity\Traits\HasLimit;
 use App\Entity\Traits\HasRoles;
-use App\Entity\User\Manager;
-use App\Form\Client\Company\CompanyFormType;
-use App\Form\Client\Company\FilterFormType;
-use App\Repository\Company\ClientRepository;
+use App\Controller\BaseController;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Form\FilterFormType;
+use App\Form\Client\Company\CompanyFormType;
+use App\Repository\Company\ClientRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(HasRoles::CLIENTCOMPANY)]
 #[Route(path: '/%website_dashboard_path%/client/companies', name: 'dashboard_client_company_')]
@@ -34,15 +35,25 @@ class CompanyController extends BaseController
     {
         $form = $this->createForm(FilterFormType::class)->handleRequest($request);
 
-        /** @var Manager $employee */
-        $employee = $this->getUser();
+        /** @var Manager|SuperAdministrator $employee */
+        $employee = $this->getUserOrThrow();
 
-        $clients = $this->clientRepository->findForPagination(
+        /*$clients = $this->clientRepository->findForPagination(
             $employee,
             $request->query->getInt('page', 1),
             HasLimit::USER_LIMIT,
             $form->get('keywords')->getData()
-        );
+        );*/
+
+
+        /*$clients = $this->clientRepository->getPaginated(
+            $employee,
+            $request->query->getInt("page", 1),
+            HasLimit::USER_LIMIT,
+            $form->get("keywords")->getData()
+        );*/
+
+        $clients = $this->clientRepository->findAll();
 
         return $this->render('dashboard/client/company/index.html.twig', [
             'clients' => $clients,
@@ -56,8 +67,8 @@ class CompanyController extends BaseController
     {
         $client = new Client();
 
-        /** @var Manager $employee */
-        $employee = $this->getUser();
+        /** @var Manager|SuperAdministrator $employee */
+        $employee = $this->getUserOrThrow();
         $client->setMember($employee->getMember());
 
         $form = $this->createForm(CompanyFormType::class, $client, ['employee' => $employee])->handleRequest($request);
@@ -79,15 +90,15 @@ class CompanyController extends BaseController
             ]);
         }
 
-        return $this->render('dashboard/client/company/new.html.twig', compact('form'));
+        return $this->render('dashboard/client/company/new-edit.html.twig', compact('form','client'));
     }
 
     #[Route(path: '/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted('EDIT', subject: 'client')]
     public function edit(Request $request, Client $client): Response
     {
-        /** @var Manager $employee */
-        $employee = $this->getUser();
+        /** @var Manager|SuperAdministrator $employee */
+        $employee = $this->getUserOrThrow();
         $client->setMember($employee->getMember());
 
         $form = $this->createForm(CompanyFormType::class, $client, ['employee' => $employee])->handleRequest($request);
@@ -106,7 +117,7 @@ class CompanyController extends BaseController
             return $this->redirectToRoute('dashboard_client_company_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/client/company/edit.html.twig', compact('form'));
+        return $this->render('dashboard/client/company/new-edit.html.twig', compact('form','client'));
     }
 
     #[Route(path: '/{id}/delete', name: 'delete', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]

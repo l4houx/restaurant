@@ -2,28 +2,29 @@
 
 namespace App\Controller\Dashboard\Member;
 
-use App\Controller\BaseController;
+use App\Entity\User;
+use App\Entity\User\Manager;
+use App\Service\AvatarService;
 use App\Entity\Traits\HasLimit;
 use App\Entity\Traits\HasRoles;
-use App\Entity\User;
-use App\Entity\User\Collaborator;
-use App\Entity\User\Manager;
 use App\Entity\User\SalesPerson;
-use App\Form\Member\AccessFormType;
-use App\Form\Member\FilterFormType;
+use App\Entity\User\Collaborator;
+use App\Controller\BaseController;
 use App\Repository\UserRepository;
-use App\Service\AvatarService;
+use App\Form\Member\AccessFormType;
+use App\Form\FilterFormType;
+use Symfony\Component\Mime\Address;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[IsGranted(HasRoles::MANAGER)]
 #[Route(path: '/%website_dashboard_path%/member/access', name: 'dashboard_member_access_')]
@@ -44,14 +45,21 @@ class AccessController extends BaseController
     {
         $form = $this->createForm(FilterFormType::class)->handleRequest($request);
 
-        /** @var Manager $manager */
-        $manager = $this->getUser();
+        /** @var Manager|SuperAdministrator $manager */
+        $manager = $this->getUserOrThrow();
 
-        $employees = $this->userRepository->findForPagination(
+        /*$employees = $this->userRepository->findForPagination(
             $manager,
             $request->query->getInt('page', 1),
             HasLimit::USER_LIMIT,
             $form->get('keywords')->getData()
+        );*/
+
+        $employees = $this->userRepository->getPaginated(
+            $manager,
+            $request->query->getInt("page", 1),
+            HasLimit::USER_LIMIT,
+            $form->get("keywords")->getData()
         );
 
         return $this->render('dashboard/member/index.html.twig', [
@@ -79,8 +87,8 @@ class AccessController extends BaseController
                 break;
         }
 
-        /** @var Manager $manager */
-        $manager = $this->getUser();
+        /** @var Manager|SuperAdministrator $manager */
+        $manager = $this->getUserOrThrow();
 
         if (1 === $manager->getMembers()->count()) {
             $user->setMember($manager->getMember());
@@ -128,8 +136,8 @@ class AccessController extends BaseController
     #[IsGranted('EDIT', subject: 'user')]
     public function edit(Request $request, User $user): Response
     {
-        /** @var Manager $manager */
-        $manager = $this->getUser();
+        /** @var Manager|SuperAdministrator $manager */
+        $manager = $this->getUserOrThrow();
         $form = $this->createForm(AccessFormType::class, $user, ['manager' => $manager])->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

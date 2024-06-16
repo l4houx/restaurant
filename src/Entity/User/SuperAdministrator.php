@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Company\Member;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\HasEmployeeTrait;
+use App\Entity\Traits\HasRoles;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Repository\User\SuperAdministratorRepository;
@@ -38,7 +39,13 @@ class SuperAdministrator extends User
 
     public function getRole(): string
     {
-        return '<span class="badge me-2 bg-danger">Super Administrator</span>';
+        //return HasRoles::ADMINAPPLICATION;
+        return '<span class="badge me-2 bg-danger">Administrator</span>';
+    }
+
+    public function getRoleName(): string
+    {
+        return "Administrator";
     }
 
     public function getCrossRoleName(): string

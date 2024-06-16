@@ -2,21 +2,22 @@
 
 namespace App\Form\Member;
 
-use App\Entity\Company\Member;
 use App\Entity\User;
 use App\Entity\User\Manager;
+use App\Entity\Company\Member;
 use App\Form\FormListenerFactory;
-use App\Repository\Company\MemberRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\FormEvents;
+use App\Entity\User\SuperAdministrator;
 use Symfony\Component\Form\AbstractType;
+use App\Repository\Company\MemberRepository;
+use function Symfony\Component\Translation\t;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
-use function Symfony\Component\Translation\t;
 
 class AccessFormType extends AbstractType
 {
@@ -76,7 +77,7 @@ class AccessFormType extends AbstractType
             ->addEventListener(FormEvents::POST_SUBMIT, $this->formListenerFactory->timestamps())
         ;
 
-        /** @var Manager $manager */
+        /** @var Manager|SuperAdministrator $manager */
         $manager = $options['manager'];
 
         if ($manager->getMembers()->count() > 1) {
@@ -97,7 +98,7 @@ class AccessFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('manager');
-        $resolver->setAllowedTypes('manager', [Manager::class]);
+        $resolver->setAllowedTypes('manager', [Manager::class, SuperAdministrator::class]);
         $resolver->setDefault('data_class', User::class);
     }
 }

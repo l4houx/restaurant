@@ -7,6 +7,7 @@ namespace App\Entity\User;
 use App\Entity\Company\Client;
 use App\Entity\Company\Member;
 use App\Entity\Traits\HasEmployeeTrait;
+use App\Entity\Traits\HasRoles;
 use App\Entity\User;
 use App\Repository\User\SalesPersonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -42,7 +43,13 @@ class SalesPerson extends User
 
     public function getRole(): string
     {
-        return 'Sales';
+        //return HasRoles::SALES;
+        return '<span class="badge me-2 bg-info">Sales Person</span>';
+    }
+
+    public function getRoleName(): string
+    {
+        return "SalesPerson";
     }
 
     public function getCrossRoleName(): string

@@ -5,6 +5,7 @@ namespace App\Repository\Company;
 use App\Entity\User\Manager;
 use App\Entity\Company\Member;
 use Doctrine\ORM\QueryBuilder;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -18,7 +19,7 @@ class MemberRepository extends ServiceEntityRepository
         parent::__construct($registry, Member::class);
     }
 
-    public function createQueryBuilderMembersByManager(Manager $employee): QueryBuilder
+    public function createQueryBuilderMembersByManager(Manager|SuperAdministrator $employee): QueryBuilder
     {
         $qb = $this->createQueryBuilder("m")
             ->orderBy("m.name", "asc")

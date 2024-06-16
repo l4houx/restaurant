@@ -6,6 +6,7 @@ namespace App\Entity\User;
 
 use App\Entity\Company\Member;
 use App\Entity\Traits\HasEmployeeTrait;
+use App\Entity\Traits\HasRoles;
 use App\Entity\User;
 use App\Repository\User\CollaboratorRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,7 +30,13 @@ class Collaborator extends User
 
     public function getRole(): string
     {
-        return 'Collabarator';
+        //return HasRoles::COLLABORATOR;
+        return '<span class="badge me-2 bg-dark">Collaborator</span>';
+    }
+
+    public function getRoleName(): string
+    {
+        return "Collaborator";
     }
 
     public function getCrossRoleName(): string

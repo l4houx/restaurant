@@ -2,22 +2,23 @@
 
 namespace App\Form\Client\Company;
 
+use App\Form\AddressType;
+use App\Entity\User\Manager;
 use App\Entity\Company\Client;
 use App\Entity\Company\Member;
-use App\Entity\User\Manager;
 use App\Entity\User\SalesPerson;
-use App\Form\AddressType;
 use App\Form\FormListenerFactory;
-use App\Repository\Company\MemberRepository;
-use App\Repository\User\SalesPersonRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use App\Entity\User\SuperAdministrator;
+use Symfony\Component\Form\AbstractType;
+use App\Repository\Company\MemberRepository;
 use function Symfony\Component\Translation\t;
+use App\Repository\User\SalesPersonRepository;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class CompanyFormType extends AbstractType
 {
@@ -47,7 +48,7 @@ class CompanyFormType extends AbstractType
         $builder->get('address')->remove('email');
         $builder->get('address')->remove('phone');
 
-        /** @var Manager $employee */
+        /** @var Manager|SuperAdministrator $employee */
         $employee = $options['employee'];
 
         $memberOptions = [];
@@ -64,8 +65,7 @@ class CompanyFormType extends AbstractType
             'choice_label' => fn (SalesPerson $salesPerson) => $salesPerson->getFullName(),
             'query_builder' => fn (SalesPersonRepository $repository) => $repository
                 ->createQueryBuilderSalesPersonsByManager($employee),
-        ])
-        ;
+        ]);
 
         if ($employee->getMembers()->count() > 1) {
             $builder->add('member', EntityType::class, [
@@ -81,7 +81,7 @@ class CompanyFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('employee');
-        $resolver->setAllowedTypes('employee', [Manager::class]);
+        $resolver->setAllowedTypes('employee', [Manager::class, SuperAdministrator::class]);
         $resolver->setDefault('data_class', Client::class);
     }
 }

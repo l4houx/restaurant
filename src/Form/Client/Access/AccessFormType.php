@@ -2,22 +2,23 @@
 
 namespace App\Form\Client\Access;
 
-use App\Entity\Company\Client;
-use App\Entity\User\Customer;
 use App\Entity\User\Manager;
+use App\Entity\User\Customer;
+use App\Entity\Company\Client;
 use App\Entity\User\SalesPerson;
 use App\Form\FormListenerFactory;
-use App\Repository\Company\ClientRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use App\Entity\User\SuperAdministrator;
+use Symfony\Component\Form\AbstractType;
+use App\Repository\Company\ClientRepository;
 use function Symfony\Component\Translation\t;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class AccessFormType extends AbstractType
 {
@@ -28,12 +29,12 @@ class AccessFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var Manager|SalesPerson $employee */
+        /** @var Manager|SalesPerson|SuperAdministrator $employee */
         $employee = $options['employee'];
 
         $clientOptions = [];
 
-        if ($employee instanceof Manager && $employee->getMembers()->count() > 1) {
+        if ($employee instanceof Manager && $employee instanceof SuperAdministrator && $employee->getMembers()->count() > 1) {
             $clientOptions['group_by'] = fn (Client $client) => $client->getMember()->getName();
         }
 
@@ -73,7 +74,7 @@ class AccessFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('employee');
-        $resolver->setAllowedTypes('employee', [SalesPerson::class, Manager::class]);
+        $resolver->setAllowedTypes('employee', [SalesPerson::class, Manager::class, SuperAdministrator::class]);
         $resolver->setDefault('data_class', Customer::class);
     }
 }

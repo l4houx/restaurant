@@ -6,6 +6,7 @@ use App\Entity\User\Manager;
 use App\Entity\Company\Member;
 use Doctrine\ORM\QueryBuilder;
 use App\Entity\User\SalesPerson;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -19,7 +20,7 @@ class SalesPersonRepository extends ServiceEntityRepository
         parent::__construct($registry, SalesPerson::class);
     }
 
-    public function createQueryBuilderSalesPersonsByManager(Manager $manager): QueryBuilder
+    public function createQueryBuilderSalesPersonsByManager(Manager|SuperAdministrator $manager): QueryBuilder
     {
         $qb = $this->createQueryBuilder("s")
             ->addSelect("m")

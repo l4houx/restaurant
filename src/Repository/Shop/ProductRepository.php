@@ -8,6 +8,7 @@ use App\Entity\Shop\Category;
 use App\Entity\Traits\HasLimit;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -92,6 +93,74 @@ class ProductRepository extends ServiceEntityRepository
             $page,
             $limit
         );
+    }
+
+    /**
+     * @return Paginator<Product>
+     */
+    public function getPaginated(
+        int $page,
+        int $limit,
+        string $sort,
+        ?Category $category,
+        Filter $filter
+    ): Paginator {
+        $qb = $this->createQueryBuilder("p")
+            ->addSelect("b")
+            ->addSelect("c")
+            ->join("p.brand", "b")
+            ->join("p.category", "c")
+            ->leftJoin("c.lastProduct", "lp")
+            ->andWhere("p.amount >= :min")
+            ->setParameter("min", $filter->min)
+            ->andWhere("p.amount <= :max")
+            ->setParameter("max", $filter->max)
+            ->setMaxResults($limit)
+            ->setFirstResult(($page - 1) * $limit)
+        ;
+
+        if ($category !== null) {
+            $qb
+                ->andWhere("c.left >= :left")
+                ->andWhere("c.right <= :right")
+                ->setParameter("left", $category->getLeft())
+                ->setParameter("right", $category->getRight())
+            ;
+        }
+
+        if ($filter->brand !== null) {
+            $qb
+                ->andWhere("b = :brand")
+                ->setParameter("brand", $filter->brand)
+            ;
+        }
+
+        if ($filter->keywords !== null) {
+            $qb
+                ->andWhere("CONCAT(p.name, ' ', p.content, ' ', b.name) LIKE :keywords")
+                ->setParameter("keywords", $filter->keywords)
+            ;
+        }
+
+        switch ($sort) {
+            case "amount-asc":
+                $qb->orderBy("p.amount", "asc");
+                break;
+            case "amount-desc":
+                $qb->orderBy("p.amount", "desc");
+                break;
+            case "name-asc":
+                $qb->orderBy("p.name", "asc");
+                break;
+            case "name-desc":
+                $qb->orderBy("p.name", "desc");
+                break;
+            default:
+                $qb->orderBy("lp.id", "desc")->orderBy("p.id", "desc");
+                break;
+        }
+
+        return new Paginator($qb);
     }
 
     /**

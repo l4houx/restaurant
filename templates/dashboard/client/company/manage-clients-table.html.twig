@@ -1,0 +1,60 @@
+<div class="table-responsive overflow-y-hidden">
+	<table class="table mb-0 text-nowrap table-hover table-centered" data-role="accessList">
+		<thead class="">
+			<tr>
+				<th>{{ 'Social reason'|trans}}</th>
+				<th>{{ 'Sales Person'|trans }}</th>
+                {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                    <th>{{ 'Member'|trans }}</th>
+                {% endif %}
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for client in clients %}
+				<tr>
+					<td>{{ client.name|lower|capitalize }}</td>
+					<td>
+						{{ client.salesPerson.getFullName|lower|capitalize }}
+					</td>
+                    {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                        <td>{{ client.member.name }}</td>
+                    {% endif %}
+					<td>
+						<div class="dropdown dropstart">
+							<a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#" role="button" id="Dropdown-{{ client.id }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fas fa-ellipsis-v"></i>
+							</a>
+							<div class="dropdown-menu" aria-labelledby="Dropdown-{{ client.id }}" style="">
+								<span class="dropdown-header">{{ 'Settings'|trans }}</span>
+                                {% if is_granted("edit", client) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_client_company_edit', { id: client.id }) }}">
+                                        <i class="fas fa-pencil fa-fw dropdown-item-icon"></i>
+                                        {{ 'Edit'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("delete", client) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_client_company_delete', { id: client.id }) }}">
+                                        <i class="fas fa-trash-restore fa-fw dropdown-item-icon"></i>
+                                        {{ 'Delete'|trans }}
+                                    </a>
+                                {% endif %}
+							</div>
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+    {% if pages > 1 %}
+        <div class="card-footer bg-transparent text-end p-0">
+            {# {{ knp_pagination_render(clients, null, {}, {'align': 'center'}) }} #}
+            {{ include("global/pagination.html.twig", {
+                class: "justify-content-center",
+                route: "dashboard_client_company_index",
+                current_page: app.request.get("page", 1),
+                pages: pages
+            }) }}
+        </div>
+    {% endif %}
+</div>

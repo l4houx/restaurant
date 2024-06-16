@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Client\Access;
+namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -13,10 +13,11 @@ class FilterFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('keywords', TextType::class, [
-            'label' => t('Search'),
+            'label' => false,
             'required' => false,
             'attr' => [
-                'placeholder' => t('Search'),
+                'class' => 'form-control pe-5',
+                'placeholder' => t('Search...'),
             ],
         ]);
     }

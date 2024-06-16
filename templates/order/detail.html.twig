@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Orders'|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ "order_index": ('Orders'|trans), (path("order_detail", { id: order.id })): ('Order No'|trans) ~ order.reference, "current":(pagetitle) }] %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+    <section class="pt-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-9 col-lg-8 col-md-12 col-12">
+                    <div class="card bg-transparent p-0">
+                        <div class="card-header bg-transparent border-bottom p-0 pb-3">
+                            <h6 class="card-title mb-0">
+                                {{ 'Products List'|trans }} 
+                            </h6>
+                        </div>
+                        <div class="table-responsive overflow-y-hidden">
+                            <table class="table mb-0 text-nowrap table-hover table-centered" data-role="accessList">
+                                <thead class="">
+                                    <tr>
+                                        <th>{{ 'Product'|trans}}</th>
+                                        <th>{{ 'Unit amount'|trans}}</th>
+                                        <th>{{ 'Quantity'|trans}}</th>
+                                        <th>{{ 'Total'|trans }}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for line in order.lines %}
+                                        <tr>
+                                            <td>{{ line.product.brand.name }} - {{ line.product.name }}</td>
+                                            <td>{{ line.amount }} {{ 'keys'|trans }}</td>
+                                            <td>{{ line.quantity }}</td>
+                                            <td>{{ order.total  }} {{ 'keys'|trans }}</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td class="text-center" colspan="4">{{ 'No result'|trans }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-12 col-12">
+                    <div class="card bg-transparent p-0">
+                        <div class="card-header bg-transparent border-bottom p-0 pb-3">
+                            <h6 class="card-title mb-0">
+                                {{ 'Detail'|trans }} 
+                            </h6>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex flex-column">
+                                <strong>{{ 'Reference'|trans}}</strong>
+                                <span>{{ order.reference }}</span>
+                            </div>
+                            <div class="list-group-item d-flex flex-column">
+                                <strong>{{ 'Date'|trans }}</strong>
+                                <span>{{ order.createdAt|format_date('long') }}</span>
+                            </div>
+                            <div class="list-group-item d-flex flex-column">
+                                <strong>{{ 'Number of products'|trans }}</strong>
+                                <span>{{ order.numberOfProducts }} {{ 'products'|trans }}</span>
+                            </div>
+                            <div class="list-group-item d-flex flex-column">
+                                <strong>{{ 'Total'|trans }}</strong>
+                                <span>{{ order.total }} {{ 'keys'|trans }}</span>
+                            </div>
+                            <div class="list-group-item d-flex flex-column align-items-start">
+                                <strong>{{ 'Status'|trans }}</strong>
+                                {% if order.state == "cart" %}
+                                    <span class="badge bg-secondary">{{ 'Basket not validated'|trans }}</span>
+                                {% elseif order.state == "pending" %}
+                                    <span class="badge bg-primary">{{ 'In process'|trans }}</span>
+                                {% elseif order.state == "on_delivery" %}
+                                    <span class="badge bg-info">{{ 'In transit'|trans }}</span>
+                                {% elseif order.state == "delivered" %}
+                                    <span class="badge bg-success">{{ 'Delivered'|trans }}</span>
+                                {% elseif order.state == "canceled" %}
+                                    <span class="badge bg-warning">{{ 'Canceled'|trans }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ 'Delivery incident'|trans }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent text-end p-0">
+                            <a href="{{ path("sav_trigger", {id: order.id}) }}" class="btn d-block btn-outline-danger rounded-0 border-0">
+                                {{ 'Trigger a service request'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

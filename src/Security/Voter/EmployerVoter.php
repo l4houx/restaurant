@@ -5,22 +5,23 @@ namespace App\Security\Voter;
 use App\Entity\User\Collaborator;
 use App\Entity\User\Manager;
 use App\Entity\User\SalesPerson;
+use App\Entity\User\SuperAdministrator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class EmployerVoter extends Voter
 {
-    public const ROLE_SUSPEND = 'SUSPEND';
+    public const ROLE_SUSPEND = 'suspend';
 
-    public const ROLE_ACTIVE = 'ACTIVE';
+    public const ROLE_ACTIVE = 'active';
 
-    public const ROLE_EDIT = 'EDIT';
+    public const ROLE_EDIT = 'edit';
 
-    public const ROLE_RESET = 'RESET';
+    public const ROLE_RESET = 'reset';
 
-    public const ROLE_DELETE = 'DELETE';
+    public const ROLE_DELETE = 'delete';
 
-    public const ROLE_LOG_AS = 'LOG_AS';
+    public const ROLE_LOG_AS = 'log_as';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -35,19 +36,20 @@ class EmployerVoter extends Voter
             Collaborator::class,
             SalesPerson::class,
             Manager::class,
+            SuperAdministrator::class,
         ])
         ;
     }
 
     /**
-     * @param Collaborator|SalesPerson|Manager $user
+     * @param Collaborator|SalesPerson|Manager|SuperAdministrator $user
      */
     protected function voteOnAttribute(string $attribute, $user, TokenInterface $token): bool
     {
-        /** @var Manager $manager */
+        /** @var Manager|SuperAdministrator $manager */
         $manager = $token->getUser();
 
-        if ($manager instanceof Manager && !$manager->getMembers()->contains($user->getMember())) {
+        if ($manager instanceof Manager && $manager instanceof SuperAdministrator && !$manager->getMembers()->contains($user->getMember())) {
             return false;
         }
 

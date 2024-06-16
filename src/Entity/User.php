@@ -273,7 +273,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
             return 'N/A';
         }
     }
-
     public function addRole(string $role): static
     {
         $role = strtoupper($role);

@@ -12,7 +12,7 @@ use App\Entity\User\SalesPerson;
 
 class OrderVoter extends Voter
 {
-    public const SHOW = 'SHOW';
+    public const SHOW = 'show';
 
     protected function supports(string $attribute, mixed $subject): bool
     {

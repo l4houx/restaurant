@@ -6,6 +6,7 @@ namespace App\Entity\User;
 
 use App\Entity\Company\Member;
 use App\Entity\Traits\HasEmployeeTrait;
+use App\Entity\Traits\HasRoles;
 use App\Entity\User;
 use App\Repository\User\ManagerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -32,7 +33,13 @@ class Manager extends User
 
     public function getRole(): string
     {
-        return 'Manager';
+        //return HasRoles::MANAGER;
+        return '<span class="badge me-2 bg-primary">Manager</span>';
+    }
+
+    public function getRoleName(): string
+    {
+        return "Manager";
     }
 
     public function getCrossRoleName(): string

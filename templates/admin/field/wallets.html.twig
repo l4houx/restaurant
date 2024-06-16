@@ -1,0 +1,46 @@
+<div class="card">
+	<div class="card-header">{{ 'List of wallets'|trans }}</div>
+	<table class="table table-bordered bg-white mb-0">
+		<thead>
+			<tr>
+				<th class="text-center">{{ 'Creation date'|trans }}</th>
+				<th class="text-center">{{ 'Solde'|trans }}</th>
+				<th class="text-center">{{ 'Expiration date'|trans }}</th>
+				<th class="text-center">{{ 'Initial transaction'|trans }}</th>
+				<th class="text-center">{{ 'Status'|trans }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for wallet in field.value %}
+				<tr>
+					<td class="text-center">{{ wallet.createdAt|date("d/m/Y H:i") }}</td>
+					<td class="text-center">{{ wallet.balance }}</td>
+					<td class="text-center">
+						{% if wallet.expiredAt is not null %}
+							{{ wallet.expiredAt|date("d/m/Y H:i") }}
+						{% else %}
+							<span class="badge badge-info">{{ 'N/C'|trans }}</span>
+						{% endif %}
+					</td>
+					<td class="text-center">
+						{% set url = ea_url().setDashboard('App\\Controller\\Admin\\DashboardController').setController('App\\Controller\\Admin\\TransactionCrudController').setAction('detail').setEntityId(wallet.purchase.id) %}
+						<a href="{{ url }}">
+							{{ "%08d"|format(wallet.purchase.id) }}
+						</a>
+					</td>
+					<td class="text-center">
+						{% if wallet.expired %}
+							<span class="badge badge-danger">{{ 'Expired'|trans }}</span>
+						{% else %}
+							<span class="badge badge-success">{{ 'Active'|trans }}</span>
+						{% endif %}
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td class="text-center" colspan="6">{{ 'No result'|trans }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity\User;
 
 use App\Entity\Company\Client;
+use App\Entity\Traits\HasRoles;
 use App\Entity\User;
 use App\Repository\User\CustomerRepository;
 use Doctrine\DBAL\Types\Types;
@@ -23,7 +24,13 @@ class Customer extends User
 
     public function getRole(): string
     {
-        return 'Customer';
+        //return HasRoles::CUSTOMER;
+        return '<span class="badge me-2 bg-success">Customer</span>';
+    }
+
+    public function getRoleName(): string
+    {
+        return "Customer";
     }
 
     public function getCrossRoleName(): string

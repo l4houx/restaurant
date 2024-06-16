@@ -1,0 +1,64 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'} }) }}
+    <div class="card bg-transparent p-0">
+        <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center p-0 pb-3">
+            <h6 class="card-title mb-0">
+                {{ pagetitle }}
+                {% if app.request.attributes.get('_route') == 'dashboard_client_company_edit' %}
+                    "{{ client.name }}"
+                {% endif %}
+            </h6>
+            <div>
+                <a href="{{ path('dashboard_client_company_index') }}" class="btn btn-sm btn-outline-success me-2">
+                    {{ 'Return to list'|trans }}
+                </a>
+            </div>
+        </div>
+        <div class="card-body px-0">
+            <div>
+                {% include "global/message.html.twig" with { type: "info", icon: "fas fa-exclamation", message: ("The fields preceded with a red * are mandatory"|trans) } %}
+            </div>
+            <div class="row g-4">
+                {{ form_errors(form) }}
+                {% if form.member is defined or form.salesPerson is defined %}
+                    {% if form.member is defined %}
+                        <div class="col-md-6">
+                            {{ form_row(form.member) }}
+                        </div>
+                    {% endif %}
+                    {% if form.salesPerson is defined %}
+                        <div class="col-md-6">
+                            {{ form_row(form.salesPerson) }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+				<div class="col-md-6">
+					{{ form_row(form.name) }}
+				</div>
+				<div class="col-md-6">
+					{{ form_row(form.companyNumber) }}
+				</div>
+				<div class="col-12">
+					{{ form_row(form.address.streetAddress) }}
+				</div>
+				<div class="col-12">
+					{{ form_row(form.address.restAddress) }}
+				</div>
+				<div class="col-md-6">
+					{{ form_row(form.address.zipCode) }}
+				</div>
+				<div class="col-md-6">
+					{{ form_row(form.address.locality) }}
+				</div>
+                <div class="col-12 text-end mt-4">
+                    <button type="submit" class="{% if client.id %}btn btn-warning{% else %}btn btn-primary{% endif %} mb-0">
+                        {% if client.id %}
+                            {{ 'Update'|trans }}
+                        {% else %}
+                            {{ 'Save'|trans }}
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{{ form_end(form) }}

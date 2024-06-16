@@ -2,28 +2,29 @@
 
 namespace App\Controller\Dashboard\Client;
 
-use App\Controller\BaseController;
+use App\Entity\User\Manager;
+use App\Entity\User\Customer;
 use App\Entity\Company\Client;
+use App\Service\AvatarService;
 use App\Entity\Traits\HasLimit;
 use App\Entity\Traits\HasRoles;
-use App\Entity\User\Customer;
-use App\Entity\User\Manager;
 use App\Entity\User\SalesPerson;
-use App\Form\Client\Access\AccessFormType;
-use App\Form\Client\Access\FilterFormType;
-use App\Repository\User\CustomerRepository;
-use App\Service\AvatarService;
+use App\Controller\BaseController;
+use Symfony\Component\Mime\Address;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Form\Client\Access\AccessFormType;
+use App\Form\FilterFormType;
+use App\Repository\User\CustomerRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[IsGranted(HasRoles::CLIENTACCESS)]
 #[Route(path: '/%website_dashboard_path%/client/access', name: 'dashboard_client_access_')]
@@ -44,15 +45,25 @@ class AccessController extends BaseController
     {
         $form = $this->createForm(FilterFormType::class)->handleRequest($request);
 
-        /** @var Manager|SalesPerson $employee */
-        $employee = $this->getUser();
+        /** @var Manager|SalesPerson|SuperAdministrator $employee */
+        $employee = $this->getUserOrThrow();
 
-        $customers = $this->customerRepository->findForPagination(
+        /*$customers = $this->customerRepository->findForPagination(
             $employee,
             $request->query->getInt('page', 1),
             HasLimit::USER_LIMIT,
             $form->get('keywords')->getData()
+        );*/
+
+        
+        $customers = $this->customerRepository->getPaginated(
+            $employee,
+            $request->query->getInt("page", 1),
+            HasLimit::USER_LIMIT,
+            $form->get("keywords")->getData()
         );
+
+        //$customers = $this->customerRepository->findAll();
 
         return $this->render('dashboard/client/index.html.twig', [
             'customers' => $customers,
@@ -71,8 +82,8 @@ class AccessController extends BaseController
             $customer->setClient($client);
         }
 
-        /** @var SalesPerson|Manager $employee */
-        $employee = $this->getUser();
+        /** @var SalesPerson|Manager|SuperAdministrator $employee */
+        $employee = $this->getUserOrThrow();
         $form = $this->createForm(AccessFormType::class, $customer, ['employee' => $employee])->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -108,15 +119,15 @@ class AccessController extends BaseController
             return $this->redirectToRoute('dashboard_client_access_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/client/new.html.twig', compact('form'));
+        return $this->render('dashboard/client/new-edit.html.twig', compact('form','customer'));
     }
 
     #[Route(path: '/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('EDIT', subject: 'customer')]
+    #[IsGranted('edit', subject: 'customer')]
     public function edit(Customer $customer, Request $request): Response
     {
-        /** @var SalesPerson|Manager $employee */
-        $employee = $this->getUser();
+        /** @var SalesPerson|Manager|SuperAdministrator $employee */
+        $employee = $this->getUserOrThrow();
         $form = $this->createForm(AccessFormType::class, $customer, ['employee' => $employee])->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -134,11 +145,11 @@ class AccessController extends BaseController
             return $this->redirectToRoute('dashboard_client_access_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/client/edit.html.twig', compact('form'));
+        return $this->render('dashboard/client/new-edit.html.twig', compact('form','customer'));
     }
 
     #[Route(path: '/{id}/delete', name: 'delete', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('DELETE', subject: 'customer')]
+    #[IsGranted('delete', subject: 'customer')]
     public function delete(Request $request, Customer $customer): Response
     {
         $form = $this->createFormBuilder()->getForm()->handleRequest($request);
@@ -162,7 +173,7 @@ class AccessController extends BaseController
     }
 
     #[Route(path: '/{id}/active', name: 'active', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('ACTIVE', subject: 'customer')]
+    #[IsGranted('active', subject: 'customer')]
     public function active(Request $request, Customer $customer): Response
     {
         $form = $this->createFormBuilder()->getForm()->handleRequest($request);
@@ -186,7 +197,7 @@ class AccessController extends BaseController
     }
 
     #[Route(path: '/{id}/reset', name: 'reset', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('RESET', subject: 'customer')]
+    #[IsGranted('reset', subject: 'customer')]
     public function reset(Request $request, Customer $customer): Response
     {
         $form = $this->createFormBuilder()->getForm()->handleRequest($request);
@@ -222,7 +233,7 @@ class AccessController extends BaseController
     }
 
     #[Route(path: '/{id}/suspend', name: 'suspend', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('SUSPEND', subject: 'customer')]
+    #[IsGranted('suspend', subject: 'customer')]
     public function suspend(Request $request, Customer $customer): Response
     {
         $form = $this->createFormBuilder()->getForm()->handleRequest($request);
