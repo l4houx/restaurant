@@ -1,21 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity\Company;
 
-use Doctrine\DBAL\Types\Types;
-use App\Validator\CompanyNumber;
-use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\HasDeletedAtTrait;
 use App\Entity\Traits\HasIdTrait;
 use App\EntityListener\CompanyListener;
-use App\Entity\Traits\HasDeletedAtTrait;
-use function Symfony\Component\String\u;
-
-use App\Repository\Company\CompanyRepository;
+use App\Validator\CompanyNumber;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: CompanyRepository::class)]
+use function Symfony\Component\String\u;
+
+#[ORM\Entity]
 #[ORM\EntityListeners([CompanyListener::class])]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discr', type: 'string')]

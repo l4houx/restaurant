@@ -22,8 +22,8 @@ class AppOrderFixtures extends Fixture implements DependentFixtureInterface
     use FakerTrait;
 
     public function __construct(
-        private readonly TokenStorageInterface $tokenStorage
-        //private readonly WorkflowInterface $workflow
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly WorkflowInterface $orderStateMachine
     ) {
     }
 
@@ -59,7 +59,7 @@ class AppOrderFixtures extends Fixture implements DependentFixtureInterface
 
             $manager->persist($order);
 
-            //$this->workflow->apply($order, 'valid_cart');
+            $this->orderStateMachine->apply($order, 'valid_cart');
         }
 
         $manager->flush();

@@ -2,10 +2,9 @@
 
 namespace App\Entity\Data;
 
-use App\Repository\Data\DebitRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: DebitRepository::class)]
+#[ORM\Entity]
 class Debit extends Transaction
 {
     public const OPERATION = 'DEBIT';

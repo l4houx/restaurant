@@ -56,14 +56,14 @@ class AccessController extends BaseController
         );*/
 
         
-        $customers = $this->customerRepository->getPaginated(
+        /*$customers = $this->customerRepository->getPaginated(
             $employee,
             $request->query->getInt("page", 1),
             HasLimit::USER_LIMIT,
             $form->get("keywords")->getData()
-        );
+        );*/
 
-        //$customers = $this->customerRepository->findAll();
+        $customers = $this->customerRepository->findBy([], ['id' => 'DESC'], 5);
 
         return $this->render('dashboard/client/index.html.twig', [
             'customers' => $customers,

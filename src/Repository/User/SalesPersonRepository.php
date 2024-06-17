@@ -29,12 +29,12 @@ class SalesPersonRepository extends ServiceEntityRepository
             ->addOrderBy("s.lastname", "asc")
         ;
 
-        $qb->andWhere(
+        /*$qb->andWhere(
             $qb->expr()->in(
                 "m.id",
                 $manager->getMembers()->map(fn (Member $member) => $member->getId())->toArray()
             )
-        );
+        );*/
 
         return $qb;
     }

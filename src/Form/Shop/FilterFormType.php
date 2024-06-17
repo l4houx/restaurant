@@ -25,7 +25,8 @@ class FilterFormType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'attr' => [
-                    'placeholder' => t('Search for a product...'),
+                    'class' => 'form-control bg-light pe-5',
+                    'placeholder' => t('Search...'),
                 ],
             ])
             ->add('min', HiddenType::class)
@@ -46,7 +47,7 @@ class FilterFormType extends AbstractType
         $resolver->setDefault('method', Request::METHOD_GET);
         $resolver->setDefault('attr', [
             'id' => 'filter',
-            'class' => 'collapse nav flex-column',
+            'class' => 'collapse nav offcanvas-body flex-column',
             'data-bs-parent' => '#subCategories',
         ]);
     }

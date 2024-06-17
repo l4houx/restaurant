@@ -53,7 +53,7 @@ class CompanyController extends BaseController
             $form->get("keywords")->getData()
         );*/
 
-        $clients = $this->clientRepository->findAll();
+        $clients = $this->clientRepository->findBy([], ['id' => 'DESC'], 5);
 
         return $this->render('dashboard/client/company/index.html.twig', [
             'clients' => $clients,
@@ -94,7 +94,7 @@ class CompanyController extends BaseController
     }
 
     #[Route(path: '/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('EDIT', subject: 'client')]
+    #[IsGranted('edit', subject: 'client')]
     public function edit(Request $request, Client $client): Response
     {
         /** @var Manager|SuperAdministrator $employee */
@@ -121,7 +121,7 @@ class CompanyController extends BaseController
     }
 
     #[Route(path: '/{id}/delete', name: 'delete', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('DELETE', subject: 'client')]
+    #[IsGranted('delete', subject: 'client')]
     public function delete(Request $request, Client $client): Response
     {
         $form = $this->createFormBuilder()->getForm()->handleRequest($request);

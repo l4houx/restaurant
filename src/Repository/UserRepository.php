@@ -84,7 +84,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     /**
      * @return Paginator<SalesPerson|Collaborator|Manager|SuperAdministrator>
      */
-    public function getPaginated(Manager $manager, int $page, int $limit, mixed $keywords): Paginator
+    public function getPaginated(Manager|SuperAdministrator $manager, int $page, int $limit, mixed $keywords): Paginator
     {
         $collaboratorsQB = $this->createQueryBuilder('c')
             ->select('c.id')
@@ -113,9 +113,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $qb = $this->createQueryBuilder('u')
             ->select('u')
             ->from(User::class, 'u')
-            ->andWhere("CONCAT(u.firstname, ' ', u.lastname) LIKE :keywords")
-            ->andWhere('u != :manager')
-            ->setParameter('manager', $manager)
+            ->andWhere("CONCAT_WS(u.firstname, ' ', u.lastname) LIKE :keywords")
+            //->where('u != :manager')
+            //->setParameter('manager', $manager)
             ->setParameter('keywords', '%'.($keywords ?? '').'%')
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit)

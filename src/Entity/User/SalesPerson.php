@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity\User;
 
 use App\Entity\Company\Client;
@@ -32,8 +30,8 @@ class SalesPerson extends User
     #[ORM\OneToMany(targetEntity: Client::class, mappedBy: 'salesPerson')]
     private Collection $clients;
 
-    //#[ORM\ManyToOne(inversedBy: 'salesPersons')]
-    //private ?Member $member = null;
+    // #[ORM\ManyToOne(inversedBy: 'salesPersons')]
+    // private ?Member $member = null;
 
     public function __construct()
     {
@@ -43,13 +41,13 @@ class SalesPerson extends User
 
     public function getRole(): string
     {
-        //return HasRoles::SALES;
+        // return HasRoles::SALES;
         return '<span class="badge me-2 bg-info">Sales Person</span>';
     }
 
     public function getRoleName(): string
     {
-        return "SalesPerson";
+        return 'SalesPerson';
     }
 
     public function getCrossRoleName(): string

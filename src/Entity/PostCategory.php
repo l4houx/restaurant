@@ -20,9 +20,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class PostCategory
 {
     use HasIdNameSlugTrait;
+    //use HasIdGedmoNameSlugAssertTrait;
     use HasBackgroundColorTrait;
     use HasIsOnlineTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 
     #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]

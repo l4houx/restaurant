@@ -15,7 +15,7 @@ use App\Entity\Traits\HasTimestampableTrait;
 use App\Entity\Traits\HasGedmoTimestampTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 
-#[ORM\Entity(repositoryClass: OrderRepository::class)]
+#[ORM\Entity]
 #[ORM\Table(name: '`order`')]
 class Order
 {

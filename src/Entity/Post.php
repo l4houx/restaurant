@@ -16,9 +16,11 @@ use App\Entity\Traits\HasIdNameSlugTrait;
 use App\Entity\Traits\HasPublishedAtTrait;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\HasTimestampableTrait;
+use App\Entity\Traits\HasGedmoTimestampTrait;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use App\Entity\Traits\HasIdGedmoNameSlugAssertTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -30,6 +32,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Post
 {
     use HasIdNameSlugTrait;
+    //use HasIdGedmoNameSlugAssertTrait;
     use HasContentTrait;
     use HasIsOnlineTrait;
     use HasViewsTrait;
@@ -37,6 +40,7 @@ class Post
     use HasMetaTrait;
     use HasPublishedAtTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.

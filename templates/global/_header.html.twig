@@ -323,12 +323,12 @@
                         {% endif %}
                         #}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {% if routename == "dashboard_main" or routename == "dashboard_user_my_dashboard" or routename == "dashboard_user_client_index" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle {% if routename == "dashboard_main" or routename == "dashboard_account_main" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                                 {{ 'Hello'|trans }} {{ app.user.getFullName | lower | capitalize }}
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item {% if routename == "dashboard_main" or routename == "admin_dashboard_index" or routename == "dashboard_account_index" or routename == "dashboard_account_main" %}active{% endif %}" href="{{ path('dashboard_main') }}">
+                                    <a class="dropdown-item {% if routename == "dashboard_main" or routename == "admin_dashboard_index" or routename == "dashboard_account_index" %}active{% endif %}" href="{{ path('dashboard_main') }}">
                                         {% if is_granted("ROLE_TEAM") %}
                                             {{ 'Dashboard'|trans }}
                                         {% else %}

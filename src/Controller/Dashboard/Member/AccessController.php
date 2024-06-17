@@ -55,12 +55,14 @@ class AccessController extends BaseController
             $form->get('keywords')->getData()
         );*/
 
-        $employees = $this->userRepository->getPaginated(
+        /*$employees = $this->userRepository->getPaginated(
             $manager,
             $request->query->getInt("page", 1),
             HasLimit::USER_LIMIT,
             $form->get("keywords")->getData()
-        );
+        );*/
+
+        $employees = $this->userRepository->findBy([], ['id' => 'DESC'], 5);
 
         return $this->render('dashboard/member/index.html.twig', [
             'employees' => $employees,
@@ -72,7 +74,7 @@ class AccessController extends BaseController
     #[Route(path: '/new/{role}', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, string $role): Response
     {
-        /** @var SalesPerson|Collaborator|Manager|null $user */
+        /** @var SalesPerson|Collaborator|Manager|SuperAdministrator|null $user */
         $user = null;
 
         switch ($role) {
@@ -84,6 +86,9 @@ class AccessController extends BaseController
                 break;
             case 'salesperson':
                 $user = new SalesPerson();
+                break;
+            case 'superadministrator':
+                $user = new SuperAdministrator();
                 break;
         }
 
@@ -129,11 +134,11 @@ class AccessController extends BaseController
             return $this->redirectToRoute('dashboard_member_access_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/member/new.html.twig', compact('form', 'role'));
+        return $this->render('dashboard/member/new.html.twig', compact('form', 'role', 'user'));
     }
 
     #[Route(path: '/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('EDIT', subject: 'user')]
+    #[IsGranted('edit', subject: 'user')]
     public function edit(Request $request, User $user): Response
     {
         /** @var Manager|SuperAdministrator $manager */
@@ -155,11 +160,11 @@ class AccessController extends BaseController
             return $this->redirectToRoute('dashboard_member_access_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/member/edit.html.twig', compact('form'));
+        return $this->render('dashboard/member/edit.html.twig', compact('form','user'));
     }
 
     #[Route(path: '/{id}/delete', name: 'delete', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('DELETE', subject: 'user')]
+    #[IsGranted('delete', subject: 'user')]
     public function delete(Request $request, User $user): Response
     {
         $form = $this->createFormBuilder()->getForm()->handleRequest($request);
@@ -183,7 +188,7 @@ class AccessController extends BaseController
     }
 
     #[Route(path: '/{id}/active', name: 'active', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('ACTIVE', subject: 'user')]
+    #[IsGranted('active', subject: 'user')]
     public function active(Request $request, User $user): Response
     {
         $form = $this->createFormBuilder()->getForm()->handleRequest($request);
@@ -207,7 +212,7 @@ class AccessController extends BaseController
     }
 
     #[Route(path: '/{id}/reset', name: 'reset', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('RESET', subject: 'user')]
+    #[IsGranted('reset', subject: 'user')]
     public function reset(Request $request, User $user): Response
     {
         $form = $this->createFormBuilder()->getForm()->handleRequest($request);
@@ -243,7 +248,7 @@ class AccessController extends BaseController
     }
 
     #[Route(path: '/{id}/suspend', name: 'suspend', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted('SUSPEND', subject: 'user')]
+    #[IsGranted('suspend', subject: 'user')]
     public function suspend(Request $request, User $user): Response
     {
         $form = $this->createFormBuilder()->getForm()->handleRequest($request);

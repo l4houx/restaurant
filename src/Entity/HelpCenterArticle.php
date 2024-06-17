@@ -21,6 +21,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class HelpCenterArticle
 {
     use HasIdNameSlugTrait;
+    //use HasIdGedmoNameSlugAssertTrait;
     use HasContentTrait;
     use HasIsOnlineTrait;
     use HasIsFeaturedTrait;
@@ -28,6 +29,7 @@ class HelpCenterArticle
     use HasTagTrait;
     use HasMetaTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]

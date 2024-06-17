@@ -62,8 +62,10 @@ class CompanyFormType extends AbstractType
             'label' => t('Sales Person'),
             'placeholder' => t('Not specified'),
             'class' => SalesPerson::class,
+            'autocomplete' => true,
+            'multiple' => false,
             'choice_label' => fn (SalesPerson $salesPerson) => $salesPerson->getFullName(),
-            'query_builder' => fn (SalesPersonRepository $repository) => $repository
+            'query_builder' => fn (SalesPersonRepository $salesPersonRepository) => $salesPersonRepository
                 ->createQueryBuilderSalesPersonsByManager($employee),
         ]);
 

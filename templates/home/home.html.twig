@@ -1,5 +1,199 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}
+{{ setting.getSettings("website_description_" ~ (app.request.get('_locale') ? app.request.get('_locale') : app.request.defaultLocale)) }}
+{% endblock %}
+
+{% block cover %}
+    <section class="pt-5 pt-xl-7">
+        {% if herosettings.content == "products" and herosettings.products | length %}
+
+            {% for product in herosettings.products %}
+
+            {% endfor %}
+
+        {% endif %}
+
+        {% if herosettings.content == "custom" %}
+
+
+        {% endif %}
+    </section>
+{% endblock %}
+
 {% block body %}
+    {% if setting.getSettings('homepage_categories_number') > 0 %}
+        <section class="pt-0">
+            <div class="container">
+                <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                    <h3>{{ 'Featured category'|trans }}</h3>
+                    <a class="icon-link icon-link-hover text-body-secondary text-primary-hover" href="#">
+                        {{ 'See all categories'|trans }}<i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                {% if homepageCategories|length %}
+
+                {% else %}
+                    {% include "global/message.html.twig" with { type: "dark", message: ('No categories found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if setting.getSettings('homepage_products_number') > 0 %}
+        <section class="pt-0">
+            <div class="container">
+                <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                    <h3>{{ "What's trending now"|trans }}</h3>
+                    <a class="icon-link icon-link-hover text-body-secondary text-primary-hover" href="#">
+                        {{ 'See all products'|trans }}
+                        <i class="fas fa-arrow-right"></i> 
+                    </a>
+                </div>
+                {% if homepageProducts|length %}
+                    <div class="row g-4 g-sm-5">
+                        <div class="col-lg-8 col-xl-6">
+                            <div class="card p-0 h-100" style="background-image:url({{ asset('images/shop/bg/03.jpg') }}); background-position: center left; background-size: cover;">
+                                <div class="card-body p-5 mb-8">
+                                    <span class="bg-dark text-white rounded fw-semibold small px-3 py-2">{{ 'New Arrival'|trans }}</span>
+                                    <h4 class="text-white my-4">{{ 'Powerful performance. Versatile design.'|trans }}</h4>
+                                    <a class="btn btn-lg btn-outline-white icon-link icon-link-hover mb-0" href="#">
+                                        {{ 'Shop now'|trans }}<i class="fas fa-arrow-right"></i> 
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% for product in homepageProducts %}
+                            {% include "global/product-card.html.twig" with {product: product, thumbnailsize: [241, 241]} %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {% include "global/message.html.twig" with { type: "dark", message: ('No products found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+                {% endif %}
+            </div>
+        </section>
+        <section class="pt-0">
+            <div class="container">
+                <div class="row g-4 g-sm-6">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-body bg-transparent p-0">
+                            <div class="icon-lg rounded-circle bg-info bg-opacity-10 text-info mb-4">
+                                <i class="fas fa-bolt fa-lg"></i>
+                            </div>
+                            <h6 class="mb-3">{{ 'Fast and reliable delivery'|trans }}</h6>
+                            <p class="mb-0">{{ 'Ensure timely and dependable delivery services to meet customer expectations.'|trans }}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-body bg-transparent p-0">
+                            <div class="icon-lg rounded-circle bg-warning bg-opacity-15 text-warning mb-4">
+                                <i class="fas fa-rainbow fa-lg"></i>
+                            </div>
+                            <h6 class="mb-3">{{ 'Package tracking'|trans }}</h6>
+                            <p class="mb-0">
+                                {{ 'Offer real-time tracking information, so customers can monitor the status of their shipments.'|trans }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-body bg-transparent p-0">
+                            <div class="icon-lg rounded-circle bg-danger bg-opacity-10 text-danger mb-4">
+                                <i class="fas fa-fire-flame-simple fa-lg"></i>
+                            </div>
+                            <h6 class="mb-3">{{ 'Returns and exchanges'|trans }}</h6>
+                            <p class="mb-0">
+                                {{ 'Clearly outline your return and exchange policy, making it easy for customers to initiate returns.'|trans }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-body bg-transparent p-0">
+                            <div class="icon-lg rounded-circle bg-primary bg-opacity-10 text-primary mb-4">
+                                <i class="fas fa-headset fa-lg"></i>
+                            </div>
+                            <h6 class="mb-3">{{ 'Customer support'|trans }}</h6>
+                            <p class="mb-0">
+                                {{ 'Provide responsive customer support to address shipping-related queries and issues.'|trans }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {% if setting.getSettings('homepage_posts_number') > 0 %}
+        <section class="pt-0">
+            <div class="container">
+                <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                    <h3>{{ 'Lastest blog posts'|trans }}</h3>
+                    <a class="icon-link icon-link-hover text-body-secondary text-primary-hover" href="{{ path('posts') }}">
+                        {{ 'See all posts'|trans }}<i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                {% if homepagePosts|length %}
+                    <div class="row g-4 g-sm-5 g-xl-7 mt-0">
+                        {% for post in homepagePosts %}
+                            {% include "global/post-card.html.twig" with {post: post, thumbnailsize: [397, 397], showdate: 1} %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {% include "global/message.html.twig" with { type: "dark", message: ('No posts found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if setting.getSettings('homepage_testimonials_number') > 0 %}
+
+    {% endif %}
+
+    {% if '1' == settings["homepage_show_call_to_action"] %}
+
+    {% endif %}
+
+    <section class="pt-0">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 col-xl-4 mb-5 mb-lg-0">
+                    <h2 class="mb-4">{{ 'Their Impressive Product Collections'|trans }}</h2>
+                    <a class="icon-link icon-link-hover heading-color text-primary-hover" href="#">
+                        {{ 'See all brands'|trans }}
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="col-lg-7 text-center ms-auto">
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4 g-md-6">
+                        <div class="col">
+                            <a href="#">
+                                <img src="{{ asset('images/client/01.svg') }}" class="grayscale" alt="client-img">
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="#"><img src="{{ asset('images/client/02.svg') }}" class="grayscale" alt="client-img"></a>
+                        </div>
+                        <div class="col">
+                            <a href="#"><img src="{{ asset('images/client/03.svg') }}" class="grayscale" alt="client-img"></a>
+                        </div>
+                        <div class="col">
+                            <a href="#"><img src="{{ asset('images/client/04.svg') }}" class="grayscale" alt="client-img"></a>
+                        </div>
+                        <div class="col">
+                            <a href="#"><img src="{{ asset('images/client/05.svg') }}" class="grayscale" alt="client-img"></a>
+                        </div>
+                        <div class="col">
+                            <a href="#"><img src="{{ asset('images/client/06.svg') }}" class="grayscale" alt="client-img"></a>
+                        </div>
+                        <div class="col">
+                            <a href="#"><img src="{{ asset('images/client/07.svg') }}" class="grayscale" alt="client-img"></a>
+                        </div>
+                        <div class="col">
+                            <a href="#"><img src="{{ asset('images/client/08.svg') }}" class="grayscale" alt="client-img"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 {% endblock %}

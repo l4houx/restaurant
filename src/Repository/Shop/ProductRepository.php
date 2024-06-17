@@ -108,8 +108,8 @@ class ProductRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder("p")
             ->addSelect("b")
             ->addSelect("c")
-            ->join("p.brand", "b")
-            ->join("p.category", "c")
+            ->leftJoin("p.brand", "b")
+            ->leftJoin("p.category", "c")
             ->leftJoin("c.lastProduct", "lp")
             ->andWhere("p.amount >= :min")
             ->setParameter("min", $filter->min)
@@ -166,7 +166,7 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @return array<Product>
      */
-    public function getLastProducts(): array
+    public function getLastProducts(int $limit): array
     {
         return $this->createQueryBuilder('p')
             ->addSelect('b')
@@ -174,7 +174,7 @@ class ProductRepository extends ServiceEntityRepository
             ->join('p.brand', 'b')
             ->join('p.category', 'c')
             ->leftJoin('c.lastProduct', 'lp')
-            ->setMaxResults(4)
+            ->setMaxResults($limit)
             ->orderBy('lp.id', 'desc')
             ->getQuery()
             ->getResult()

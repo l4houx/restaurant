@@ -4,13 +4,12 @@ namespace App\Entity\Data;
 
 use App\Entity\Order\Order;
 use App\Entity\Traits\HasGedmoTimestampTrait;
-use App\Repository\Data\TransactionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: TransactionRepository::class)]
+#[ORM\Entity]
 #[UniqueEntity('reference')]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discr', type: 'string')]

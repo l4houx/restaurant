@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Data\TransferPointsInterface;
 use App\Entity\Data\Account;
 use App\Entity\Data\Purchase;
+use App\Entity\Data\Transaction;
 use App\Entity\Data\Transfer;
+use App\Entity\Data\Wallet;
 use App\Entity\Traits\HasRoles;
 use App\Entity\User\Manager;
 use App\Entity\User\SalesPerson;
@@ -13,8 +15,11 @@ use App\Form\Data\PurchaseFormType;
 use App\Form\Data\TransferFormType;
 use App\Repository\Data\AccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -22,6 +27,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/data', name: 'data_')]
@@ -40,8 +46,55 @@ class DataController extends BaseController
     }
 
     #[Route('/{id}/export', name: 'export', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
-    public function export(Account $account, string $tempDirectory): void
+    public function export(Account $account, string $tempDirectory): BinaryFileResponse
     {
+        $spreadsheet = new Spreadsheet();
+
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle($this->translator->trans('Key movements'));
+        $sheet->fromArray(
+            array_merge(
+                [['Date', 'Opération', 'Clés']],
+                $account->getTransactions()->map(fn (Transaction $transaction) => [
+                    $transaction->getCreatedAt()->format('d/m/Y'),
+                    $transaction->getType(),
+                    sprintf('%d clés', $transaction->getPoints()),
+                ])->toArray()
+            )
+        );
+
+        $sheet = $spreadsheet->createSheet();
+        $sheet->setTitle($this->translator->trans('Expiration of your keys'));
+        $sheet->fromArray(
+            array_merge(
+                [["Date d'acquisition", "Date d'expiration", 'Clés restantes']],
+                $account->getRemainingWallets()->map(fn (Wallet $wallet) => [
+                    $wallet->getCreatedAt()->format('d/m/Y'),
+                    $wallet->getExpiredAt()->format('d/m/Y'),
+                    sprintf('%d clés', $wallet->getBalance()),
+                ])->toArray()
+            )
+        );
+
+        $sheet = $spreadsheet->createSheet();
+        $sheet->setTitle($this->translator->trans('Expired keys'));
+        $sheet->fromArray(
+            array_merge(
+                [["Date d'acquisition", "Date d'expiration", 'Clés restantes']],
+                $account->getExpiredWallets()->map(fn (Wallet $wallet) => [
+                    $wallet->getCreatedAt()->format('d/m/Y'),
+                    $wallet->getExpiredAt()->format('d/m/Y'),
+                    sprintf('%d clés', $wallet->getBalance()),
+                ])->toArray()
+            )
+        );
+
+        $filename = sprintf('export_cles_%s.xlsx', (string) Uuid::v4());
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save(sprintf('%s/%s', $tempDirectory, $filename));
+
+        return $this->file(sprintf('%s/%s', $tempDirectory, $filename));
     }
 
     #[Route('/history/{id}', name: 'history', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]

@@ -6,14 +6,13 @@ use App\Entity\Traits\HasDeletedAtTrait;
 use App\Entity\Traits\HasExpiredAtTrait;
 use App\Entity\Traits\HasGedmoTimestampTrait;
 use App\Entity\Traits\HasIdTrait;
-use App\Repository\Data\WalletRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-#[ORM\Entity(repositoryClass: WalletRepository::class)]
+#[ORM\Entity]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
 class Wallet implements \Stringable
 {

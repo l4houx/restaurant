@@ -80,9 +80,9 @@ class CustomerRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder("u")
             ->addSelect("c")
             ->addSelect("m")
-            ->join("u.client", "c")
+            ->leftJoin("u.client", "c")
             ->join("c.member", "m")
-            ->andWhere("CONCAT(u.firstname, ' ', u.lastname, ' ', c.name) LIKE :keywords")
+            ->andWhere("CONCAT_WS(u.firstname, ' ', u.lastname, ' ', c.name) LIKE :keywords")
             ->setParameter("keywords", "%" . ($keywords ?? "") . "%")
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit)
@@ -93,7 +93,8 @@ class CustomerRepository extends ServiceEntityRepository
         if ($employee instanceof SalesPerson) {
             $qb
                 ->andWhere("c.salesPerson = :salesPerson")
-                ->setParameter("salesPerson", $employee);
+                ->setParameter("salesPerson", $employee)
+            ;
         } else {
             $qb->andWhere(
                 $qb->expr()->in(

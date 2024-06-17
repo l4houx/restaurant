@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: PurchaseRepository::class)]
+#[ORM\Entity]
 class Purchase extends Transaction
 {
     public const OPERATION = 'ACH';

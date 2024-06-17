@@ -5,14 +5,15 @@ namespace App\Entity\User;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\Company\Member;
-use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\HasEmployeeTrait;
 use App\Entity\Traits\HasRoles;
+use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use App\Entity\Traits\HasEmployeeTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Repository\User\SuperAdministratorRepository;
 
-#[ORM\Entity(repositoryClass: SuperAdministratorRepository::class)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class SuperAdministrator extends User
 {
     use HasEmployeeTrait;

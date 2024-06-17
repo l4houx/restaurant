@@ -20,10 +20,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class HelpCenterCategory implements \Stringable
 {
     use HasIdNameSlugTrait;
+    //use HasIdGedmoNameSlugAssertTrait;
     use HasBackgroundColorTrait;
     use HasIconTrait;
     use HasIsOnlineTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subcategories')]

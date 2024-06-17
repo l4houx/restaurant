@@ -5,7 +5,6 @@ namespace App\Entity\Data;
 use App\Entity\Traits\HasDeletedAtTrait;
 use App\Entity\Traits\HasGedmoTimestampTrait;
 use App\Entity\Traits\HasIdTrait;
-use App\Repository\Data\TransferRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -14,7 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-#[ORM\Entity(repositoryClass: TransferRepository::class)]
+#[ORM\Entity]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
 class Transfer
 {

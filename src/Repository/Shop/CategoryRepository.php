@@ -22,6 +22,20 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    /**
+     * @return array<Category>
+     */
+    public function getLastCategories(int $limit): array
+    {
+        return $this->createQueryBuilder('c')
+
+            ->setMaxResults($limit)
+            ->orderBy('c.numberOfProducts', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findForPagination(int $page): PaginationInterface
     {
         $builder = $this->createQueryBuilder('c')

@@ -9,5 +9,52 @@
 {% endblock %}
 
 {% block body %}
+	<section class="pt-0">
+		<div class="container">
+			<div class="row">
+				{% include "global/_sidebar.html.twig" %}
+				<div class="col-xl-9 ps-xl-6">
+					<form class="row g-2 g-xl-4 mb-4">
+						<div class="col-md-6">
+							<div class="rounded position-relative">
+								<input class="form-control bg-light pe-5" type="search" placeholder="{{ 'Search...'|trans }}" aria-label="Search">
+								<button class="btn bg-transparent border-0 px-2 py-0 position-absolute top-50 end-0 translate-middle-y" type="submit"><i class="fas fa-search"> </i></button>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-3 ms-auto">
+							<select class="form-select" aria-label="Default select example">
+								<option selected="">{{ "Sort by"|trans }}</option>
+								<option value="1">Name</option>
+								<option value="2">Low to High Price</option>
+								<option value="3">Heigh to Low Price</option>
+							</select>
+						</div>
+						<div class="col-sm-6 col-md-3 d-grid d-xl-none">
+							<button class="btn btn-dark mb-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+								<i class="fas fa-sliders-h me-1"></i> {{ "Show filter"|trans }}
+							</button>
+						</div>
+					</form>
+					{% if products|length > 0 %}
+						<div class="row g-4 g-lg-5">
+							{% for product in products %}
+								{% include "global/product-card-item.html.twig" with {product: product, thumbnailsize: [241, 241]} %}
+							{% endfor %}
+						</div>
+						{% if pages > 1 %}
+							<ul class="pagination pagination-primary-soft d-flex justify-content-end mb-0 mt-5">
+								<li>
+									<ul class="list-unstyled">
 
+									</ul>
+								</li>
+							</ul>
+						{% endif %}
+					{% else %}
+						{% include "global/message.html.twig" with { type: "dark", message: ('No products found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</section>
 {% endblock %}

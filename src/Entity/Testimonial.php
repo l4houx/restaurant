@@ -18,10 +18,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Testimonial
 {
     use HasIdNameSlugTrait;
+    //use HasIdGedmoNameSlugAssertTrait;
     use HasRatingTrait;
     use HasContentTrait;
     use HasIsOnlineTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 
     #[ORM\ManyToOne(inversedBy: 'testimonials')]

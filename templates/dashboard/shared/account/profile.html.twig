@@ -55,16 +55,14 @@
                                     <div class="mb-3 col-12 col-md-4">
                                         {{ form_row(form.username) }}
                                     </div>
-                                    {#  
-                                    <div class="mb-3 col-12 col-md-6">
-                                        {{ form_row(form.email) }}
-                                    </div>
-                                    #}
                                     <div class="mb-3 col-12 col-md-4">
                                         {{ form_row(form.firstname) }}
                                     </div>
                                     <div class="mb-3 col-12 col-md-4">
                                         {{ form_row(form.lastname) }}
+                                    </div>
+                                    <div class="mb-3 col-12 col-md-6">
+                                        {{ form_row(form.email) }}
                                     </div>
                                     {% if form.phone is defined %}
                                         <div class="mb-3 col-12 col-md-6">
@@ -79,25 +77,18 @@
                         </div>
                     {{ form_end(form, {'render_rest': false}) }}
                     <div class="text-center my-5"><i class="fas fa-ellipsis"></i></div>
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'} }) }}
-                        {{ form_errors(form) }}
-                        <div class="card bg-transparent p-0">
-                            <div class="card-header bg-transparent border-bottom px-0">
-                                <h6 class="mb-0">{{ 'Update email'|trans }}</h6>
-                            </div>
-                            <div class="card-body px-0">
-                                <div class="mb-4">
-                                    <p class="mb-4">{{ 'Your current email address is'|trans }}
-                                        <span class="text-primary">{{ user.email }}</span>
-                                    </p>
-                                    {{ form_row(form.email) }}
-                                </div>
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary mb-0">{{ 'Apply changes'|trans }}</button>
-                                </div>
+                    <div class="card bg-transparent p-0">
+                        <div class="card-header bg-transparent border-bottom px-0">
+                            <h6 class="mb-0">{{ 'Email'|trans }}</h6>
+                        </div>
+                        <div class="card-body px-0">
+                            <div class="mb-4">
+                                <p class="mb-4">{{ 'Your current email address is'|trans }}
+                                    <span class="text-primary">{{ user.email }}</span>
+                                </p>
                             </div>
                         </div>
-                    {{ form_end(form, {'render_rest': false}) }}
+                    </div>
                 </div>
             </div>
         </div>

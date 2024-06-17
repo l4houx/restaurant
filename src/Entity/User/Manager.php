@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity\User;
 
 use App\Entity\Company\Member;
 use App\Entity\Traits\HasEmployeeTrait;
 use App\Entity\Traits\HasRoles;
 use App\Entity\User;
-use App\Repository\User\ManagerRepository;
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ManagerRepository::class)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class Manager extends User
 {
     use HasEmployeeTrait;
@@ -33,13 +31,13 @@ class Manager extends User
 
     public function getRole(): string
     {
-        //return HasRoles::MANAGER;
+        // return HasRoles::MANAGER;
         return '<span class="badge me-2 bg-primary">Manager</span>';
     }
 
     public function getRoleName(): string
     {
-        return "Manager";
+        return 'Manager';
     }
 
     public function getCrossRoleName(): string

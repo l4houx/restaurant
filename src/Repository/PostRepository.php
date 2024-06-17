@@ -71,30 +71,21 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Post[] Returns an array of Post objects
+     * @return array<Post>
      */
-    public function findLastRecent(int $maxResults): array
+    public function getLastPosts(int $limit): array
     {
         return $this->createQueryBuilder('p')
-            ->orderBy('p.publishedAt', 'DESC')
+            ->addSelect('t')
+            ->addSelect('c')
+            ->join('p.type', 't')
+            ->join('p.category', 'c')
             ->setParameter('now', new \DateTimeImmutable())
             ->where('p.publishedAt <= :now')
-            ->setMaxResults($maxResults)
+            ->setMaxResults($limit)
+            ->orderBy('p.publishedAt', 'DESC')
             ->getQuery()
             ->getResult()
-        ;
-    }
-
-    /**
-     * @return QueryBuilder<Post>
-     */
-    public function findRecent(int $maxResults): QueryBuilder
-    {
-        return $this->createQueryBuilder('p')
-            ->select('p')
-            ->where('p.isOnline = true AND createdAt < NOW()')
-            ->orderBy('p.createdAt', 'DESC')
-            ->setMaxResults($maxResults)
         ;
     }
 

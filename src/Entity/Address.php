@@ -1,16 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity;
 
+use App\Entity\Traits\HasIdTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\HasIdTrait;
-use App\Repository\AddressRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: AddressRepository::class)]
+#[ORM\Entity]
 class Address
 {
     use HasIdTrait;

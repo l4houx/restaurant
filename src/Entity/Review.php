@@ -20,9 +20,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Review
 {
     use HasIdNameSlugTrait;
+    //use HasIdGedmoNameSlugAssertTrait;
     use HasRatingTrait;
     use HasContentTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]

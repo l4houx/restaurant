@@ -18,8 +18,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class PostType
 {
     use HasIdNameSlugTrait;
+    //use HasIdGedmoNameSlugAssertTrait;
     use HasIsOnlineTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 
     /**

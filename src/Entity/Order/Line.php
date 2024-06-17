@@ -3,12 +3,11 @@
 namespace App\Entity\Order;
 
 use App\Entity\Shop\Product;
+use App\Entity\Traits\HasIdTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\HasIdTrait;
-use App\Repository\Order\LineRepository;
 
-#[ORM\Entity(repositoryClass: LineRepository::class)]
+#[ORM\Entity]
 #[ORM\Table(name: '`order_line`')]
 class Line
 {
@@ -54,14 +53,14 @@ class Line
 
     public function decreaseQuantity(): static
     {
-        $this->quantity--;
+        --$this->quantity;
 
         return $this;
     }
 
     public function increaseQuantity(): static
     {
-        $this->quantity++;
+        ++$this->quantity;
 
         return $this;
     }

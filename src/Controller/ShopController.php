@@ -5,9 +5,9 @@ namespace App\Controller;
 use App\Entity\Shop\Filter;
 use App\Entity\Shop\Product;
 use App\Entity\Shop\Category;
+use App\Entity\Traits\HasLimit;
 use App\Entity\Traits\HasRoles;
 use App\Entity\Shop\SubCategory;
-use App\Entity\Traits\HasLimit;
 use Doctrine\ORM\Mapping\Entity;
 use App\Form\Shop\FilterFormType;
 use App\Repository\Shop\ProductRepository;
@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\Shop\SubCategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\expr;
@@ -25,8 +26,6 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\expr;
 class ShopController extends AbstractController
 {
     #[Route('/{subcategory}/{category}', name: 'index', methods: ['GET'], defaults: ['category' => null, 'subcategory'=> null])]
-    //#[Entity('subcategory', SubCategory::class)]
-    //#[Entity('category', Category::class)]
     public function index(
         Request $request,
         ?SubCategory $subCategory,
@@ -43,21 +42,30 @@ class ShopController extends AbstractController
 
         $form = $this->createForm(FilterFormType::class, $filter)->handleRequest($request);
 
-        $products = $productRepository->findForPagination(
+        /*$products = $productRepository->findForPagination(
+            $request->query->getInt("page", 1),
+            $request->query->getInt("limit", 18),
+            $request->query->get("sort", "new-products"),
+            $category,
+            $filter
+        );*/
+
+        $products = $productRepository->getPaginated(
             $request->query->getInt("page", 1),
             $request->query->getInt("limit", 18),
             $request->query->get("sort", "new-products"),
             $category,
             $filter
         );
+
         $pages = ceil(count($products) / $request->query->getInt("limit", HasLimit::PRODUCT_LIMIT));
 
         return $this->render('shop/index.html.twig', [
+            'subCategories' => $subCategoryRepository->getSubCategories(),
             'subCategory' => $subCategory,
             'category' => $category,
             'products' => $products,
             'form' => $form,
-            'subCategories' => $subCategoryRepository->getSubCategories(),
             "min" => $min,
             "max" => $max,
             "params" => [
@@ -73,7 +81,7 @@ class ShopController extends AbstractController
         ]);
     }
 
-    #[Route('/products/{slug}/{cart}', name: 'product', methods: ['GET'], defaults: ['cart' => false])]
+    #[Route('/products/{slug}/{cart}', name: 'product', methods: ['GET'], defaults: ['cart' => false], requirements: ['slug' => Requirement::ASCII_SLUG])]
     public function product(Product $product, bool $cart): Response
     {
         return $this->render("shop/product.html.twig", compact('product', 'cart'));

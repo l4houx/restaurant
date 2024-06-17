@@ -2,10 +2,9 @@
 
 namespace App\Entity\Data;
 
-use App\Repository\Data\CreditRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CreditRepository::class)]
+#[ORM\Entity]
 class Credit extends Transaction
 {
     public const OPERATION = 'CREDIT';

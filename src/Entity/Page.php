@@ -17,10 +17,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Page
 {
     use HasIdNameSlugTrait;
+    //use HasIdGedmoNameSlugAssertTrait;
     use HasContentTrait;
     use HasViewsTrait;
     use HasMetaTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
 
     public function __toString(): string
     {

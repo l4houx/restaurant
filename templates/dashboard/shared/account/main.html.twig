@@ -17,33 +17,48 @@
                     </div>
                     <div class="card bg-transparent p-0">
                         <div class="card-header bg-transparent border-bottom p-0 pb-3">
-                            <h6 class="mb-0">{{ 'Account status'|trans }}</h6>
+                            <h6 class="mb-0">{{ 'Personal informations'|trans }}</h6>
                         </div>
-                        <div class="card-body flex-grow-1 px-0">
-                            <div class="row mb-3">
-                                <div class="col-5 text-end">{{ 'First name'|trans }} :</div>
-                                <div class="col-7 fw-bold" data-role="firstname">{{ app.user.firstname }}</div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-5 text-end">{{ 'Last name'|trans }} :</div>
-                                <div class="col-7 fw-bold" data-role="lastname">{{ app.user.lastname }}</div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-5 text-end">{{ 'Email address'|trans }} :</div>
-                                <div class="col-7 fw-bold" data-role="email">{{ app.user.email }}</div>
-                            </div>
-                            {% if is_granted("ROLE_EMPLOYEE") %}
-                                <div class="row mb-3">
-                                    <div class="col-5 text-end">{{ 'Telephone No'|trans }} :</div>
-                                    <div class="col-7 fw-bold" data-role="phone">{{ app.user.phone }}</div>
+                        <div class="card-body px-0">
+                            <div class="mb-4">
+                                <div class="mb-4">
+                                    <p class="heading-color fw-bold mb-0">{{ 'First name'|trans }} : 
+                                        <span class="text-secondary" data-role="firstname">{{ app.user.firstname|lower|capitalize }}</span>
+                                    </p>
                                 </div>
-                            {% endif %}
-                            <div class="row mb-3">
-                                <div class="col-5 text-end">{{ 'Registered the'|trans }} :</div>
-                                <div class="col-7 fw-bold">
-                                    {{ app.user.createdAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
+                                <div class="mb-4">
+                                    <p class="heading-color fw-bold mb-0">{{ 'Last name'|trans }} : 
+                                        <span class="text-secondary" data-role="lastname">{{ app.user.lastname|lower|capitalize }}</span>
+                                    </p>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="heading-color fw-bold mb-0">{{ 'Email address'|trans }} : 
+                                        <span class="text-secondary" data-role="email">{{ app.user.email }}</span>
+                                    </p>
+                                </div>
+                                {% if is_granted("ROLE_EMPLOYEE") %}
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Telephone No'|trans }} : 
+                                            <span class="text-secondary" data-role="phone">{{ app.user.phone }}</span>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                <div class="mb-4">
+                                    <p class="heading-color fw-bold mb-0">{{ 'Registered the'|trans }} : 
+                                        <span class="text-secondary">
+                                            {{ app.user.createdAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
+                        </div>
+                        <div class="card-footer bg-transparent p-0 text-end">
+                            <a href="{{ path("dashboard_account_edit") }}" class="btn btn-success-soft mb-0">
+                                {{ 'Edit Profile'|trans }}
+                            </a>
+                            <a href="{{ path("dashboard_account_change_password") }}" class="btn btn-primary mb-0">
+                                {{ 'Edit Password'|trans }}
+                            </a>
                         </div>
                     </div>
                     <div class="text-center my-5"><i class="fas fa-ellipsis"></i></div>
@@ -53,79 +68,86 @@
                                 {{ 'My Profile'|trans }} {{ website_name }}
                             </h6>
                         </div>
-                        <div class="card-body flex-grow-1 px-0">
-                            {% if is_granted("ROLE_CUSTOMER") %}
-                                <div class="row mb-3">
-                                    <div class="col-5 text-end">{{ 'Social reason'|trans }} :</div>
-                                    <div class="col-7 fw-bold">{{ app.user.client.name }}</div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-5 text-end">{{ 'Member'|trans }} :</div>
-                                    <div class="col-7 fw-bold">{{ app.user.client.member.name }}</div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-5 text-end">{{ 'Sales Person'|trans }} :</div>
-                                    <div class="col-7 fw-bold">{{ app.user.client.salesPerson.fullName }}</div>
-                                </div>
-                            {% endif %}
-                            {% if is_granted("ROLE_COLLABORATOR") %}
-                                <div class="row mb-3">
-                                    <div class="col-5 text-end">{{ 'Member'|trans }} :</div>
-                                    <div class="col-7 fw-bold">{{ app.user.member.name }}</div>
-                                </div>
-                            {% endif %}
-                            {% if is_granted("ROLE_SALES_PERSON") %}
-                                <div class="row mb-3">
-                                    <div class="col-5 text-end">{{ 'Member'|trans }} :</div>
-                                    <div class="col-7 fw-bold">{{ app.user.member.name }}</div>
-                                </div>
-                            {% endif %}
-                            {% if is_granted("ROLE_MANAGER") and app.user.members|length == 1 %}
-                                <div class="row mb-3">
-                                    <div class="col-5 text-end">{{ 'Member'|trans }} :</div>
-                                    <div class="col-7 fw-bold">{{ app.user.member.name }}</div>
-                                </div>
-                            {% endif %}
-                            {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
-                                <div class="row mb-3">
-                                    <div class="col-5 text-end">{{ 'Main member'|trans }} :</div>
-                                    <div class="col-7 fw-bold">{{ app.user.member.name }}</div>
-                                </div>
-                            {% endif %}
-                            {% if is_granted("ROLE_CUSTOMER") %}
-                                <div class="row">
-                                    <div class="col-5 text-end">{{ 'Address'|trans }} :</div>
-                                    <div class="col-7 fw-bold">
-                                        {{ app.user.client.address.streetAddress }}
-                                        {% if app.user.client.address.restAddress is not null %}
-                                            <br/>{{ app.user.client.address.restAddress }}
-                                        {% endif %}
-                                        <br/>{{ app.user.client.address.zipCode }} - {{ app.user.client.address.locality }}
+                        <div class="card-body px-0">
+                            <div class="mb-4">
+                                {% if is_granted("ROLE_CUSTOMER") %}
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Social reason'|trans }} : 
+                                            <span class="text-secondary">{{ app.user.client.name }}</span>
+                                        </p>
                                     </div>
-                                </div>
-                            {% endif %}
-                            {% if not is_granted("ROLE_CUSTOMER") and app.user.member.address is not null %}
-                                <div class="row">
-                                    <div class="col-5 text-end">{{ 'Address'|trans }} :</div>
-                                    <div class="col-7 fw-bold">
-                                        {{ app.user.member.address.streetAddress }}
-                                        {% if app.user.member.address.restAddress is not null %}
-                                            <br/>{{ app.user.member.address.restAddress }}
-                                        {% endif %}
-                                        <br/>{{ app.user.member.address.zipCode }} - {{ app.user.member.address.locality }}
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Member'|trans }} : 
+                                            <span class="text-secondary">{{ app.user.client.member.name }}</span>
+                                        </p>
                                     </div>
-                                </div>
-                            {% endif %}
-                            <div class="row mb-3">
-                                <div class="col-5 text-end">{{ 'Registered the'|trans }} :</div>
-                                <div class="col-7 fw-bold">
-                                    {{ app.user.createdAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
-                                </div>
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Sales Person'|trans }} : 
+                                            <span class="text-secondary">{{ app.user.client.salesPerson.fullName }}</span>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                {% if is_granted("ROLE_COLLABORATOR") %}
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Member'|trans }} : 
+                                            <span class="text-secondary">{{ app.user.member.name }}</span>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                {% if is_granted("ROLE_SALES_PERSON") %}
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Member'|trans }} : 
+                                            <span class="text-secondary">{{ app.user.member.name }}</span>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                {% if is_granted("ROLE_MANAGER") and app.user.members|length == 1 %}
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Member'|trans }} : 
+                                            <span class="text-secondary">{{ app.user.member.name }}</span>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Main member'|trans }} : 
+                                            <span class="text-secondary">{{ app.user.member.name }}</span>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                {% if is_granted("ROLE_CUSTOMER") %}
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Address'|trans }} :
+                                            <span class="text-secondary">
+                                                <br/>{{ app.user.client.address.streetAddress }}
+                                                {% if app.user.client.address.restAddress is not null %}
+                                                <br/>{{ app.user.client.address.restAddress }}
+                                                {% endif %}
+                                                <br/>{{ app.user.client.address.zipCode }} - {{ app.user.client.address.locality }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                {#
+                                {% if not is_granted("ROLE_CUSTOMER") and app.user.member.address is not null %}
+                                    <div class="mb-4">
+                                        <p class="heading-color fw-bold mb-0">{{ 'Address'|trans }} :
+                                            <span class="text-secondary">
+                                                <br/>{{ app.user.member.address.streetAddress }}
+                                                {% if app.user.member.address.restAddress is not null %}
+                                                <br/>{{ app.user.member.address.restAddress }}
+                                                {% endif %}
+                                                <br/>{{ app.user.member.address.zipCode }} - {{ app.user.member.address.locality }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                #}
                             </div>
                         </div>
                     </div>
-                    <div class="card bg-transparent p-0">
-                        {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                    {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                        <div class="card bg-transparent p-0">
                             <div class="card-header bg-transparent border-bottom p-0 pb-3">
                                 <h6 class="mb-0">
                                     {{ 'Member'|trans }}
@@ -136,7 +158,12 @@
                                     {% endfor %}
                                 </ul>
                             </div>
-                        {% endif %}
+                        </div>
+                    {% endif %}
+                    <div class="card-footer bg-transparent p-0 text-end">
+                        <a href="{{ path("contact") }}" class="btn btn-danger mb-0">
+                            {{ 'Report an error'|trans }}
+                        </a>
                     </div>
                     <div class="text-center my-5"><i class="fas fa-ellipsis"></i></div>
                     <div class="card bg-transparent p-0">
