@@ -4,7 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Controller\Admin\Field\LinesField;
 use App\Controller\Admin\Field\OrderStateField;
-use App\Controller\Admin\Traits\ReadOnlyTrait;
+use App\Controller\Admin\Field\TransactionsField;
+use App\Controller\Admin\Traits\DetailOnlyTrait;
 use App\Entity\Order\Order;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
@@ -19,7 +20,7 @@ use function Symfony\Component\Translation\t;
 
 class OrderCrudController extends AbstractCrudController
 {
-    use ReadOnlyTrait;
+    use DetailOnlyTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -34,16 +35,16 @@ class OrderCrudController extends AbstractCrudController
         ;
         yield DateTimeField::new('createdAt', t('Order date'));
         yield IntegerField::new('total', t('Total (points)'));
-        yield OrderStateField::new('state', 'State');
-        yield LinesField::new('lines', 'Command lines')->onlyOnDetail();
-        // yield TransactionsField::new("transactions", "Transactions")->onlyOnDetail();
+        yield OrderStateField::new('state', t('State'));
+        yield LinesField::new('lines', t('Command lines'))->onlyOnDetail();
+        yield TransactionsField::new('transactions', t('Transactions'))->onlyOnDetail();
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular(t('Account'))
-            ->setEntityLabelInPlural(t('Accounts'))
+            ->setEntityLabelInSingular(t('Points account'))
+            ->setEntityLabelInPlural(t('Points accounts'))
             ->setDefaultSort(['createdAt' => 'DESC'])
             ->setDateFormat('dd/MM/YYYY')
             ->setDateTimeFormat('dd/MM/YYYY HH:mm')

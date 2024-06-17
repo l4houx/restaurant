@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\Traits\CreateEditTrait;
-use App\Entity\Testimonial;
+use App\Entity\Review;
 use App\Entity\Traits\HasRoles;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -29,13 +29,13 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 use function Symfony\Component\Translation\t;
 
-class TestimonialCrudController extends AbstractCrudController
+class ReviewCrudController extends AbstractCrudController
 {
     // use CreateEditTrait;
 
     public static function getEntityFqcn(): string
     {
-        return Testimonial::class;
+        return Review::class;
     }
 
     public function configureFields(string $pageName): iterable
@@ -76,10 +76,11 @@ class TestimonialCrudController extends AbstractCrudController
             ->autocomplete()
             ->renderAsNativeWidget()
         ;
+        // yield AssociationField::new('product', t('Product'))->autocomplete();
         yield AssociationField::new('author', t('Author'))->autocomplete();
 
         yield FormField::addPanel(t('Actived'));
-        yield BooleanField::new('isOnline', t('Published'));
+        yield BooleanField::new('isVisible', t('Published'));
 
         yield FormField::addPanel(t('Date'))->hideOnForm();
         yield DateTimeField::new('createdAt', t('Creation date'))->hideOnForm()->onlyOnDetail();
@@ -91,8 +92,8 @@ class TestimonialCrudController extends AbstractCrudController
     {
         return $crud
             ->setEntityPermission(HasRoles::ADMINAPPLICATION)
-            ->setEntityLabelInSingular(t('Testimonial'))
-            ->setEntityLabelInPlural(t('Testimonials'))
+            ->setEntityLabelInSingular(t('Review'))
+            ->setEntityLabelInPlural(t('Reviews'))
             ->setDefaultSort(['createdAt' => 'DESC', 'author' => 'ASC'])
             ->setDateFormat('dd/MM/YYYY')
             ->setDateTimeFormat('dd/MM/YYYY HH:mm:ss')
@@ -110,16 +111,16 @@ class TestimonialCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $viewTestimonial = Action::new('viewTestimonial', t('See the testimonial'))
+        $viewReview = Action::new('viewReview', t('See the product review'))
             ->setHtmlAttributes([
                 'target' => '_blank',
             ])
-            ->linkToCrudAction('viewTestimonial')
+            ->linkToCrudAction('viewReview')
         ;
 
         return $actions
-            ->add(Crud::PAGE_EDIT, $viewTestimonial)
-            ->add(Crud::PAGE_INDEX, $viewTestimonial)
+            ->add(Crud::PAGE_EDIT, $viewReview)
+            ->add(Crud::PAGE_INDEX, $viewReview)
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
             ->remove(Crud::PAGE_DETAIL, Action::DELETE)
@@ -129,12 +130,12 @@ class TestimonialCrudController extends AbstractCrudController
         ;
     }
 
-    public function viewTestimonial(AdminContext $context): Response
+    public function viewReview(AdminContext $context): Response
     {
-        /** @var Testimonial $entity */
+        /** @var Review $entity */
         $entity = $context->getEntity()->getInstance();
 
-        return $this->redirectToRoute('testimonial', [
+        return $this->redirectToRoute('review_show', [
             'slug' => $entity->getSlug(),
         ]);
     }

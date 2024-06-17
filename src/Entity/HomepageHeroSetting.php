@@ -21,6 +21,7 @@ class HomepageHeroSetting
 {
     use HasIdTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
 
     #[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
     private ?string $title = null;

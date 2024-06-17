@@ -19,6 +19,7 @@ class AppLayoutSetting
 {
     use HasIdTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
     #[Vich\UploadableField(mapping: 'app_layout', fileNameProperty: 'logoName')]

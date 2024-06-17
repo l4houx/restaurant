@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\Admin\Traits\CreateReadDeleteTrait;
 use App\Entity\Question;
+use App\Entity\Traits\HasRoles;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -58,6 +59,7 @@ class QuestionCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
+            ->setEntityPermission(HasRoles::ADMINAPPLICATION)
             ->setEntityLabelInSingular(t('Question'))
             ->setEntityLabelInPlural(t('Questions'))
             ->setDefaultSort(['question' => 'ASC'])

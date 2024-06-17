@@ -16,6 +16,7 @@ class Question
     use HasIdTrait;
     use HasIsOnlineTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank]

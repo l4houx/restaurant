@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\Traits\EditOnlyTrait;
+use App\Controller\Admin\Traits\CreateEditTrait;
 use App\Entity\Setting;
 use App\Entity\Traits\HasRoles;
 use App\Repository\SettingRepository;
@@ -28,7 +28,7 @@ use function Symfony\Component\Translation\t;
 
 class SettingCrudController extends AbstractCrudController
 {
-    use EditOnlyTrait;
+    use CreateEditTrait;
 
     public function __construct(
         private SettingRepository $settingRepository

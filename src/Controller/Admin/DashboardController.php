@@ -9,6 +9,10 @@ use App\Entity\Company\Member;
 use App\Entity\Company\Organization;
 use App\Entity\Currency;
 use App\Entity\Data\Account;
+use App\Entity\Data\Purchase;
+use App\Entity\Data\Transaction;
+use App\Entity\Data\Transfer;
+use App\Entity\Data\Wallet;
 use App\Entity\HelpCenterArticle;
 use App\Entity\HelpCenterCategory;
 use App\Entity\HelpCenterFaq;
@@ -20,6 +24,7 @@ use App\Entity\PostCategory;
 use App\Entity\PostType;
 use App\Entity\Question;
 use App\Entity\Review;
+use App\Entity\Rules;
 use App\Entity\Setting;
 use App\Entity\Shop\Brand;
 use App\Entity\Shop\Category;
@@ -107,13 +112,21 @@ class DashboardController extends AbstractDashboardController
                 // MenuItem::linkToCrud(t('Brands'), 'fas fa-b', Brand::class),
                 // MenuItem::linkToCrud(t('Categories'), 'fa fa-tags', Category::class),
                 MenuItem::linkToCrud(t('Orders'), 'fa fa-bell', Order::class),
-                MenuItem::linkToCrud(t('Account'), 'fa fa-balance-scale', Account::class),
+            ]);
+
+            yield MenuItem::section(t('Points Settings'));
+            yield MenuItem::subMenu(t('Points Management'), 'fas fa-user')->setSubItems([
+                MenuItem::linkToCrud(t('Point Accounts'), 'fa fa-balance-scale', Account::class),
+                MenuItem::linkToCrud(t('Point Purchases'), 'fa fa-bell', Purchase::class),
+                MenuItem::linkToCrud(t('Wallets'), 'fa fa-bank', Wallet::class),
+                MenuItem::linkToCrud(t('Transactions'), 'fa fa-list', Transaction::class),
+                MenuItem::linkToCrud(t('Transferts'), 'fa fa-exchange', Transfer::class),
             ]);
 
             yield MenuItem::section(t('Review Settings'));
             yield MenuItem::subMenu(t('Testimonial Settings'), 'fas fa-star')->setSubItems([
-                // MenuItem::linkToCrud(t('Review'), 'fas fa-star', Review::class),
-                // MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Review::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('Review'), 'fas fa-star', Review::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Review::class)->setAction(Crud::PAGE_NEW),
                 MenuItem::linkToCrud(t('Testimonial'), 'fas fa-star', Testimonial::class),
                 MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Testimonial::class)->setAction(Crud::PAGE_NEW),
             ]);
@@ -160,8 +173,10 @@ class DashboardController extends AbstractDashboardController
                 MenuItem::linkToCrud(t('Teams'), 'fa fa-user-shield', SuperAdministrator::class),
                 MenuItem::linkToCrud(t('Add'), 'fas fa-plus', SuperAdministrator::class)->setAction(Crud::PAGE_NEW),
                 MenuItem::linkToCrud(t('Users'), 'fas fa-user-friends', User::class),
-                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', User::class)->setAction(Crud::PAGE_NEW),
                 MenuItem::linkToExitImpersonation(t('Stop impersonation'), 'fas fa-door-open'),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', User::class)->setAction(Crud::PAGE_NEW),
+                MenuItem::linkToCrud(t('Rules'), 'fa fa-file', Rules::class),
+                MenuItem::linkToCrud(t('Add'), 'fas fa-plus', Rules::class)->setAction(Crud::PAGE_NEW),
             ]);
         }
 

@@ -43,6 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     use HasRulesAgreementsTrait;
     use HasIsTeamTrait;
     use HasTimestampableTrait;
+    //use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
     // use SoftDeleteableEntity;
 
