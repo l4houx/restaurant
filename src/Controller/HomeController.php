@@ -2,14 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\HomepageHeroSetting;
 use App\Entity\Post;
-use App\Entity\Shop\Category;
+use App\Entity\Testimonial;
 use App\Entity\Shop\Product;
+use App\Entity\Shop\Category;
+use App\Entity\HomepageHeroSetting;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
@@ -21,6 +22,7 @@ class HomeController extends AbstractController
             'homepageCategories' => $em->getRepository(Category::class)->getLastCategories(6),
             'homepageProducts' => $em->getRepository(Product::class)->getLastProducts(4),
             'homepagePosts' => $em->getRepository(Post::class)->getLastPosts(3),
+            'homepageTestimonials' => $em->getRepository(Testimonial::class)->getRand(3),
         ]);
     }
 }

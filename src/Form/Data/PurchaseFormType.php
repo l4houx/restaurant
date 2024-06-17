@@ -3,18 +3,19 @@
 namespace App\Form\Data;
 
 use App\Entity\Data\Account;
-use App\Entity\Data\Purchase;
 use App\Entity\User\Manager;
-use App\Repository\Data\AccountRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Data\Purchase;
+use App\Entity\User\SuperAdministrator;
 use Symfony\Component\Form\AbstractType;
+use App\Repository\Data\AccountRepository;
+use function Symfony\Component\Translation\t;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
-use function Symfony\Component\Translation\t;
 
 class PurchaseFormType extends AbstractType
 {
@@ -39,7 +40,7 @@ class PurchaseFormType extends AbstractType
                 ],
             ]);
 
-        /** @var Manager $manager */
+        /** @var Manager|SuperAdministrator $manager */
         $manager = $options['manager'];
 
         if ($manager->getMembers()->count() > 1) {
@@ -58,6 +59,6 @@ class PurchaseFormType extends AbstractType
         $resolver->setDefault('data_class', Purchase::class);
         $resolver->setDefault('validation_groups', ['new']);
         $resolver->setRequired('manager');
-        $resolver->setAllowedTypes('manager', [Manager::class]);
+        $resolver->setAllowedTypes('manager', [Manager::class, SuperAdministrator::class]);
     }
 }

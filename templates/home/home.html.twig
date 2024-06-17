@@ -145,7 +145,22 @@
     {% endif %}
 
     {% if setting.getSettings('homepage_testimonials_number') > 0 %}
-
+        <section class="pt-0">
+            <div class="container">
+                <div class="inner-container-small text-center mb-4 mb-sm-5">
+                    <h2 class="mb-0">{{ 'What people say about us'|trans }}</h2>
+                </div>
+                {% if homepageTestimonials|length %}
+                    <div class="row mt-0">
+                        {% for testimonial in homepageTestimonials %}
+                            {% include "global/testimonial-card.html.twig" with {testimonial: testimonial, showuser: 1, index: loop.index, class : 'mb-5'} %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {% include "global/message.html.twig" with { type: "dark", message: ('No testimonials found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+                {% endif %}
+            </div>
+        </section>
     {% endif %}
 
     {% if '1' == settings["homepage_show_call_to_action"] %}

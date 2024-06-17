@@ -2,17 +2,17 @@
 
 namespace App\Repository;
 
-use App\Entity\Post;
-use App\Entity\User;
 use App\Entity\Comment;
+use App\Entity\Post;
+use App\Entity\Traits\HasLimit;
+use App\Entity\User;
+use App\Service\SettingService;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use App\Entity\Traits\HasLimit;
-use App\Service\SettingService;
 use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @extends ServiceEntityRepository<Comment>
@@ -43,8 +43,8 @@ class CommentRepository extends ServiceEntityRepository
             $builder,
             $page,
             HasLimit::COMMENT_LIMIT,
-            ['wrap-queries' => true],
             [
+                'wrap-queries' => true,
                 'distinct' => false,
                 'sortFieldAllowList' => ['c.id', 'c.post'],
             ]
@@ -134,7 +134,7 @@ class CommentRepository extends ServiceEntityRepository
      *
      * @return Comment[] Returns an array of Comments objects
      */
-    public function findLastByUser(User $user, int $maxResults): array //  (UserController)
+    public function getLastByUser(User $user, int $limit): array //  (UserController)
     {
         return $this->createQueryBuilder('c')
             ->join('c.post', 'p')
@@ -142,14 +142,14 @@ class CommentRepository extends ServiceEntityRepository
             ->andWhere('c.author = :user')
             ->andWhere('c.isApproved = true')
             ->orderBy('c.publishedAt', 'DESC')
-            ->setMaxResults($maxResults)
+            ->setMaxResults($limit)
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult()
         ;
     }
 
-    public function queryLatest($value, int $maxResults): Query
+    public function queryLatest($value, int $limit): Query
     {
         if ($value instanceof Post) {
             $object = 'post';
@@ -159,10 +159,10 @@ class CommentRepository extends ServiceEntityRepository
             ->andWhere('c.'.$object.' = :val')
             ->setParameter('val', $value->getId())
             ->orderBy('c.publishedAt', 'DESC')
-            //->join('c.target', 't')
+            // ->join('c.target', 't')
             ->leftJoin('c.author', 'a')
             ->addSelect('t', 'a')
-            ->setMaxResults($maxResults)
+            ->setMaxResults($limit)
             ->getQuery()
         ;
     }

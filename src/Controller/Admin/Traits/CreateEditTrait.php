@@ -14,6 +14,7 @@ trait CreateEditTrait
             //->disable(Action::EDIT)
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->remove(Crud::PAGE_DETAIL, Action::DELETE)
+            ->remove(Crud::PAGE_INDEX, Action::NEW)
         ;
 
         return $actions;

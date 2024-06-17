@@ -19,6 +19,6 @@ class MainController extends BaseController
     {
         $user = $this->getUserOrThrow();
 
-        return $this->render('dashboard/shared/index.html.twig', compact('user'));
+        return $this->render('dashboard/shared/main.html.twig', compact('user'));
     }
 }

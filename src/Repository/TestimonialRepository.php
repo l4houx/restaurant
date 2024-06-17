@@ -2,58 +2,78 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
-use App\Entity\Product;
 use App\Entity\Testimonial;
-use Doctrine\ORM\QueryBuilder;
-use App\Entity\Traits\HasLimit;
-use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\PaginatorInterface;
-use Knp\Component\Pager\Pagination\PaginationInterface;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Testimonial>
  */
 class TestimonialRepository extends ServiceEntityRepository
 {
-    public function __construct(
-        ManagerRegistry $registry,
-        private readonly PaginatorInterface $paginator
-    ) {
+    public function __construct(ManagerRegistry $registry)
+    {
         parent::__construct($registry, Testimonial::class);
     }
 
-    public function findForPagination(int $page): PaginationInterface // TestimonialController
-    {
-        $builder = $this->createQueryBuilder('t')
-            ->orderBy('t.createdAt', 'DESC')
+    /**
+     * @return Paginator<Testimonial>
+     */
+    public function getPaginated(
+        int $page,
+        int $limit,
+        ?string $keywords
+    ): Paginator {
+        $qb = $this->createQueryBuilder('t')
             ->setParameter('now', new \DateTimeImmutable())
             ->where('t.createdAt <= :now')
             ->orWhere('t.isOnline = true')
+            ->andWhere('t.name LIKE :keywords')
+            ->setParameter('keywords', '%'.($keywords ?? '').'%')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->orderBy('t.createdAt', 'DESC')
         ;
 
-        return $this->paginator->paginate(
-            $builder,
-            $page,
-            HasLimit::TESTIMONIAL_LIMIT,
-            ['wrap-queries' => true],
-            [
-                'distinct' => false,
-                'sortFieldAllowList' => ['t.id', 't.rating', 't.createdAt'],
-            ]
-        );
+        return new Paginator($qb);
     }
 
     /**
-     * @return Testimonial[] Returns an array of Testimonial objects
+     * Retrieves testimonials randomly (-1 months)
      */
-    public function findLastRecent(int $maxResults): array // (PageController, HomeController)
+    public function getRand(int $limit): array
+    {
+        $date = new \DateTimeImmutable('1 day');
+
+        return $this->createQueryBuilder('t')
+            ->addSelect('a')
+            ->join('t.author', 'a')
+            ->where('t.isOnline = true')
+            ->andWhere('t.createdAt < :date')
+            ->setParameter('date', $date)
+            ->setMaxResults($limit)
+            ->orderBy('RAND()')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return array<Testimonial>
+     */
+    public function getLastTestimonials(int $limit): array
     {
         return $this->createQueryBuilder('t')
-            ->orderBy('t.id', 'DESC')
+            ->addSelect('a')
+            ->join('t.author', 'a')
             ->where('t.isOnline = true')
-            ->setMaxResults($maxResults)
+            ->setParameter('now', new \DateTimeImmutable())
+            ->where('t.createdAt <= :now')
+            ->setMaxResults($limit)
+            ->orderBy('t.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
         ;
@@ -64,12 +84,13 @@ class TestimonialRepository extends ServiceEntityRepository
      *
      * @return Testimonial[] Returns an array of Testimonial objects
      */
-    public function findLastByUser(User $user, int $maxResults): array // AccountTestimonialController
+    public function getLastByUser(User $user): array
     {
         return $this->createQueryBuilder('t')
-            ->where('t.author = :user')
-            ->orderBy('t.updatedAt', 'DESC')
-            ->setMaxResults($maxResults)
+            ->where('t.isOnline = true')
+            ->andWhere('t.author = :user')
+            ->orderBy('t.createdAt', 'DESC')
+            ->setMaxResults(1)
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult()
@@ -79,17 +100,17 @@ class TestimonialRepository extends ServiceEntityRepository
     /**
      * Returns the testimonials after applying the specified search criterias.
      *
-     * @param string      $keyword
-     * @param string      $slug
-     * @param User|null   $user
-     * @param bool        $isOnline
-     * @param int|null    $rating
-     * @param int         $minrating
-     * @param int         $maxrating
-     * @param int         $limit
-     * @param int         $count
-     * @param string      $sort
-     * @param string      $order
+     * @param string    $keyword
+     * @param string    $slug
+     * @param User|null $user
+     * @param bool      $isOnline
+     * @param int|null  $rating
+     * @param int       $minrating
+     * @param int       $maxrating
+     * @param int       $limit
+     * @param int       $count
+     * @param string    $sort
+     * @param string    $order
      */
     public function getTestimonials($keyword, $slug, $user, $isOnline, $rating, $minrating, $maxrating, $limit, $count, $sort, $order): QueryBuilder
     {

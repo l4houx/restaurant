@@ -9,6 +9,7 @@ use App\Entity\Company\Member;
 use Doctrine\ORM\QueryBuilder;
 use App\Entity\User\SalesPerson;
 use App\Entity\User\Collaborator;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -25,11 +26,11 @@ class AccountRepository extends ServiceEntityRepository
     /**
      * @return array<int, Account>
      */
-    public function getClientsAccountByEmployee(SalesPerson | Manager $employee): array
+    public function getClientsAccountByEmployee(SalesPerson|Manager|SuperAdministrator $employee): array
     {
         $members = [$employee->getMember()->getId()];
 
-        if ($employee instanceof Manager) {
+        if ($employee instanceof Manager && $employee instanceof SuperAdministrator) {
             $members = $employee->getMembers()->map(fn (Member $member) => $member->getId())->toArray();
         }
 
@@ -57,7 +58,7 @@ class AccountRepository extends ServiceEntityRepository
         ;
     }
 
-    public function createQueryBuilderAccountByManagerForTransfer(Manager $manager): QueryBuilder
+    public function createQueryBuilderAccountByManagerForTransfer(Manager|SuperAdministrator $manager): QueryBuilder
     {
         $customerAccountsQB = $this->_em->createQueryBuilder()
             ->select("account1.id")
@@ -100,6 +101,14 @@ class AccountRepository extends ServiceEntityRepository
             ->getDQL()
         ;
 
+        $superadministratorQB = $this->_em->createQueryBuilder()
+        ->select("account6.id")
+        ->from(SuperAdministrator::class, "superadministrator")
+        ->join("superadministrator.account", "account6")
+        ->where("superadministrator IN (:members)")
+        ->getDQL()
+    ;
+
         $qb = $this->createQueryBuilder("a")
             ->addSelect("u")
             ->addSelect("m")
@@ -116,14 +125,15 @@ class AccountRepository extends ServiceEntityRepository
                 $qb->expr()->in("a.id", $collaboratorAccountsQB),
                 $qb->expr()->in("a.id", $salesPersonAccountsQB),
                 $qb->expr()->in("a.id", $managerAccountsQB),
-                $qb->expr()->in("a.id", $membersAccountsQB)
+                $qb->expr()->in("a.id", $membersAccountsQB),
+                $qb->expr()->in("a.id", $superadministratorQB)
             )
         );
 
         return $qb;
     }
 
-    public function createQueryBuilderAccountByManagerForPurchase(Manager $manager): QueryBuilder
+    public function createQueryBuilderAccountByManagerForPurchase(Manager|SuperAdministrator $manager): QueryBuilder
     {
         return $this->createQueryBuilder("a")
             ->addSelect("m")

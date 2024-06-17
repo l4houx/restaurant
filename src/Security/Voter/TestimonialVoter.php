@@ -51,9 +51,14 @@ class TestimonialVoter extends Voter
             self::MANAGE => $this->canManage($user, $testimonial),
             self::EDIT => $this->canEdit(),
             self::DELETE => $this->canDelete(),
-            self::CREATE, => true,
+            self::CREATE, => $this->canCreate($user),
             default => false,
         };
+    }
+
+    private function canCreate(User $user): bool
+    {
+        return $user->isVerified() && true;
     }
 
     private function canManage(User $user, Testimonial $testimonial): bool

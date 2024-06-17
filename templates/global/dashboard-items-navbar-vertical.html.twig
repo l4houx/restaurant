@@ -36,6 +36,11 @@
                             </a>
 						</li>
 						<li class="nav-item">
+							<a class="nav-link {% if activerd == 'testimonial_index' or activerd == 'testimonial_new' %}active{% endif %}" href="{{ path('dashboard_account_testimonial_index') }}">
+								<i class="fas fa-star fa-fw me-2"></i>{{ 'Testimonial'|trans }}
+                            </a>
+						</li>
+						<li class="nav-item">
 							<a class="nav-link" href="">
 								<i class="fas fa-wallet fa-fw me-2"></i>{{ 'Payment Details'|trans }}
                             </a>

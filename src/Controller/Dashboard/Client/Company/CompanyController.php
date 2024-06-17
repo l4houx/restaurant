@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Dashboard\Client;
+namespace App\Controller\Dashboard\Client\Company;
 
 use App\Entity\User\Manager;
 use App\Entity\Company\Client;

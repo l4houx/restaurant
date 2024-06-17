@@ -19,8 +19,8 @@ class UserController extends BaseController
     ): Response {
         return $this->render('user/profile-manager.html.twig', [
             'user' => $user,
-            'lastComments' => $commentRepository->findLastByUser($user, 4),
-            'lastReviews' => $reviewRepository->findLastByUser($user, 4),
+            'lastComments' => $commentRepository->getLastByUser($user, 4),
+            'lastReviews' => $reviewRepository->getLastByUser($user, 4),
         ]);
     }
 }

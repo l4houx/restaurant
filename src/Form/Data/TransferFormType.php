@@ -3,23 +3,24 @@
 namespace App\Form\Data;
 
 use App\Entity\Data\Account;
-use App\Entity\Data\Transfer;
-use App\Entity\User\Collaborator;
-use App\Entity\User\Customer;
 use App\Entity\User\Manager;
+use App\Entity\Data\Transfer;
+use App\Entity\User\Customer;
 use App\Entity\User\SalesPerson;
-use App\Repository\Data\AccountRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\View\ChoiceGroupView;
-use Symfony\Component\Form\ChoiceList\View\ChoiceView;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
+use App\Entity\User\Collaborator;
 use Symfony\Component\Form\FormView;
+use App\Entity\User\SuperAdministrator;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormInterface;
+use App\Repository\Data\AccountRepository;
+use function Symfony\Component\Translation\t;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use function Symfony\Component\Translation\t;
+use Symfony\Component\Form\ChoiceList\View\ChoiceGroupView;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class TransferFormType extends AbstractType
 {
@@ -36,7 +37,7 @@ class TransferFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var Manager $manager */
+        /** @var Manager|SuperAdministrator $manager */
         $manager = $options['manager'];
 
         $accountOptions = [
@@ -63,7 +64,7 @@ class TransferFormType extends AbstractType
                     );
                 }
 
-                /** @var SalesPerson|Manager|Collaborator $employee */
+                /** @var SalesPerson|Manager|Collaborator|SuperAdministrator $employee */
                 $employee = $account->getUser();
 
                 return sprintf(
@@ -82,7 +83,7 @@ class TransferFormType extends AbstractType
                     return t('Client');
                 }
 
-                /** @var SalesPerson|Manager|Collaborator $employee */
+                /** @var SalesPerson|Manager|Collaborator|SuperAdministrator $employee */
                 $employee = $account->getUser();
 
                 return $employee->getMember()->getName();
@@ -108,6 +109,6 @@ class TransferFormType extends AbstractType
     {
         $resolver->setDefault('data_class', Transfer::class);
         $resolver->setRequired('manager');
-        $resolver->setAllowedTypes('manager', [Manager::class]);
+        $resolver->setAllowedTypes('manager', [Manager::class, SuperAdministrator::class]);
     }
 }

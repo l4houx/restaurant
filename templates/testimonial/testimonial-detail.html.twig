@@ -13,15 +13,24 @@
         <div class="container">
             <div class="inner-container-small text-center mb-4 mb-sm-5">
                 <h2 class="mb-0">{{ 'What people say about us'|trans }}</h2>
-                <p>{{ "%resultsCount% testimonial(s) found"|trans({'%resultsCount%': testimonials.getTotalItemCount}) }}</p>
+                <p>{{ pagetitle }}</p>
             </div>
-            {% if testimonials.getTotalItemCount > 0 %}
+            {% if testimonials|length > 0 %}
                 <div class="row mt-0">
                     {% for testimonial in testimonials %}
                         {% include "global/testimonial-card.html.twig" with {testimonial: testimonial, showuser: 1, index: loop.index, class : 'mb-5'} %}
                     {% endfor %}
                 </div>
-                {{ knp_pagination_render(testimonials, null, {}, {'align': 'center'}) }}
+                {% if pages > 1 %}
+                    <div class="text-end p-0">
+                        {{ include("global/pagination.html.twig", {
+                            class: "justify-content-center",
+                            route: "testimonial",
+                            current_page: app.request.get("page", 1),
+                            pages: pages
+                        }) }}
+                    </div>
+                {% endif %}
             {% else %}
                 {% include "global/message.html.twig" with { type: "info", message: ('No testimonials found'|trans), icon: "fas fa-exclamation" } %}
             {% endif %}

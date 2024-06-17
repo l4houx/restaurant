@@ -12,17 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SearchController extends AbstractController
 {
-    #[Route('/search', 'search_index', methods: ['GET'])]
-    public function index(Request $request, SearchService $searchService): Response
-    {
-        //$keyword = $request->query->get('keyword');
-        $keyword = $request->getPayload()->get('keyword');
-
-        return $this->render('search/dropdown_menu.html.twig', [
-            'results' => $searchService->search($keyword),
-        ]);
-    }
-
     #[Route('/search-post', 'search_post', methods: ['GET'])]
     public function searchPost(Request $request, PostRepository $postRepository): Response
     {

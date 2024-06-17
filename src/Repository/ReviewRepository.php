@@ -2,12 +2,12 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
 use App\Entity\Review;
-use App\Entity\Product;
+use App\Entity\Shop\Product;
+use App\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Review>
@@ -24,13 +24,13 @@ class ReviewRepository extends ServiceEntityRepository
      *
      * @return Review[] Returns an array of Review objects
      */
-    public function findLastByUser(User $user, int $maxResults): array //  (UserController)
+    public function getLastByUser(User $user, int $limit): array //  (UserController)
     {
         return $this->createQueryBuilder('r')
             ->andWhere('r.author = :user')
             ->andWhere('r.isVisible = true')
             ->orderBy('r.createdAt', 'DESC')
-            ->setMaxResults($maxResults)
+            ->setMaxResults($limit)
             ->setParameter('user', $user)
             ->getQuery()
             ->getResult()
@@ -40,18 +40,18 @@ class ReviewRepository extends ServiceEntityRepository
     /**
      * Returns the reviews after applying the specified search criterias.
      *
-     * @param string          $keyword
-     * @param string          $slug
-     * @param User            $user
-     * @param Product|null    $product
-     * @param bool            $isVisible
-     * @param int|null        $rating
-     * @param int             $minrating
-     * @param int             $maxrating
-     * @param int             $limit
-     * @param int             $count
-     * @param string          $sort
-     * @param string          $order
+     * @param string       $keyword
+     * @param string       $slug
+     * @param User         $user
+     * @param Product|null $product
+     * @param bool         $isVisible
+     * @param int|null     $rating
+     * @param int          $minrating
+     * @param int          $maxrating
+     * @param int          $limit
+     * @param int          $count
+     * @param string       $sort
+     * @param string       $order
      */
     public function getReviews($keyword, $slug, $user, $product, $isVisible, $rating, $minrating, $maxrating, $limit, $count, $sort, $order): QueryBuilder
     {

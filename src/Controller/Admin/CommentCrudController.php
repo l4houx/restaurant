@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\Traits\ReadOnlyTrait;
+use App\Controller\Admin\Traits\CreateEditTrait;
 use App\Entity\Comment;
 use App\Entity\Traits\HasRoles;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -20,7 +20,7 @@ use function Symfony\Component\Translation\t;
 
 class CommentCrudController extends AbstractCrudController
 {
-    use ReadOnlyTrait;
+    use CreateEditTrait;
 
     public static function getEntityFqcn(): string
     {

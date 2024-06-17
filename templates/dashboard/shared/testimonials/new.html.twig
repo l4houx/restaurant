@@ -1,21 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% set pagetitle = 'Add a new testimonial'|trans %}
-{% if testimonial.id %}{% set pagetitle = 'Edit the testimonial'|trans %}{% endif %}
 {% block title pagetitle %}
 
 {% block body %}
     <section class="pt-sm-7">
         <div class="container pt-3 pt-xl-5">
             <div class="row">
-                {% include "global/dashboard-items-navbar-vertical.html.twig" with {activerd: 'testimonial_index'} %}
+                {% include "global/dashboard-items-navbar-vertical.html.twig" with {activerd: 'testimonial_new'} %}
                 <div class="col-lg-8 col-xl-9 ps-lg-4 ps-xl-6">
                     <div class="d-flex justify-content-between align-items-center mb-5 mb-sm-6">
                         <h1 class="h3 mb-0">
                             {{ 'Testimonial'|trans }}
-                            {% if app.request.attributes.get('_route') == 'dashboard_admin_testimonial_edit' %}
-                                "{{ testimonial.name }}"
-                            {% endif %}
                         </h1>
                         <button class="btn btn-primary d-lg-none flex-shrink-0 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
                             <i class="fas fa-sliders-h"></i> {{ 'Menu'|trans }}
@@ -34,8 +30,8 @@
                                 </div>
                                 {{ form_widget(form) }}
                                 <div class="d-flex justify-content-end mt-4">
-                                    <button type="submit" class="{% if testimonial.id %}btn btn-warning{% else %}btn btn-primary{% endif %} mb-0">
-                                        {% if testimonial.id %}{{ 'Update'|trans }}{% else %}{{ 'Post It'|trans }}{% endif %}
+                                    <button type="submit" class="btn btn-primary mb-0">
+                                        {{ 'Post It'|trans }}
                                         <i class="fa-fw fas fa-arrow-right ms-2"></i>
                                     </button>
                                 </div>

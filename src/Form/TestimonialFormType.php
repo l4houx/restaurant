@@ -65,7 +65,7 @@ class TestimonialFormType extends AbstractType
             ->addEventListener(FormEvents::POST_SUBMIT, $this->formListenerFactory->timestamps())
         ;
 
-        if ($this->authChecker->isGranted(HasRoles::ADMINAPPLICATION)) {
+        /*if ($this->authChecker->isGranted(HasRoles::ADMINAPPLICATION)) {
             $builder
                 ->add('author', UserAutocompleteField::class, [
                     //'label' => t('Author')
@@ -73,7 +73,7 @@ class TestimonialFormType extends AbstractType
                 ])
                 ->add('isOnline', SwitchType::class, ['label' => t('Online')])
             ;
-        }
+        }*/
     }
 
     public function configureOptions(OptionsResolver $resolver): void

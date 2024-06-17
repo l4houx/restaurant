@@ -2,15 +2,16 @@
 
 namespace App\EventSubscriber;
 
-use App\Entity\Administrator;
 use App\Entity\Post;
-use App\Event\CommentCreatedEvent;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Mailer\MailerInterface;
+use App\Entity\Administrator;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Event\CommentCreatedEvent;
+use App\Entity\User\SuperAdministrator;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class NotificationCommentsSubscriber implements EventSubscriberInterface
 {
@@ -30,7 +31,7 @@ class NotificationCommentsSubscriber implements EventSubscriberInterface
         /** @var Post $post */
         $post = $comment->getPost();
 
-        /** @var Administrator $author */
+        /** @var SuperAdministrator $author */
         $author = $post->getAuthor();
 
         /** @var string $emailAddress */

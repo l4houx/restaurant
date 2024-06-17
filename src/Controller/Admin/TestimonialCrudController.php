@@ -2,10 +2,11 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Admin\Traits\CreateReadDeleteTrait;
+use App\Controller\Admin\Traits\CreateEditTrait;
 use App\Entity\Testimonial;
 use App\Entity\Traits\HasRoles;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -23,7 +24,7 @@ use function Symfony\Component\Translation\t;
 
 class TestimonialCrudController extends AbstractCrudController
 {
-    use CreateReadDeleteTrait;
+    use CreateEditTrait;
 
     public static function getEntityFqcn(): string
     {
@@ -57,13 +58,14 @@ class TestimonialCrudController extends AbstractCrudController
             ->renderExpanded(true)
             ->renderAsBadges()
             ->setChoices([
-                '5 stars' => 5,
-                '4 stars' => 4,
-                '3 stars' => 3,
-                '2 stars' => 2,
-                '1 star' => 1,
+                '★★★★★ (5/5)' => 5,
+                '★★★★☆ (4/5)' => 4,
+                '★★★☆☆ (3/5)' => 3,
+                '★★☆☆☆ (2/5)' => 2,
+                '★☆☆☆☆ (1/5)' => 1,
             ])
-            ->setRequired(isRequired: true)
+            ->setRequired(Crud::PAGE_NEW === $pageName)
+            // ->setRequired(isRequired: true)
             ->autocomplete()
             ->renderAsNativeWidget()
         ;
@@ -85,6 +87,15 @@ class TestimonialCrudController extends AbstractCrudController
             ->setEntityLabelInSingular(t('Testimonial'))
             ->setEntityLabelInPlural(t('Testimonials'))
             ->setDefaultSort(['createdAt' => 'DESC', 'author' => 'ASC'])
+        ;
+    }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add('isOnline')
+            ->add('createdAt')
+            ->add('author')
         ;
     }
 }
