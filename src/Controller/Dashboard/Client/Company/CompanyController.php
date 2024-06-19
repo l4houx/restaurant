@@ -2,22 +2,22 @@
 
 namespace App\Controller\Dashboard\Client\Company;
 
-use App\Entity\User\Manager;
+use App\Controller\BaseController;
 use App\Entity\Company\Client;
 use App\Entity\Traits\HasLimit;
 use App\Entity\Traits\HasRoles;
-use App\Controller\BaseController;
+use App\Entity\User\Manager;
 use App\Entity\User\SuperAdministrator;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Form\FilterFormType;
 use App\Form\Client\Company\CompanyFormType;
+use App\Form\FilterFormType;
 use App\Repository\Company\ClientRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted(HasRoles::CLIENTCOMPANY)]
 #[Route(path: '/%website_dashboard_path%/client/companies', name: 'dashboard_client_company_')]
@@ -38,28 +38,16 @@ class CompanyController extends BaseController
         /** @var Manager|SuperAdministrator $employee */
         $employee = $this->getUserOrThrow();
 
-        /*$clients = $this->clientRepository->findForPagination(
+        $clients = $this->clientRepository->getPaginated(
             $employee,
             $request->query->getInt('page', 1),
             HasLimit::USER_LIMIT,
             $form->get('keywords')->getData()
-        );*/
+        );
 
+        $pages = ceil(count($clients) / $request->query->getInt('limit', HasLimit::USER_LIMIT));
 
-        /*$clients = $this->clientRepository->getPaginated(
-            $employee,
-            $request->query->getInt("page", 1),
-            HasLimit::USER_LIMIT,
-            $form->get("keywords")->getData()
-        );*/
-
-        $clients = $this->clientRepository->findBy([], ['id' => 'DESC'], 5);
-
-        return $this->render('dashboard/client/company/index.html.twig', [
-            'clients' => $clients,
-            'pages' => ceil(count($clients) / HasLimit::USER_LIMIT),
-            'form' => $form,
-        ]);
+        return $this->render('dashboard/client/company/index.html.twig', compact('form', 'pages', 'clients'));
     }
 
     #[Route(path: '/new', name: 'new', methods: ['GET', 'POST'])]
@@ -90,7 +78,7 @@ class CompanyController extends BaseController
             ]);
         }
 
-        return $this->render('dashboard/client/company/new-edit.html.twig', compact('form','client'));
+        return $this->render('dashboard/client/company/new-edit.html.twig', compact('form', 'client'));
     }
 
     #[Route(path: '/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
@@ -117,7 +105,7 @@ class CompanyController extends BaseController
             return $this->redirectToRoute('dashboard_client_company_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/client/company/new-edit.html.twig', compact('form','client'));
+        return $this->render('dashboard/client/company/new-edit.html.twig', compact('form', 'client'));
     }
 
     #[Route(path: '/{id}/delete', name: 'delete', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]

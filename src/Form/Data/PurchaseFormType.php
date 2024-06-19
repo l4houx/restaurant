@@ -25,7 +25,7 @@ class PurchaseFormType extends AbstractType
             ->add('points', IntegerType::class, [
                 'label' => t('Amount of your purchase'),
                 'empty_data' => 0,
-                'help' => t('Reminder: 1 star = 1 euro excl. tax'),
+                'help' => t('Reminder: 1 star = 1 euro excluding tax'),
             ])
             ->add('internReference', TextType::class, [
                 'label' => t('Your internal reference (visible on the invoice)'),
@@ -33,11 +33,14 @@ class PurchaseFormType extends AbstractType
             ])
             ->add('mode', ChoiceType::class, [
                 'label' => t('Payment method'),
+                'required' => true,
+                'multiple' => false,
                 'expanded' => true,
                 'choices' => [
                     Purchase::MODE_BANK_WIRE => Purchase::MODE_BANK_WIRE,
                     Purchase::MODE_CHECK => Purchase::MODE_CHECK,
                 ],
+                'label_attr' => ['class' => 'radio-custom radio-inline'],
             ]);
 
         /** @var Manager|SuperAdministrator $manager */

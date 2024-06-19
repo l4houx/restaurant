@@ -39,8 +39,6 @@ class AppPostFixtures extends Fixture implements DependentFixtureInterface
                 ->setContent($this->faker()->paragraphs(10, true))
                 ->setReadtime(rand(10, 160))
                 ->setAuthor($this->getReference('SuperAdministrator'))
-                // ->setTags(mt_rand(0, 1) === 1 ? $this->faker()->unique()->word() : null)
-                // ->setTags(mt_rand(0, 1) === 1 ? $tags : null)
                 ->setMetaTitle($post->getName())
                 ->setMetaDescription($this->faker()->realText(100))
                 ->setCreatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
@@ -80,7 +78,6 @@ class AppPostFixtures extends Fixture implements DependentFixtureInterface
                 $comment = (new Comment())
                     ->setIp($this->faker()->ipv4)
                     ->setContent($this->faker()->paragraph())
-                    //->setAuthor($this->getReference('user-'.$this->faker()->numberBetween(1, 10)))
                     ->setAuthor($this->faker()->randomElement($users))
                     ->setPost($post)
                     ->setParent(null)
@@ -102,8 +99,6 @@ class AppPostFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            //AppAdminTeamUserFixtures::class,
-            //AppAdministratorTeamFixtures::class,
             AppUserFixtures::class,
             AppPostCategoryFixtures::class,
             AppPostTypeFixtures::class,

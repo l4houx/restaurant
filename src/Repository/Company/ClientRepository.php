@@ -2,63 +2,24 @@
 
 namespace App\Repository\Company;
 
-use App\Entity\User\Manager;
 use App\Entity\Company\Client;
 use App\Entity\Company\Member;
-use Doctrine\ORM\QueryBuilder;
-use App\Entity\Traits\HasLimit;
+use App\Entity\User\Manager;
 use App\Entity\User\SalesPerson;
 use App\Entity\User\SuperAdministrator;
-use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\PaginatorInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Client>
  */
 class ClientRepository extends ServiceEntityRepository
 {
-    public function __construct(
-        ManagerRegistry $registry,
-        private readonly PaginatorInterface $paginator
-    ) {
+    public function __construct(ManagerRegistry $registry)
+    {
         parent::__construct($registry, Client::class);
-    }
-
-    public function findForPagination(
-        Manager $employee,
-        int $page,
-        int $limit,
-        ?string $keywords
-    ): PaginationInterface {
-        $builder = $this->createQueryBuilder('c')
-            ->addSelect('s')
-            ->addSelect('m')
-            ->leftJoin('c.salesPerson', 's')
-            ->join('c.member', 'm')
-            ->andWhere('c.name LIKE :keywords')
-            ->setParameter('keywords', '%'.($keywords ?? '').'%')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->orderBy('c.name', 'asc')
-        ;
-
-        $builder->andWhere(
-            $builder->expr()->in(
-                'm.id',
-                $employee->getMembers()->map(fn (Member $member) => $member->getId())->toArray()
-            )
-        );
-
-        // return new Paginator($builder);
-
-        return $this->paginator->paginate(
-            $builder,
-            $page,
-            $limit
-        );
     }
 
     /**
@@ -70,21 +31,21 @@ class ClientRepository extends ServiceEntityRepository
         int $limit,
         ?string $keywords
     ): Paginator {
-        $qb = $this->createQueryBuilder("c")
-            ->addSelect("s")
-            ->addSelect("m")
-            ->leftJoin("c.salesPerson", "s")
-            ->join("c.member", "m")
-            ->andWhere("c.name LIKE :keywords")
-            ->setParameter("keywords", "%" . ($keywords ?? "") . "%")
+        $qb = $this->createQueryBuilder('c')
+            ->addSelect('s')
+            ->addSelect('m')
+            ->leftJoin('c.salesPerson', 's')
+            ->join('c.member', 'm')
+            ->andWhere('c.name LIKE :keywords')
+            ->setParameter('keywords', '%'.($keywords ?? '').'%')
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit)
-            ->orderBy("c.name", "asc")
+            ->orderBy('c.name', 'asc')
         ;
 
         $qb->andWhere(
             $qb->expr()->in(
-                "m.id",
+                'm.id',
                 $employee->getMembers()->map(fn (Member $member) => $member->getId())->toArray()
             )
         );
@@ -92,6 +53,9 @@ class ClientRepository extends ServiceEntityRepository
         return new Paginator($qb);
     }
 
+    /**
+     * @param SalesPerson|Manager|SuperAdministrator $employee
+     */
     public function createQueryBuilderClientsByEmployee(SalesPerson|Manager|SuperAdministrator $employee): QueryBuilder
     {
         $qb = $this->createQueryBuilder('c')

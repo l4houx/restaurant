@@ -4,6 +4,7 @@ namespace App\Entity\Data;
 
 use App\Entity\Order\Order;
 use App\Entity\Traits\HasGedmoTimestampTrait;
+use App\Entity\Traits\HasTimestampableTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -16,7 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\DiscriminatorMap(['purchase' => Purchase::class, 'credit' => Credit::class, 'debit' => Debit::class])]
 abstract class Transaction
 {
-    use HasGedmoTimestampTrait;
+    use HasTimestampableTrait;
+    // use HasGedmoTimestampTrait;
     public const OPERATION = 'TRANSACTION';
 
     #[ORM\Id]
@@ -56,7 +58,7 @@ abstract class Transaction
 
     public function __construct(Wallet $wallet, int $points)
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
         $this->wallet = $wallet;
         $this->account = $wallet->getAccount();
         $this->account->getTransactions()->add($this);

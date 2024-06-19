@@ -48,17 +48,28 @@ class AccessFormType extends AbstractType
                     'I receive the lots from my customers to give them to them' => 0,
                 ],
             ])
+            // Profil
             ->add('firstname', TextType::class, [
                 'label' => t('First name'),
+                // 'purify_html' => true,
+                'required' => true,
                 'empty_data' => '',
+                'attr' => ['placeholder' => t('First name')],
             ])
             ->add('lastname', TextType::class, [
-                'label' => 'Last name',
+                'label' => t('Last name'),
+                // 'purify_html' => true,
+                'required' => true,
                 'empty_data' => '',
+                'attr' => ['placeholder' => t('Last name')],
             ])
+            // Contact
             ->add('email', EmailType::class, [
-                'label' => 'Email address',
+                'label' => t('Email address'),
+                // 'purify_html' => true,
+                'required' => true,
                 'empty_data' => '',
+                'attr' => ['placeholder' => t('Email address here')],
             ])
             ->add('client', EntityType::class, $clientOptions + [
                 'label' => t('Company name of your customer'),

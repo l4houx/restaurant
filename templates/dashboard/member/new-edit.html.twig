@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Add a new access'|trans %}
+{% if user.id %}{% set pagetitle = 'Edit access'|trans %}{% endif %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ 
+        "dashboard_main": ('Dashboard' | trans), 
+        "dashboard_member_access_index": 'Manage access for my company'|trans,
+        "current":(pagetitle) 
+        }] 
+    %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+	<section class="pt-0">
+		<div class="container">
+			<div class="row">
+				<div class="col-xl-9 col-lg-8 col-md-12 col-12">
+					{{ include('dashboard/member/_form.html.twig') }}
+				</div>
+				<div class="col-xl-3 col-lg-4 col-md-12 col-12"></div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

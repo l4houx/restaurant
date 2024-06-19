@@ -5,6 +5,7 @@ namespace App\Entity\Data;
 use App\Entity\Traits\HasDeletedAtTrait;
 use App\Entity\Traits\HasGedmoTimestampTrait;
 use App\Entity\Traits\HasIdTrait;
+use App\Entity\Traits\HasTimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -18,7 +19,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class Transfer
 {
     use HasIdTrait;
-    use HasGedmoTimestampTrait;
+    use HasTimestampableTrait;
+    // use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
     // use SoftDeleteableEntity;
 
@@ -50,7 +52,7 @@ class Transfer
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getPoints(): int

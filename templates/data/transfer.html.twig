@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Transfer keys'|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ "data_index": ('Key account'|trans), "current":(pagetitle) }] %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+    <section class="pt-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'} }) }}
+                        <div class="card bg-transparent p-0">
+                            <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center p-0 pb-3">
+                                <h6 class="card-title mb-0">
+                                    {{ pagetitle }}
+                                </h6>
+                                <div>
+                                    <a href="{{ path('data_index') }}" class="btn btn-sm btn-outline-success me-2">
+                                        {{ 'Return to list'|trans }}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body px-0">
+                                <div>
+                                    {% include "global/message.html.twig" with { type: "info", icon: "fas fa-exclamation", message: ("The fields preceded with a red * are mandatory"|trans) } %}
+                                </div>
+                                <div class="row g-4">
+                                    {{ form_errors(form) }}
+                                    <div class="col-md-6">
+                                        {{ form_row(form.from) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_row(form.to) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_row(form.points) }}
+                                    </div>
+                                    <div class="col-12 text-end mt-4">
+                                        <button type="submit" class="btn btn-primary mb-0">
+                                            {{ 'Transfer'|trans }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

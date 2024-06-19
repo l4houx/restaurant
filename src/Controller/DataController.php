@@ -2,35 +2,37 @@
 
 namespace App\Controller;
 
-use App\Data\TransferPointsInterface;
-use App\Entity\Data\Account;
-use App\Entity\Data\Purchase;
-use App\Entity\Data\Transaction;
-use App\Entity\Data\Transfer;
 use App\Entity\Data\Wallet;
-use App\Entity\Traits\HasRoles;
+use App\Entity\Data\Account;
 use App\Entity\User\Manager;
+use App\Entity\Data\Purchase;
+use App\Entity\Data\Transfer;
+use App\Entity\Traits\HasRoles;
+use Symfony\Component\Uid\Uuid;
+use App\Entity\Data\Transaction;
 use App\Entity\User\SalesPerson;
 use App\Form\Data\PurchaseFormType;
 use App\Form\Data\TransferFormType;
-use App\Repository\Data\AccountRepository;
+use Symfony\Component\Mime\Address;
+use App\Data\TransferPointsInterface;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use App\Repository\Data\AccountRepository;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/data', name: 'data_')]
+#[Route(path: '/data', name: 'data_')]
 class DataController extends BaseController
 {
     public function __construct(
@@ -39,13 +41,13 @@ class DataController extends BaseController
     ) {
     }
 
-    #[Route('', name: 'index', methods: ['GET'])]
+    #[Route(path: '', name: 'index', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('data/index.html.twig');
     }
 
-    #[Route('/{id}/export', name: 'export', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
+    #[Route(path: '/{id}/export', name: 'export', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
     public function export(Account $account, string $tempDirectory): BinaryFileResponse
     {
         $spreadsheet = new Spreadsheet();
@@ -54,11 +56,15 @@ class DataController extends BaseController
         $sheet->setTitle($this->translator->trans('Key movements'));
         $sheet->fromArray(
             array_merge(
-                [['Date', 'Opération', 'Clés']],
+                [[
+                    $this->translator->trans('Date'), 
+                    $this->translator->trans('Operation'), 
+                    $this->translator->trans('Keys')
+                ]],
                 $account->getTransactions()->map(fn (Transaction $transaction) => [
                     $transaction->getCreatedAt()->format('d/m/Y'),
                     $transaction->getType(),
-                    sprintf('%d clés', $transaction->getPoints()),
+                    sprintf($this->translator->trans('%d keys'), $transaction->getPoints()),
                 ])->toArray()
             )
         );
@@ -67,11 +73,15 @@ class DataController extends BaseController
         $sheet->setTitle($this->translator->trans('Expiration of your keys'));
         $sheet->fromArray(
             array_merge(
-                [["Date d'acquisition", "Date d'expiration", 'Clés restantes']],
+                [[
+                    $this->translator->trans("Acquisition date"), 
+                    $this->translator->trans("Expiration date"), 
+                    $this->translator->trans('Remaining keys')
+                ]],
                 $account->getRemainingWallets()->map(fn (Wallet $wallet) => [
                     $wallet->getCreatedAt()->format('d/m/Y'),
                     $wallet->getExpiredAt()->format('d/m/Y'),
-                    sprintf('%d clés', $wallet->getBalance()),
+                    sprintf($this->translator->trans('%d keys'), $wallet->getBalance()),
                 ])->toArray()
             )
         );
@@ -80,11 +90,15 @@ class DataController extends BaseController
         $sheet->setTitle($this->translator->trans('Expired keys'));
         $sheet->fromArray(
             array_merge(
-                [["Date d'acquisition", "Date d'expiration", 'Clés restantes']],
+                [[
+                    $this->translator->trans("Acquisition date"), 
+                    $this->translator->trans("Expiration date"), 
+                    $this->translator->trans('Remaining keys')
+                ]],
                 $account->getExpiredWallets()->map(fn (Wallet $wallet) => [
                     $wallet->getCreatedAt()->format('d/m/Y'),
                     $wallet->getExpiredAt()->format('d/m/Y'),
-                    sprintf('%d clés', $wallet->getBalance()),
+                    sprintf($this->translator->trans('%d keys'), $wallet->getBalance()),
                 ])->toArray()
             )
         );
@@ -97,18 +111,18 @@ class DataController extends BaseController
         return $this->file(sprintf('%s/%s', $tempDirectory, $filename));
     }
 
-    #[Route('/history/{id}', name: 'history', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
+    #[Route(path: '/history/{id}', name: 'history', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
     public function history(Account $account): Response
     {
         return $this->render('data/history.html.twig', compact('account'));
     }
 
-    #[Route('/transfer', name: 'transfer', methods: ['GET', 'POST'])]
+    #[Route(path: '/transfer', name: 'transfer', methods: ['GET', 'POST'])]
     #[IsGranted(HasRoles::DATATRANSFER)]
     public function transfer(Request $request, TransferPointsInterface $transferPoints): Response
     {
-        /** @var Manager $manager */
-        $manager = $this->getUser();
+        /** @var Manager|SuperAdministrator $manager */
+        $manager = $this->getUserOrThrow();
 
         $transfer = new Transfer();
 
@@ -130,12 +144,12 @@ class DataController extends BaseController
         return $this->render('data/transfer.html.twig', compact('form'));
     }
 
-    #[Route('/purchase', name: 'purchase', methods: ['GET', 'POST'])]
+    #[Route(path: '/purchase', name: 'purchase', methods: ['GET', 'POST'])]
     #[IsGranted(HasRoles::DATAPURCHASE)]
     public function purchase(Request $request, MailerInterface $mailer): Response
     {
-        /** @var Manager $manager */
-        $manager = $this->getUser();
+        /** @var Manager|SuperAdministrator $manager */
+        $manager = $this->getUserOrThrow();
 
         $purchase = new Purchase();
 
@@ -175,17 +189,20 @@ class DataController extends BaseController
             return $this->redirectToRoute('data_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('data/purchase.html.twig', compact('form'));
+        return $this->render('data/purchase.html.twig', compact('form', 'purchase'));
     }
 
-    #[Route('/clients', name: 'clients', methods: ['GET'])]
-    #[Security("is_granted('ROLE_SALES_PERSON') or is_granted('ROLE_MANAGER')")]
+    #[Route(path: '/clients', name: 'clients', methods: ['GET'])]
     public function clients(AccountRepository $accountRepository): Response
     {
-        /** @var SalesPerson|Manager $user */
+        $this->denyAccessUnlessGranted(new Expression(
+            'is_granted("ROLE_SALES_PERSON") or is_granted("ROLE_MANAGER")'
+        ));
+
+        /** @var SalesPerson|Manager|SuperAdministrator $user */
         $user = $this->getUserOrThrow();
 
-        return $this->render('data/clients.html.twig', [
+        return $this->render('data/_clients.html.twig', [
             'accounts' => $accountRepository->getClientsAccountByEmployee($user),
         ]);
     }

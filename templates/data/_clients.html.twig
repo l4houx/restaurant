@@ -1,0 +1,69 @@
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card bg-transparent">
+            <div class="card-header bg-transparent border-bottom p-0 pb-3">
+                <h6 class="card-title mb-0">
+                    {{ 'Key accounts - Customers'|trans }}
+                </h6>
+            </div>
+            <div class="table-responsive overflow-y-hidden">
+                <table class="table mb-0 text-nowrap table-hover table-centered" data-role="accessList">
+                    <thead class="">
+                        <tr>
+                            <th>{{ 'Client'|trans}}</th>
+                            <th>{{ 'User'|trans}}</th>
+                            <th>{{ 'Pay'|trans }}</th>
+                            <th>{{ 'Detail'|trans }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in accounts|sort((a, b) => a.user.client.name <=> b.user.client.name) %}
+                            <tr>
+                                <td>{{ account.user.client.name }}</td>
+                                <td>{{ account.user.getFullName|lower|capitalize }}</td>
+                                <td>{{ account.balance }} {{ 'keys'|trans }}</td>
+                                <td>
+                                    <a class="btn btn-sm btn-primary" data-bs-toggle="collapse" href="#account-{{ account.id }}" role="button" aria-expanded="false" aria-controls="account-{{ account.id }}">
+                                        <span class="fas fa-eye"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr class="collapse" id="account-{{ account.id }}">
+                                <td colspan="4" class="p-0">
+                                    <table class="table mb-0 text-nowrap table-hover table-centered" data-role="accessList">
+                                        <thead class="">
+                                            <tr>
+                                                <th>{{ 'Acquisition date'|trans}}</th>
+                                                <th>{{ 'Expiration date'|trans}}</th>
+                                                <th>{{ 'Keys remaining'|trans}}</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for wallet in account.remainingWallets|sort((a, b) => b.expiredAt < a.expiredAt) %}
+                                                <tr>
+                                                    <td>{{ wallet.createdAt|format_date('long') }}</td>
+                                                    <td>{{ wallet.expiredAt|format_date('long') }}</td>
+                                                    <td>{{ wallet.balance }} {{ 'keys'|trans }}</td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td class="text-center" colspan="4">{{ 'No result'|trans }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td class="text-center" colspan="4">{{ 'No result'|trans }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

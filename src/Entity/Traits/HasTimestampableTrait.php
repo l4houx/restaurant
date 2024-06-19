@@ -8,10 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 trait HasTimestampableTrait
 {
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
-    private \DateTimeImmutable $createdAt;
+    protected \DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    protected ?\DateTimeImmutable $updatedAt = null;
 
     public function getCreatedAt(): \DateTimeImmutable
     {

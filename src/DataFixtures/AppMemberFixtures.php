@@ -26,11 +26,11 @@ class AppMemberFixtures extends Fixture implements DependentFixtureInterface
             ;
 
             $member->getAddress()
-                ->setLocality('Paris')
-                ->setZipCode('75000')
-                ->setEmail('email@email.com')
-                ->setPhone('0123456789')
-                ->setStreetAddress('1 rue de la mairie')
+                ->setLocality($this->faker()->city)
+                ->setZipCode($this->faker()->postcode)
+                ->setEmail($this->faker()->email)
+                ->setPhone($this->faker()->phoneNumber)
+                ->setStreetAddress($this->faker()->address)
             ;
 
             $manager->persist($member);

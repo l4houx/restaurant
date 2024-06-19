@@ -3,16 +3,16 @@
 namespace App\Entity;
 
 use App\Entity\Shop\Product;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
-use App\Repository\ReviewRepository;
-use App\Entity\Traits\HasRatingTrait;
 use App\Entity\Traits\HasContentTrait;
 use App\Entity\Traits\HasDeletedAtTrait;
 use App\Entity\Traits\HasIdNameSlugTrait;
+use App\Entity\Traits\HasRatingTrait;
 use App\Entity\Traits\HasTimestampableTrait;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Repository\ReviewRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[UniqueEntity('name')]
@@ -20,11 +20,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Review
 {
     use HasIdNameSlugTrait;
-    //use HasIdGedmoNameSlugAssertTrait;
+    // use HasIdGedmoNameSlugAssertTrait;
     use HasRatingTrait;
     use HasContentTrait;
     use HasTimestampableTrait;
-    //use HasGedmoTimestampTrait;
+    // use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
@@ -41,6 +41,7 @@ class Review
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
         $this->isVisible = true;
     }
 

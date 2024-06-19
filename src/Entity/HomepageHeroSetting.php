@@ -3,17 +3,17 @@
 namespace App\Entity;
 
 use App\Entity\Shop\Product;
+use App\Entity\Traits\HasIdTrait;
+use App\Entity\Traits\HasTimestampableTrait;
+use App\Repository\HomepageHeroSettingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\HasIdTrait;
-use Doctrine\Common\Collections\Collection;
-use App\Entity\Traits\HasTimestampableTrait;
 use Symfony\Component\HttpFoundation\File\File;
-use Doctrine\Common\Collections\ArrayCollection;
-use App\Repository\HomepageHeroSettingRepository;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: HomepageHeroSettingRepository::class)]
 #[Vich\Uploadable]
@@ -21,7 +21,7 @@ class HomepageHeroSetting
 {
     use HasIdTrait;
     use HasTimestampableTrait;
-    //use HasGedmoTimestampTrait;
+    // use HasGedmoTimestampTrait;
 
     #[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
     private ?string $title = null;
@@ -91,6 +91,7 @@ class HomepageHeroSetting
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
         $this->products = new ArrayCollection();
     }
 

@@ -48,27 +48,17 @@ class AccessController extends BaseController
         /** @var Manager|SuperAdministrator $manager */
         $manager = $this->getUserOrThrow();
 
-        /*$employees = $this->userRepository->findForPagination(
-            $manager,
-            $request->query->getInt('page', 1),
-            HasLimit::USER_LIMIT,
-            $form->get('keywords')->getData()
-        );*/
-
-        /*$employees = $this->userRepository->getPaginated(
+        $employees = $this->userRepository->getPaginated(
             $manager,
             $request->query->getInt("page", 1),
             HasLimit::USER_LIMIT,
             $form->get("keywords")->getData()
-        );*/
+        );
 
-        $employees = $this->userRepository->findBy([], ['id' => 'DESC'], 5);
+        //$employees = $this->userRepository->findBy([], ['id' => 'DESC'], 5);
+        $pages = ceil(count($employees) / $request->query->getInt("limit", HasLimit::USER_LIMIT));
 
-        return $this->render('dashboard/member/index.html.twig', [
-            'employees' => $employees,
-            'pages' => ceil(count($employees) / HasLimit::USER_LIMIT),
-            'form' => $form,
-        ]);
+        return $this->render('dashboard/member/index.html.twig', compact("form","pages","employees"));
     }
 
     #[Route(path: '/new/{role}', name: 'new', methods: ['GET', 'POST'])]
@@ -134,7 +124,7 @@ class AccessController extends BaseController
             return $this->redirectToRoute('dashboard_member_access_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/member/new.html.twig', compact('form', 'role', 'user'));
+        return $this->render('dashboard/member/new-edit.html.twig', compact('form', 'role', 'user'));
     }
 
     #[Route(path: '/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
@@ -160,7 +150,7 @@ class AccessController extends BaseController
             return $this->redirectToRoute('dashboard_member_access_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/member/edit.html.twig', compact('form','user'));
+        return $this->render('dashboard/member/new-edit.html.twig', compact('form','user'));
     }
 
     #[Route(path: '/{id}/delete', name: 'delete', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]

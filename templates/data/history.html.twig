@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'History'|trans %}
+{% block title pagetitle %}
+
+{% block breadcrumb %}
+	{% set breadcrumb = [{ "data_index": ('Key account'|trans), "current":(pagetitle) }] %}
+	{% include "global/breadcrumb.html.twig" with breadcrumb %}
+{% endblock %}
+
+{% block body %}
+    <section class="pt-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card bg-transparent">
+                        <div class="card-header bg-transparent border-bottom p-0 pb-3">
+                            <h6 class="card-title mb-0">
+                                {{ 'History'|trans }}
+                            </h6>
+                        </div>
+                        <div class="card-body px-0">
+                            <div class="row g-4">
+                                <div class="col-12 col-lg-6 mb-6 mb-lg-0">
+                                    <div class="card bg-transparent mb-4 p-0">
+                                        <div class="card-header bg-transparent border-bottom p-0 pb-3">
+                                            <h6 class="card-title mb-0">
+                                                {{ 'Tracking your key expiration dates'|trans }} 
+                                            </h6>
+                                        </div>
+                                        <div class="table-responsive overflow-y-hidden">
+                                            <table class="table mb-0 text-nowrap table-hover table-centered" data-role="accessList">
+                                                <thead class="">
+                                                    <tr>
+                                                        <th>{{ 'Acquisition date'|trans}}</th>
+                                                        <th>{{ 'Expiration date'|trans}}</th>
+                                                        <th>{{ 'Keys remaining'|trans}}</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for wallet in account.remainingWallets|sort((a, b) => b.expiredAt < a.expiredAt) %}
+                                                        <tr>
+                                                            <td>{{ wallet.createdAt|format_date('long') }}</td>
+                                                            <td>{{ wallet.expiredAt|format_date('long') }}</td>
+                                                            <td>{{ wallet.balance }} {{ 'keys'|trans }}</td>
+                                                        </tr>
+                                                    {% else %}
+                                                        <tr>
+                                                            <td class="text-center" colspan="4">{{ 'No result'|trans }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6 mb-6 mb-lg-0">
+                                    <div class="card bg-transparent mb-4 p-0">
+                                        <div class="card-header bg-transparent border-bottom p-0 pb-3">
+                                            <h6 class="card-title mb-0">
+                                                {{ 'Expired Key Tracking'|trans }} 
+                                            </h6>
+                                        </div>
+                                        <div class="table-responsive overflow-y-hidden">
+                                            <table class="table mb-0 text-nowrap table-hover table-centered" data-role="accessList">
+                                                <thead class="">
+                                                    <tr>
+                                                        <th>{{ 'Acquisition date'|trans}}</th>
+                                                        <th>{{ 'Expiration date'|trans}}</th>
+                                                        <th>{{ 'Keys'|trans}}</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for wallet in account.getExpiredWallets|sort((a, b) => b.expiredAt < a.expiredAt) %}
+                                                        <tr>
+                                                            <td>{{ wallet.createdAt|format_date('long') }}</td>
+                                                            <td>{{ wallet.expiredAt|format_date('long') }}</td>
+                                                            <td>{{ wallet.balance }} {{ 'keys'|trans }}</td>
+                                                        </tr>
+                                                    {% else %}
+                                                        <tr>
+                                                            <td class="text-center" colspan="4">{{ 'No result'|trans }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6 mb-6 mb-lg-0">
+                                    <div class="card bg-transparent mb-4 p-0">
+                                        <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center p-0 pb-3">
+                                            <div>
+                                                <h6 class="card-title mb-0">
+                                                    {{ 'Tracking your key movements'|trans }}
+                                                </h6>
+                                            </div>
+                                            <div>
+                                                {% if is_granted('ROLE_VERIFIED') %}
+                                                    <a href="{{ path('data_export', { id: account.id }) }}" class="btn btn-sm btn-primary me-2">
+                                                        {{ 'Export'|trans }}
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive overflow-y-hidden">
+                                            <table class="table mb-0 text-nowrap table-hover table-centered" data-role="accessList">
+                                                <thead class="">
+                                                    <tr>
+                                                        <th>{{ 'Date'|trans}}</th>
+                                                        <th>{{ 'Operation'|trans}}</th>
+                                                        <th>{{ 'Keys'|trans}}</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for transaction in account.transactions|reverse %}
+                                                        <tr>
+                                                            <td>{{ transaction.createdAt|format_date('long') }}</td>
+                                                            <td>{{ transaction.type }}</td>
+                                                            <td>{{ transaction.points }} {{ 'keys'|trans }}</td>
+                                                        </tr>
+                                                    {% else %}
+                                                        <tr>
+                                                            <td class="text-center" colspan="4">{{ 'No result'|trans }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

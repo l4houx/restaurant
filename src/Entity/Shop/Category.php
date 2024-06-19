@@ -3,6 +3,7 @@
 namespace App\Entity\Shop;
 
 use App\Entity\Traits\HasIdGedmoNameSlugAssertTrait;
+use App\Entity\Traits\HasIdNameSlugTrait;
 use App\Repository\Shop\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,13 +13,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-// #[UniqueEntity('name')]
-// #[UniqueEntity('slug')]
+#[UniqueEntity('name')]
+#[UniqueEntity('slug')]
 #[Gedmo\Tree(type: 'nested')]
 class Category
 {
-    use HasIdGedmoNameSlugAssertTrait;
+    use HasIdNameSlugTrait;
+    // use HasIdGedmoNameSlugAssertTrait;
 
+    /*
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     #[Gedmo\TreeLeft]
     private int $left;
@@ -30,6 +33,7 @@ class Category
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     #[Gedmo\TreeLevel]
     private int $level;
+    */
 
     /**
      * @var Collection<int, SubCategory>
@@ -68,6 +72,7 @@ class Category
         $this->children = new ArrayCollection();
     }
 
+    /*
     public function getLeft(): int
     {
         return $this->left;
@@ -103,6 +108,7 @@ class Category
 
         return $this;
     }
+    */
 
     /**
      * @return Collection<int, SubCategory>

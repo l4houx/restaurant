@@ -11,6 +11,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppDataFixtures extends Fixture implements DependentFixtureInterface
 {
+    use FakerTrait;
+
     public function load(ObjectManager $manager): void
     {
         /** @var array<Member> $members */
@@ -23,6 +25,8 @@ class AppDataFixtures extends Fixture implements DependentFixtureInterface
                 ->setPoints(5000)
                 ->setState('accepted')
                 ->prepare()
+                ->setCreatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
+                ->setUpdatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
             ;
 
             $purchase->getWallet()->addTransaction($purchase);
@@ -40,6 +44,8 @@ class AppDataFixtures extends Fixture implements DependentFixtureInterface
                 ->setPoints(7000)
                 ->setState('accepted')
                 ->prepare()
+                ->setCreatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
+                ->setUpdatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
             ;
 
             $purchase->getWallet()->addTransaction($purchase);

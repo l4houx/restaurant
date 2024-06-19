@@ -11,11 +11,12 @@ class AppPostTypeFixtures extends Fixture
 {
     use FakerTrait;
 
-    private $counter = 1;
+    private int $autoIncrement;
 
     public function __construct(
         private readonly SluggerInterface $slugger
     ) {
+        $this->autoIncrement = 1;
     }
 
     public function load(ObjectManager $manager): void
@@ -44,8 +45,8 @@ class AppPostTypeFixtures extends Fixture
         ;
         $manager->persist($type);
 
-        $this->addReference('type-'.$this->counter, $type);
-        ++$this->counter;
+        $this->addReference('type-'.$this->autoIncrement, $type);
+        ++$this->autoIncrement;
 
         return $type;
     }

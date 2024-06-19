@@ -2,29 +2,29 @@
 
 namespace App\Controller\Dashboard\Client;
 
-use App\Entity\User\Manager;
-use App\Entity\User\Customer;
+use App\Controller\BaseController;
 use App\Entity\Company\Client;
-use App\Service\AvatarService;
 use App\Entity\Traits\HasLimit;
 use App\Entity\Traits\HasRoles;
+use App\Entity\User\Customer;
+use App\Entity\User\Manager;
 use App\Entity\User\SalesPerson;
-use App\Controller\BaseController;
-use Symfony\Component\Mime\Address;
 use App\Entity\User\SuperAdministrator;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Form\Client\Access\AccessFormType;
 use App\Form\FilterFormType;
 use App\Repository\User\CustomerRepository;
+use App\Service\AvatarService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[IsGranted(HasRoles::CLIENTACCESS)]
 #[Route(path: '/%website_dashboard_path%/client/access', name: 'dashboard_client_access_')]
@@ -48,28 +48,16 @@ class AccessController extends BaseController
         /** @var Manager|SalesPerson|SuperAdministrator $employee */
         $employee = $this->getUserOrThrow();
 
-        /*$customers = $this->customerRepository->findForPagination(
+        $customers = $this->customerRepository->getPaginated(
             $employee,
             $request->query->getInt('page', 1),
             HasLimit::USER_LIMIT,
             $form->get('keywords')->getData()
-        );*/
+        );
 
-        
-        /*$customers = $this->customerRepository->getPaginated(
-            $employee,
-            $request->query->getInt("page", 1),
-            HasLimit::USER_LIMIT,
-            $form->get("keywords")->getData()
-        );*/
+        $pages = ceil(count($customers) / $request->query->getInt('limit', HasLimit::USER_LIMIT));
 
-        $customers = $this->customerRepository->findBy([], ['id' => 'DESC'], 5);
-
-        return $this->render('dashboard/client/index.html.twig', [
-            'customers' => $customers,
-            'pages' => ceil(count($customers) / HasLimit::USER_LIMIT),
-            'form' => $form,
-        ]);
+        return $this->render('dashboard/client/index.html.twig', compact('form', 'pages', 'customers'));
     }
 
     #[Route(path: '/new/{id}', name: 'new', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS], defaults: ['id' => null])]
@@ -119,7 +107,7 @@ class AccessController extends BaseController
             return $this->redirectToRoute('dashboard_client_access_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/client/new-edit.html.twig', compact('form','customer'));
+        return $this->render('dashboard/client/new-edit.html.twig', compact('form', 'customer'));
     }
 
     #[Route(path: '/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
@@ -145,7 +133,7 @@ class AccessController extends BaseController
             return $this->redirectToRoute('dashboard_client_access_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('dashboard/client/new-edit.html.twig', compact('form','customer'));
+        return $this->render('dashboard/client/new-edit.html.twig', compact('form', 'customer'));
     }
 
     #[Route(path: '/{id}/delete', name: 'delete', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]

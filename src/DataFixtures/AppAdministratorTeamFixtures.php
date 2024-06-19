@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Company\Member;
 use App\Service\AvatarService;
 use App\Entity\Traits\HasRoles;
 use App\Entity\User\SuperAdministrator;
@@ -12,7 +13,7 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class AppAdministratorTeamFixtures extends Fixture
+class AppAdministratorTeamFixtures extends Fixture implements FixtureGroupInterface
 {
     use FakerTrait;
 
@@ -41,7 +42,7 @@ class AppAdministratorTeamFixtures extends Fixture
             ->setUsername('superadmin')
             // ->setSlug('superadmin')
             ->setEmail('superadmin@yourdomain.com')
-            // ->setPhone($this->faker()->phoneNumber())
+            ->setPhone($this->faker()->phoneNumber())
             ->setIsTeam(true)
             ->setIsAgreeTerms(true)
             ->setIsVerified(true)
@@ -74,7 +75,7 @@ class AppAdministratorTeamFixtures extends Fixture
             ->setUsername('admin')
             // ->setSlug('admin')
             ->setEmail('admin@yourdomain.com')
-            // ->setPhone($this->faker()->phoneNumber())
+            ->setPhone($this->faker()->phoneNumber())
             ->setIsTeam(true)
             ->setIsAgreeTerms(true)
             ->setIsVerified(true)
@@ -105,7 +106,7 @@ class AppAdministratorTeamFixtures extends Fixture
             ->setUsername('moderator')
             // ->setSlug('moderator')
             ->setEmail('moderator@yourdomain.com')
-            // ->setPhone($this->faker()->phoneNumber())
+            ->setPhone($this->faker()->phoneNumber())
             ->setIsTeam(true)
             ->setIsAgreeTerms(true)
             ->setIsVerified(true)
@@ -136,7 +137,7 @@ class AppAdministratorTeamFixtures extends Fixture
             ->setUsername('editor')
             // ->setSlug('editor')
             ->setEmail('editor@yourdomain.com')
-            // ->setPhone($this->faker()->phoneNumber())
+            ->setPhone($this->faker()->phoneNumber())
             ->setIsTeam(true)
             ->setIsAgreeTerms(true)
             ->setIsVerified(true)
@@ -155,5 +156,13 @@ class AppAdministratorTeamFixtures extends Fixture
         );
 
         $manager->flush();
+    }
+
+    /**
+     * @return array<array-key, class-string<Fixture>>
+     */
+    public static function getGroups(): array
+    {
+        return ['prod'];
     }
 }

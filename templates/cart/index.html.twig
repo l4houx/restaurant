@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if order.lines | length > 0 %}
+    {% if order.lines|length > 0 %}
         <section class="pt-0">
             <div class="container">
                 <div class="row">
@@ -70,7 +70,7 @@
                                     <hr>
                                 {% endfor %}
                                 <div class="d-flex justify-content-between">
-                                    <a href="#" class="btn btn-primary">
+                                    <a href="{{ path("shop_index") }}" class="btn btn-primary">
                                         {{ 'Continue Shopping'|trans }}
                                     </a>
                                     <a href="#" class="btn btn-light border mb-0">
@@ -154,13 +154,13 @@
                         <p class="mb-0">{{ 'Perceived end knowledge certainly day sweetness why cordially'|trans }}</p>
                     </div>
                 </div>
-                {% if questions | length > 0 %}
+                {% if questions|length > 0 %}
                     <div class="row g-4 g-md-5">
                         {% for q in questions %}
                             <div class="col-md-6 col-lg-4">
                                 <div class="card card-body border bg-transparent h-100 p-4">
                                     <h6>{{ q.question }}?</h6>
-                                    <p class="mb-0">{{ q.answer | html_markdown }}.</p>
+                                    <p class="mb-0">{{ q.answer|html_markdown }}.</p>
                                 </div>
                             </div>
                         {% endfor %}
@@ -204,7 +204,7 @@
                     <p class="mb-0">
                         {{ 'I think the below button is important. Hit this button and you will find a lot of interesting products on our "Shop" page'|trans }}
                     </p>
-                    <a href="" class="btn btn-primary mt-4 mb-0">{{ 'Back to Shop'|trans }}</a>
+                    <a href="{{ path("shop_index") }}" class="btn btn-primary mt-4 mb-0">{{ 'Back to Shop'|trans }}</a>
                 </div>
             </div>
         </section>

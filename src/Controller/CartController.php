@@ -5,23 +5,24 @@ namespace App\Controller;
 use App\Entity\Order\Line;
 use App\Entity\Order\Order;
 use App\Entity\Shop\Product;
-use App\Entity\Traits\HasRoles;
-use App\Entity\User\Collaborator;
-use App\Entity\User\Customer;
 use App\Entity\User\Manager;
+use App\Entity\User\Customer;
+use App\Entity\Traits\HasRoles;
 use App\Entity\User\SalesPerson;
+use App\Entity\User\Collaborator;
 use App\Form\Order\OrderFormType;
-use App\Repository\Order\OrderRepository;
+use App\Repository\QuestionRepository;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Repository\Order\OrderRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Workflow\WorkflowInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use App\Repository\QuestionRepository;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(HasRoles::SHOP)]
 #[Route('/cart', name: 'cart_')]
@@ -61,7 +62,7 @@ class CartController extends BaseController
                 if ($user instanceof Customer) {
                     $address = $user->getClient()->getMember()->getAddress();
                 } else {
-                    /** @var SalesPerson|Collaborator|Manager $user */
+                    /** @var SalesPerson|Collaborator|Manager|SuperAdministrator $user */
                     $address = $user->getMember()->getAddress();
                 }
 

@@ -2,97 +2,21 @@
 
 namespace App\Repository\Shop;
 
+use App\Entity\Shop\Category;
 use App\Entity\Shop\Filter;
 use App\Entity\Shop\Product;
-use App\Entity\Shop\Category;
-use App\Entity\Traits\HasLimit;
-use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\PaginatorInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Product>
  */
 class ProductRepository extends ServiceEntityRepository
 {
-    public function __construct(
-        ManagerRegistry $registry,
-        private readonly PaginatorInterface $paginator
-    ) {
+    public function __construct(ManagerRegistry $registry)
+    {
         parent::__construct($registry, Product::class);
-    }
-
-    public function findForPagination(
-        int $page,
-        int $limit,
-        string $sort,
-        ?Category $category,
-        Filter $filter
-    ): PaginationInterface {
-        $builder = $this->createQueryBuilder('p')
-            ->addSelect('b')
-            ->addSelect('c')
-            ->join('p.brand', 'b')
-            ->join('p.category', 'c')
-            ->leftJoin('c.lastProduct', 'lp')
-            ->andWhere('p.amount >= :min')
-            ->setParameter('min', $filter->min)
-            ->andWhere('p.amount <= :max')
-            ->setParameter('max', $filter->max)
-            ->setMaxResults($limit)
-            ->setFirstResult(($page - 1) * $limit)
-        ;
-
-        if (null !== $category) {
-            $builder
-                ->andWhere('c.left >= :left')
-                ->andWhere('c.right <= :right')
-                ->setParameter('left', $category->getLeft())
-                ->setParameter('right', $category->getRight())
-            ;
-        }
-
-        if (null !== $filter->brand) {
-            $builder
-                ->andWhere('b = :brand')
-                ->setParameter('brand', $filter->brand)
-            ;
-        }
-
-        if (null !== $filter->keywords) {
-            $builder
-                ->andWhere("CONCAT(p.name, ' ', p.content, ' ', b.name) LIKE :keywords")
-                ->setParameter('keywords', $filter->keywords)
-            ;
-        }
-
-        switch ($sort) {
-            case 'amount-asc':
-                $builder->orderBy('p.amount', 'asc');
-                break;
-            case 'amount-desc':
-                $builder->orderBy('p.amount', 'desc');
-                break;
-            case 'name-asc':
-                $builder->orderBy('p.name', 'asc');
-                break;
-            case 'name-desc':
-                $builder->orderBy('p.name', 'desc');
-                break;
-            default:
-                $builder->orderBy('lp.id', 'desc')->orderBy('p.id', 'desc');
-                break;
-        }
-
-        // return new Paginator($builder);
-
-        return $this->paginator->paginate(
-            $builder,
-            $page,
-            $limit
-        );
     }
 
     /**
@@ -105,58 +29,58 @@ class ProductRepository extends ServiceEntityRepository
         ?Category $category,
         Filter $filter
     ): Paginator {
-        $qb = $this->createQueryBuilder("p")
-            ->addSelect("b")
-            ->addSelect("c")
-            ->leftJoin("p.brand", "b")
-            ->leftJoin("p.category", "c")
-            ->leftJoin("c.lastProduct", "lp")
-            ->andWhere("p.amount >= :min")
-            ->setParameter("min", $filter->min)
-            ->andWhere("p.amount <= :max")
-            ->setParameter("max", $filter->max)
+        $qb = $this->createQueryBuilder('p')
+            ->addSelect('b')
+            ->addSelect('c')
+            ->leftJoin('p.brand', 'b')
+            ->leftJoin('p.category', 'c')
+            ->leftJoin('c.lastProduct', 'lp')
+            ->andWhere('p.amount >= :min')
+            ->setParameter('min', $filter->min)
+            ->andWhere('p.amount <= :max')
+            ->setParameter('max', $filter->max)
             ->setMaxResults($limit)
             ->setFirstResult(($page - 1) * $limit)
         ;
 
-        if ($category !== null) {
+        /*if ($category !== null) {
             $qb
                 ->andWhere("c.left >= :left")
                 ->andWhere("c.right <= :right")
                 ->setParameter("left", $category->getLeft())
                 ->setParameter("right", $category->getRight())
             ;
-        }
+        }*/
 
-        if ($filter->brand !== null) {
+        if (null !== $filter->brand) {
             $qb
-                ->andWhere("b = :brand")
-                ->setParameter("brand", $filter->brand)
+                ->andWhere('b = :brand')
+                ->setParameter('brand', $filter->brand)
             ;
         }
 
-        if ($filter->keywords !== null) {
+        if (null !== $filter->keywords) {
             $qb
                 ->andWhere("CONCAT(p.name, ' ', p.content, ' ', b.name) LIKE :keywords")
-                ->setParameter("keywords", $filter->keywords)
+                ->setParameter('keywords', $filter->keywords)
             ;
         }
 
         switch ($sort) {
-            case "amount-asc":
-                $qb->orderBy("p.amount", "asc");
+            case 'amount-asc':
+                $qb->orderBy('p.amount', 'asc');
                 break;
-            case "amount-desc":
-                $qb->orderBy("p.amount", "desc");
+            case 'amount-desc':
+                $qb->orderBy('p.amount', 'desc');
                 break;
-            case "name-asc":
-                $qb->orderBy("p.name", "asc");
+            case 'name-asc':
+                $qb->orderBy('p.name', 'asc');
                 break;
-            case "name-desc":
-                $qb->orderBy("p.name", "desc");
+            case 'name-desc':
+                $qb->orderBy('p.name', 'desc');
                 break;
             default:
-                $qb->orderBy("lp.id", "desc")->orderBy("p.id", "desc");
+                $qb->orderBy('lp.id', 'desc')->orderBy('p.id', 'desc');
                 break;
         }
 

@@ -1,0 +1,103 @@
+<div class="table-responsive overflow-y-hidden">
+	<table class="table mb-0 text-nowrap table-hover table-centered" data-role="accessList">
+		<thead class="">
+			<tr>
+				<th>{{ 'First name'|trans}}</th>
+				<th>{{ 'Last name'|trans }}</th>
+                <th>{{ 'Role'|trans }}</th>
+                {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                    <th>{{ 'Member'|trans }}</th>
+                {% endif %}
+                <th>{{ 'Registration Date'|trans }}</th>
+                <th>{{ 'Last login / IP'|trans}}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for employee in employees %}
+				<tr class="{{ employee.suspended ? "bg-warning" }}">
+					<td>{{ employee.firstname|lower|capitalize }}</td>
+					<td>{{ employee.lastname|lower|capitalize }}</td>
+					<td>{{ employee.roleName }}</td>
+                    {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                        <td>
+                            {% if employee.role == "ROLE_MANAGER" and employee.members|length > 1  %}
+                                {% for member in employee.members %}
+                                    {{ member.name ~ (not loop.last ? ", ") }}
+                                {% endfor %}
+                            {% else %}
+                                {{ employee.member.name }}
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                    <td>{{ employee.createdAt ? employee.createdAt|format_date('long') : '' }}</td>
+					<td>
+						{% if employee.lastLogin %}
+							{{ employee.lastLogin|format_date('long') }}
+						{% else %}
+							{{ "N/A"|trans }}
+						{% endif %}
+						<br>
+						<a href="https://ipinfo.io/{{ employee.lastLoginIp }}" target="_blank">{{ employee.lastLoginIp }}</a>
+					</td>
+					<td>
+						<div class="dropdown dropstart">
+							<a class="btn-icon btn btn-ghost btn-sm rounded-circle" href="#" role="button" id="Dropdown-{{ employee.id }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fas fa-ellipsis-v"></i>
+							</a>
+							<div class="dropdown-menu" aria-labelledby="Dropdown-{{ employee.id }}" style="">
+								<span class="dropdown-header">{{ 'Settings'|trans }}</span>
+                                {% if is_granted("edit", employee) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_member_access_edit', { id: employee.id }) }}">
+                                        <i class="fas fa-pencil fa-fw dropdown-item-icon"></i>
+                                        {{ 'Edit'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("delete", employee) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_member_access_delete', { id: employee.id }) }}">
+                                        <i class="fas fa-trash-restore fa-fw dropdown-item-icon"></i>
+                                        {{ 'Delete'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("suspend", employee) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_member_access_suspend', { id: employee.id }) }}">
+                                        <i class="fas fa-user-lock fa-fw dropdown-item-icon"></i>
+                                        {{ 'Suspend'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("active", employee) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_member_access_active', { id: employee.id }) }}">
+                                        <i class="fas fa-user-check fa-fw dropdown-item-icon"></i>
+                                        {{ 'Enable'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("reset", employee) %}
+                                    <a class="dropdown-item" href="{{ path('dashboard_member_access_reset', { id: employee.id }) }}">
+                                        <i class="fas fa-key fa-fw dropdown-item-icon"></i>
+                                        {{ 'Resend password'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("log_as", employee) %}
+                                    <a class="dropdown-item" href="{{ path("home", {_switch_user: employee.email}) }}">
+                                        <i class="fas fa-user-ninja fa-fw dropdown-item-icon"></i>
+                                        {{ 'View his profile'|trans }}
+                                    </a>
+                                {% endif %}
+							</div>
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+    {% if pages > 1 %}
+        <div class="card-footer bg-transparent text-end p-0">
+            {{ include("global/pagination.html.twig", {
+                class: "justify-content-center",
+                route: "dashboard_member_access_index",
+                current_page: app.request.get("page", 1),
+                pages: pages
+            }) }}
+        </div>
+    {% endif %}
+</div>

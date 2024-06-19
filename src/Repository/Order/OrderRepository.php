@@ -2,17 +2,15 @@
 
 namespace App\Repository\Order;
 
-use App\Entity\Order\Order;
-use App\Entity\User\Manager;
-use App\Entity\User\Customer;
 use App\Entity\Company\Member;
-use App\Entity\Traits\HasLimit;
+use App\Entity\Order\Order;
+use App\Entity\User\Customer;
+use App\Entity\User\Manager;
 use App\Entity\User\SalesPerson;
 use App\Entity\User\SuperAdministrator;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
-use Knp\Component\Pager\Pagination\PaginationInterface;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -39,8 +37,8 @@ class OrderRepository extends ServiceEntityRepository
         if ($employee instanceof SalesPerson) {
             $subQuery = $this->createQueryBuilder('c')
                 ->select('c.id')
-                ->from(Customer::class, 'c')
-                ->join('c.client', 'cl')
+                ->from(Customer::class, 'cu')
+                ->join('cu.client', 'cl')
                 ->where('cl.salesPerson = :employee')
                 ->getDQL()
             ;
@@ -49,8 +47,8 @@ class OrderRepository extends ServiceEntityRepository
         } else {
             $subQuery = $this->createQueryBuilder('c')
                 ->select('c.id')
-                ->from(Customer::class, 'c')
-                ->join('c.client', 'cl')
+                ->from(Customer::class, 'cu')
+                ->join('cu.client', 'cl')
                 ->join('cl.member', 'm')
             ;
 

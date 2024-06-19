@@ -23,7 +23,7 @@ class SavFormType extends AbstractType
     {
         $builder
             ->add('line', EntityType::class, [
-                'label' => t('Product concerned :'),
+                'label' => t('Product concerned'),
                 'class' => Line::class,
                 'choice_label' => fn (Line $line) => sprintf(
                     '%s - %s - %s',
@@ -39,7 +39,7 @@ class SavFormType extends AbstractType
                 ],
             ])
             ->add('_attachments', DropzoneType::class, [
-                'label' => t('Attachments :'),
+                'label' => t('Attachments'),
                 'required' => false,
                 'mapped' => false,
                 'attr' => [
@@ -53,14 +53,16 @@ class SavFormType extends AbstractType
                 'allow_add' => true,
             ])
             ->add('description', TextareaType::class, [
-                'label' => t('Accurate description of the fault :'),
+                'label' => t('Accurate description of the fault'),
+                'attr' => ['placeholder' => 'Description here', 'rows' => 4],
                 'row_attr' => [
                     'class' => 'mb-3',
                 ],
             ])
             ->add('comment', TextareaType::class, [
                 'required' => false,
-                'label' => t('Comments :'),
+                'label' => t('Comments'),
+                'attr' => ['placeholder' => 'Leave a comment here', 'rows' => 4],
                 'row_attr' => [
                     'class' => 'mb-3',
                 ],

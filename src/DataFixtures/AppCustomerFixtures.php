@@ -2,14 +2,15 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Company\Client;
 use App\Entity\User\Customer;
+use App\Entity\Company\Client;
 use App\Service\AvatarService;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use App\Entity\Traits\HasRoles;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppCustomerFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -46,27 +47,20 @@ class AppCustomerFixtures extends Fixture implements DependentFixtureInterface
         //$avatar = $this->avatarService->createAvatar($user->getEmail());
         $user = (new Customer())
             //->setAvatar($avatar)
+            ->setIsVerified(true)
+            ->setIsAgreeTerms(true)
+            ->setRoles([HasRoles::CUSTOMER])
             ->setLastName($this->faker()->lastName)
             ->setFirstName($this->faker()->firstName($genre))
-            ->setUsername(sprintf('user+%d', $this->autoIncrement))
-            ->setEmail(sprintf('user+%d@email.com', $this->autoIncrement))
+            ->setUsername(sprintf('customer+%d', $this->autoIncrement))
+            ->setEmail(sprintf('customer+%d@email.com', $this->autoIncrement))
             ->setLastLogin(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
             ->setLastLoginIp($this->faker()->ipv4())
             ->setCreatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
             ->setUpdatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
         ;
 
-        $user->setPassword($this->hasher->hashPassword($user, 'user'));
-
-        if ($this->autoIncrement > 5) {
-            $user->setIsVerified(false);
-            $user->setIsSuspended($this->faker()->numberBetween(0, 1));
-            $user->setIsAgreeTerms(false);
-            $user->setDeletedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')));
-        } else {
-            $user->setIsVerified(true);
-            $user->setIsAgreeTerms(true);
-        }
+        $user->setPassword($this->hasher->hashPassword($user, 'customer'));
 
         ++$this->autoIncrement;
 

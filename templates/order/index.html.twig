@@ -28,7 +28,6 @@
                                         <th>{{ 'Number of products'|trans }}</th>
                                         <th>{{ 'Total (keys)'|trans }}</th>
                                         <th>{{ 'Status'|trans }}</th>
-                                        <th>{{ 'Detail'|trans }}</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -71,7 +70,7 @@
                                         {% endif %}
                                     {% else %}
                                         <tr>
-                                            <td class="text-center" colspan="8">{{ 'No result'|trans }}</td>
+                                            <td class="text-center" colspan="10">{{ 'No result'|trans }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -79,8 +78,7 @@
                         </div>
                     </div>
                     {% if is_granted("ROLE_MANAGER") or is_granted("ROLE_SALES_PERSON") %}
-                        {# {{ render(path('order_clients')) }} #}
-                        {% include "order/_clients.html.twig" %}
+                        {{ render(path('order_clients')) }}
                     {% endif %}
                 </div>
             </div>

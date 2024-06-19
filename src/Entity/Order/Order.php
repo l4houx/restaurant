@@ -20,7 +20,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Order
 {
     use HasIdTrait;
-    use HasGedmoTimestampTrait;
+    use HasTimestampableTrait;
+    // use HasGedmoTimestampTrait;
 
     #[ORM\Column(type: Types::STRING)]
     private string $state = 'cart';
@@ -46,7 +47,7 @@ class Order
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
         $this->lines = new ArrayCollection();
         $this->transactions = new ArrayCollection();
     }

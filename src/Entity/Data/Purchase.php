@@ -2,7 +2,6 @@
 
 namespace App\Entity\Data;
 
-use App\Repository\Data\PurchaseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -31,7 +30,7 @@ class Purchase extends Transaction
     public function prepare(): static
     {
         $wallet = new Wallet($this->account, new \DateTimeImmutable('2 year first day of next month midnight'));
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
         $this->wallet = $wallet;
         $wallet->setPurchase($this);
 

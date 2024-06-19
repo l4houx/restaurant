@@ -59,21 +59,6 @@ class AccessFormType extends AbstractType
                 'empty_data' => '',
                 'attr' => ['placeholder' => t('Telephone No here')],
             ])
-            // Team
-            ->add('designation', TextType::class, [
-                'label' => t('Designation'),
-                // 'purify_html' => true,
-                'required' => false,
-                'empty_data' => '',
-                'attr' => ['placeholder' => ''],
-            ])
-            ->add('about', TextareaType::class, [
-                'label' => t('About'),
-                // 'purify_html' => true,
-                'required' => false,
-                'empty_data' => '',
-                'attr' => ['placeholder' => '', 'rows' => 6],
-            ])
             ->addEventListener(FormEvents::POST_SUBMIT, $this->formListenerFactory->timestamps())
         ;
 

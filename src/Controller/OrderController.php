@@ -30,7 +30,6 @@ class OrderController extends BaseController
     }
 
     #[Route('/clients', name: 'clients', methods: ['GET'])]
-    //#[Security("is_granted('ROLE_SALES_PERSON') or is_granted('ROLE_MANAGER')")]
     public function clients(OrderRepository $orderRepository): Response
     {
         $this->denyAccessUnlessGranted(new Expression(

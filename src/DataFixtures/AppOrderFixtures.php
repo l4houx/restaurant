@@ -2,20 +2,21 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\User;
 use App\Entity\Order\Line;
 use App\Entity\Order\Order;
 use App\Entity\Shop\Product;
-use App\Entity\User;
-use App\Entity\User\Collaborator;
-use App\Entity\User\Customer;
 use App\Entity\User\Manager;
+use App\Entity\User\Customer;
 use App\Entity\User\SalesPerson;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use App\Entity\User\Collaborator;
+use App\Entity\User\SuperAdministrator;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\Workflow\WorkflowInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class AppOrderFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -41,10 +42,10 @@ class AppOrderFixtures extends Fixture implements DependentFixtureInterface
          */
         foreach ($users as $k => $user) {
             if ($user instanceof Customer) {
-                $address = $user->getClient()->getMember()->getAddress();
+                $address = $user->getClient()->getMember()?->getAddress();
             } else {
-                /** @var SalesPerson|Collaborator|Manager $user */
-                $address = $user->getMember()->getAddress();
+                /** @var SalesPerson|Collaborator|Manager|SuperAdministrator $user */
+                $address = $user->getMember()?->getAddress();
             }
 
             $token = new UsernamePasswordToken($user, 'main', $user->getRoles());

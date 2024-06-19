@@ -16,7 +16,7 @@
                     <h6 class="mb-0">{{ 'List of access'|trans }}</h6>
                 </div>
                 <div class="col-xl-9 ms-auto">
-                    {{ form_start(form, {attr: {class: "rounded position-relative", method: "GET", action: path("dashboard_client_access_index", {page: 1})}}) }}
+                    {{ form_start(form, {attr: {class: "rounded position-relative", method: "GET", action: path("dashboard_client_access_index", {page: 1})} }) }}
                         {{ form_row(form.keywords) }}
                         <button class="btn border-0 px-3 py-0 position-absolute top-50 end-0 translate-middle-y" type="submit">
                             <i class="fas fa-search fs-6"></i>

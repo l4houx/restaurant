@@ -6,6 +6,7 @@ use App\Entity\Traits\HasDeletedAtTrait;
 use App\Entity\Traits\HasExpiredAtTrait;
 use App\Entity\Traits\HasGedmoTimestampTrait;
 use App\Entity\Traits\HasIdTrait;
+use App\Entity\Traits\HasTimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -17,7 +18,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Wallet implements \Stringable
 {
     use HasIdTrait;
-    use HasGedmoTimestampTrait;
+    use HasTimestampableTrait;
+    // use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
     // use SoftDeleteableEntity;
     use HasExpiredAtTrait;
@@ -48,7 +50,7 @@ class Wallet implements \Stringable
     public function __construct(Account $account, \DateTimeImmutable $expiredAt)
     {
         $this->transactions = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
         $this->expiredAt = $expiredAt;
         $this->account = $account;
         if (!$account->getWallets()->contains($this)) {

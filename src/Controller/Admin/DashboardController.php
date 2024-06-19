@@ -2,53 +2,54 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\AppLayoutSetting;
-use App\Entity\Comment;
-use App\Entity\Company\Client;
-use App\Entity\Company\Member;
-use App\Entity\Company\Organization;
-use App\Entity\Currency;
-use App\Entity\Data\Account;
-use App\Entity\Data\Purchase;
-use App\Entity\Data\Transaction;
-use App\Entity\Data\Transfer;
-use App\Entity\Data\Wallet;
-use App\Entity\HelpCenterArticle;
-use App\Entity\HelpCenterCategory;
-use App\Entity\HelpCenterFaq;
-use App\Entity\HomepageHeroSetting;
-use App\Entity\Order\Order;
 use App\Entity\Page;
 use App\Entity\Post;
-use App\Entity\PostCategory;
+use App\Entity\User;
+use App\Entity\Rules;
+use App\Entity\Review;
+use App\Entity\Comment;
+use App\Entity\Setting;
+use App\Entity\Currency;
 use App\Entity\PostType;
 use App\Entity\Question;
-use App\Entity\Review;
-use App\Entity\Rules;
-use App\Entity\Setting;
 use App\Entity\Shop\Brand;
-use App\Entity\Shop\Category;
-use App\Entity\Shop\Product;
+use App\Entity\Data\Wallet;
+use App\Entity\Order\Order;
 use App\Entity\Testimonial;
-use App\Entity\Traits\HasRoles;
-use App\Entity\User;
-use App\Entity\User\Collaborator;
-use App\Entity\User\Customer;
+use App\Entity\Data\Account;
+use App\Entity\PostCategory;
+use App\Entity\Shop\Product;
 use App\Entity\User\Manager;
+use App\Entity\Data\Purchase;
+use App\Entity\Data\Transfer;
+use App\Entity\HelpCenterFaq;
+use App\Entity\Shop\Category;
+use App\Entity\User\Customer;
+use App\Entity\Company\Client;
+use App\Entity\Company\Member;
+use App\Entity\Traits\HasRoles;
+use App\Entity\AppLayoutSetting;
+use App\Entity\Data\Transaction;
+use App\Entity\Shop\SubCategory;
 use App\Entity\User\SalesPerson;
+use App\Entity\HelpCenterArticle;
+use App\Entity\User\Collaborator;
+use App\Entity\HelpCenterCategory;
+use App\Entity\HomepageHeroSetting;
+use App\Entity\Company\Organization;
 use App\Entity\User\SuperAdministrator;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
-use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use function Symfony\Component\Translation\t;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-use function Symfony\Component\Translation\t;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -61,7 +62,7 @@ class DashboardController extends AbstractDashboardController
     #[IsGranted(HasRoles::TEAM)]
     public function index(): Response
     {
-        $controller = $this->isGranted(HasRoles::ADMIN) ? SettingCrudController::class : PostCrudController::class;
+        $controller = $this->isGranted(HasRoles::ADMIN) ? SettingCrudController::class : ProductCrudController::class;
 
         $url = $this->adminUrlGenerator
             ->setController($controller)
@@ -108,9 +109,9 @@ class DashboardController extends AbstractDashboardController
 
             yield MenuItem::section(t('Shoppings Settings'));
             yield MenuItem::subMenu(t('Shoppings'), 'fas fa-shop')->setSubItems([
-                // MenuItem::linkToCrud(t('Products'), 'fa fa-shopping-cart', Product::class),
-                // MenuItem::linkToCrud(t('Brands'), 'fas fa-b', Brand::class),
-                // MenuItem::linkToCrud(t('Categories'), 'fa fa-tags', Category::class),
+                MenuItem::linkToCrud(t('Products'), 'fa fa-shopping-cart', Product::class),
+                MenuItem::linkToCrud(t('Brands'), 'fas fa-b', Brand::class),
+                MenuItem::linkToCrud(t('Sub Categories'), 'fa fa-tags', SubCategory::class),
                 MenuItem::linkToCrud(t('Orders'), 'fa fa-bell', Order::class),
             ]);
 

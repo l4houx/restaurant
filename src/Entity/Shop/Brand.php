@@ -7,6 +7,7 @@ use App\Entity\Traits\HasGedmoTimestampTrait;
 use App\Entity\Traits\HasIdNameTrait;
 use App\Entity\Traits\HasIsOnlineTrait;
 use App\Entity\Traits\HasMetaTrait;
+use App\Entity\Traits\HasTimestampableTrait;
 use App\Repository\Shop\BrandRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -20,6 +21,12 @@ class Brand
     use HasIdNameTrait;
     use HasMetaTrait;
     use HasIsOnlineTrait;
-    use HasGedmoTimestampTrait;
+    use HasTimestampableTrait;
+    // use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 }

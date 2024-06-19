@@ -9,6 +9,7 @@ use App\Entity\Shop\Product;
 use App\Entity\Shop\SubCategory;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -41,10 +42,11 @@ class AppShopFixtures extends Fixture
     private function createSubCategories(ObjectManager $manager): void
     {
         for ($i = 1; $i <= 10; ++$i) {
-            /** @var SubCategory $subCategory */
-            $subCategory = (new SubCategory())
+            $subCategory = (new SubCategory());
+            $subCategory
                 ->setId($i)
-                ->setName(sprintf('SubCategoies %d', $i))
+                ->setName($this->faker()->unique()->sentence(5, true))
+                ->setSlug($this->slugger->slug($subCategory->getName())->lower())
                 ->setColor($this->faker()->hexColor())
             ;
             $this->subCategories[$i] = $subCategory;
@@ -55,24 +57,31 @@ class AppShopFixtures extends Fixture
     private function createCategories(ObjectManager $manager, Category $parent): void
     {
         for ($i = 1; $i <= 5; ++$i) {
-            $manager->persist($category = (new Category())
+            $category = (new Category());
+            $category
                 ->setId($this->categoryId)
-                ->setParent($parent)
+                ->setName($this->faker()->unique()->sentence(5, true))
+                ->setSlug($this->slugger->slug($category->getName())->lower())
+                ->setParent($category)
                 ->setNumberOfProducts(10)
-                ->setName(sprintf('Categorie %d', $this->categoryId)))
             ;
+            $this->categories[] = $category;
+            $manager->persist($category);
 
             ++$this->categoryId;
 
             for ($l = 1; $l <= 5; ++$l) {
-                $manager->persist($subCategory = (new Category())
+                $sub = (new Category());
+                $sub
                     ->setId($this->categoryId)
+                    ->setName($this->faker()->unique()->sentence(5, true))
+                    ->setSlug($this->slugger->slug($sub->getName())->lower())
                     ->setParent($category)
                     ->setNumberOfProducts(10)
-                    ->setName(sprintf('Categorie %d', $this->categoryId)))
                 ;
+                $this->categories[] = $sub;
+                $manager->persist($sub);
 
-                $this->categories[] = $subCategory;
                 ++$this->categoryId;
             }
         }
@@ -88,25 +97,34 @@ class AppShopFixtures extends Fixture
                 ->setMetaTitle(sprintf('Brand %d', $i))
                 ->setMetaDescription(sprintf('Brand %d', $i))
                 ->setIsOnline(true)
+                ->setCreatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
+                ->setUpdatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
             ;
             $this->brands[$i] = $brand;
             $manager->persist($brand);
         }
     }
 
+    /**
+     * @param EntityManagerInterface $manager
+     */
     public function load(ObjectManager $manager): void
     {
         $this->createSubCategories($manager);
 
-        $manager->persist($category = (new Category())->setId(10000)->setName('Categorie 1'));
+        $manager->persist($category = (new Category())->setId(10000)->setName($this->faker()->unique()->name));
 
         for ($j = 1; $j <= 20; ++$j) {
-            $manager->persist($categoryLevel1 = (new Category())
+            $categoryLevel1 = (new Category());
+            $categoryLevel1
                 ->setId($this->categoryId)
+                ->setName($this->faker()->unique()->sentence(5, true))
+                ->setSlug($this->slugger->slug($categoryLevel1->getName())->lower())
                 ->setParent($category)
                 ->setNumberOfProducts(10)
-                ->setName(sprintf('Categorie %d', $this->categoryId)))
             ;
+            $this->categories[] = $categoryLevel1;
+            $manager->persist($categoryLevel1);
 
             ++$this->categoryId;
 
@@ -131,22 +149,19 @@ class AppShopFixtures extends Fixture
         /** @var array<int, User> $users */
         $users = $manager->getRepository(User::class)->findAll();
 
-        $i = 1;
-
         // Create 2000 Products by User and admin
         for ($p = 1; $p <= 2000; ++$p) {
-            /** @var string $content */
-            $content = $this->faker()->sentences(5, true);
-
             $product = (new Product());
             $product
                 ->setId($p)
-                ->setName(sprintf('Product %d', $p))
-                ->setContent($content)
+                ->setName($this->faker()->unique()->sentence(5, true))
+                ->setSlug($this->slugger->slug($product->getName())->lower())
+                ->setContent($this->faker()->paragraphs(10, true))
                 ->setCategory($this->categories[$p % count($this->categories)])
                 ->setBrand($this->brands[($p % count($this->brands)) + 1])
                 ->setRef(sprintf('REF_%d', $p))
                 ->setAmount(intval(ceil(rand(10, 2000) / 5) * 5))
+                ->setTax(0.2)
                 ->setStock(rand(10, 2000))
                 ->setTags($this->faker()->word())
                 ->setViews(rand(10, 2000))
@@ -169,11 +184,9 @@ class AppShopFixtures extends Fixture
                 ->addAddedtofavoritesby($this->faker()->randomElement($users))
                 ->setIsonhomepageslider($this->faker()->randomElement($homepages))
                 ->setIsOnline($this->faker()->numberBetween(0, 1))
+                ->setCreatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
+                ->setUpdatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
             ;
-
-            $this->setReference('p-'.$p, $product);
-
-            ++$i;
 
             if (2000 === $p) {
                 $product->setAmount(2000);

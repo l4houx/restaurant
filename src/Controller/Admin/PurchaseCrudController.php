@@ -76,7 +76,8 @@ class PurchaseCrudController extends AbstractCrudController
             ->setEntityLabelInPlural(t('Point Purchases'))
             ->setDefaultSort(['createdAt' => 'DESC'])
             ->setDateFormat('dd/MM/YYYY')
-            ->setDateTimeFormat('dd/MM/YYYY HH:mm:ss');
+            ->setDateTimeFormat('dd/MM/YYYY HH:mm:ss')
+        ;
     }
 
     public function configureActions(Actions $actions): Actions

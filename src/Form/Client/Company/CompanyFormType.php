@@ -33,6 +33,7 @@ class CompanyFormType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => t('Social reason'),
                 'empty_data' => '',
+                'attr' => ['placeholder' => t('Company')],
             ])
             ->add('address', AddressType::class, [
                 'label' => false,
@@ -41,6 +42,7 @@ class CompanyFormType extends AbstractType
                 'required' => false,
                 'label' => t('SIRET No'),
                 'empty_data' => '',
+                'attr' => ['placeholder' => t('21931232314430')],
             ])
             ->addEventListener(FormEvents::POST_SUBMIT, $this->formListenerFactory->timestamps())
         ;

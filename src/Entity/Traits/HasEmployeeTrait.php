@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 trait HasEmployeeTrait
 {
     #[ORM\ManyToOne]
-    private ?Member $member = null;
+    protected ?Member $member = null;
 
     #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\NotBlank]
@@ -21,7 +21,7 @@ trait HasEmployeeTrait
         pattern: '/^0[0-9]{9}$/',
         message: 'This value is not a valid phone number.',
     )]
-    private string $phone = '';
+    protected string $phone = '';
 
     public function getMember(): ?Member
     {

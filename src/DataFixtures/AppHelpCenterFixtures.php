@@ -13,7 +13,7 @@ class AppHelpCenterFixtures extends Fixture
 {
     use FakerTrait;
 
-    private $counter = 1;
+    private int $autoIncrement;
 
     private int $subcategoryId = 0;
 
@@ -25,6 +25,7 @@ class AppHelpCenterFixtures extends Fixture
     public function __construct(
         private readonly SluggerInterface $slugger
     ) {
+        $this->autoIncrement = 1;
     }
 
     public function load(ObjectManager $manager): void
@@ -105,8 +106,8 @@ class AppHelpCenterFixtures extends Fixture
         ;
         $manager->persist($helpcentercategory);
 
-        $this->addReference('helpcentercategory-'.$this->counter, $helpcentercategory);
-        ++$this->counter;
+        $this->addReference('helpcentercategory-'.$this->autoIncrement, $helpcentercategory);
+        ++$this->autoIncrement;
 
         return $helpcentercategory;
     }

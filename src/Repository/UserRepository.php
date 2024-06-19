@@ -2,83 +2,29 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
-use App\Entity\User\Manager;
 use App\Entity\Company\Member;
-use Doctrine\ORM\QueryBuilder;
-use App\Entity\Traits\HasLimit;
-use App\Entity\User\SalesPerson;
-use App\Entity\User\Collaborator;
 use App\Entity\HomepageHeroSetting;
+use App\Entity\User;
+use App\Entity\User\Collaborator;
+use App\Entity\User\Manager;
+use App\Entity\User\SalesPerson;
 use App\Entity\User\SuperAdministrator;
-use Doctrine\Persistence\ManagerRegistry;
-use Knp\Component\Pager\PaginatorInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use Knp\Component\Pager\Pagination\PaginationInterface;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  * @extends ServiceEntityRepository<User>
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    public function __construct(
-        ManagerRegistry $registry,
-        private readonly PaginatorInterface $paginator
-    ) {
-        parent::__construct($registry, User::class);
-    }
-
-    public function findForPagination(Manager $manager, int $page, int $limit, mixed $keywords): PaginationInterface
+    public function __construct(ManagerRegistry $registry)
     {
-        $collaboratorsQB = $this->createQueryBuilder('c')
-            ->select('c.id')
-            ->from(Collaborator::class, 'c')
-            ->where('c.member IN (:members)')
-            ->getDQL()
-        ;
-        $managersQB = $this->createQueryBuilder('m')
-            ->select('m.id')
-            ->from(Manager::class, 'm')
-            ->where('m.member IN (:members)')
-            ->getDQL()
-        ;
-        $salesPersonsQB = $this->createQueryBuilder('s')
-            ->select('s.id')
-            ->from(SalesPerson::class, 's')
-            ->where('s.member IN (:members)')
-            ->getDQL()
-        ;
-        $builder = $this->createQueryBuilder('u')
-            ->select('u')
-            ->from(User::class, 'u')
-            ->andWhere("CONCAT(u.firstname, ' ', u.lastname) LIKE :keywords")
-            ->andWhere('u != :manager')
-            ->setParameter('manager', $manager)
-            ->setParameter('keywords', '%'.($keywords ?? '').'%')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->orderBy('u.firstname', 'asc')
-            ->addOrderBy('u.lastname', 'asc')
-        ;
-        $builder->andWhere(
-            $builder->expr()->orX(
-                $builder->expr()->in('u.id', $collaboratorsQB),
-                $builder->expr()->in('u.id', $salesPersonsQB),
-                $builder->expr()->in('u.id', $managersQB)
-            )
-        )->setParameter('members', $manager->getMembers()->map(fn (Member $member) => $member->getId())->toArray());
-
-        // return new Paginator($builder);
-
-        return $this->paginator->paginate(
-            $builder,
-            $page,
-            $limit
-        );
+        parent::__construct($registry, User::class);
     }
 
     /**
@@ -87,36 +33,36 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function getPaginated(Manager|SuperAdministrator $manager, int $page, int $limit, mixed $keywords): Paginator
     {
         $collaboratorsQB = $this->createQueryBuilder('c')
-            ->select('c.id')
-            ->from(Collaborator::class, 'c')
-            ->where('c.member IN (:members)')
+            ->select('col.id')
+            ->from(Collaborator::class, 'col')
+            ->where('col.member IN (:members)')
             ->getDQL()
         ;
         $managersQB = $this->createQueryBuilder('m')
-            ->select('m.id')
-            ->from(Manager::class, 'm')
-            ->where('m.member IN (:members)')
+            ->select('man.id')
+            ->from(Manager::class, 'man')
+            ->where('man.member IN (:members)')
             ->getDQL()
         ;
         $administratorQB = $this->createQueryBuilder('a')
-            ->select('a.id')
-            ->from(SuperAdministrator::class, 'a')
-            ->where('a.member IN (:members)')
+            ->select('sup.id')
+            ->from(SuperAdministrator::class, 'sup')
+            ->where('sup.member IN (:members)')
             ->getDQL()
         ;
         $salesPersonsQB = $this->createQueryBuilder('s')
-            ->select('s.id')
-            ->from(SalesPerson::class, 's')
-            ->where('s.member IN (:members)')
+            ->select('sal.id')
+            ->from(SalesPerson::class, 'sal')
+            ->where('sal.member IN (:members)')
             ->getDQL()
         ;
         $qb = $this->createQueryBuilder('u')
-            ->select('u')
-            ->from(User::class, 'u')
-            ->andWhere("CONCAT_WS(u.firstname, ' ', u.lastname) LIKE :keywords")
-            //->where('u != :manager')
-            //->setParameter('manager', $manager)
-            ->setParameter('keywords', '%'.($keywords ?? '').'%')
+            // ->select('us')
+            // ->from(User::class, 'us')
+            ->andWhere("CONCAT(u.firstname, ' ', u.lastname) LIKE :keywords")
+            ->where('u != :manager')
+            ->setParameter('manager', $manager)
+            // ->setParameter('keywords', '%'.($keywords ?? '').'%')
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit)
             ->orderBy('u.firstname', 'asc')

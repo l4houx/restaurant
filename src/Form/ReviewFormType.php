@@ -52,8 +52,6 @@ class ReviewFormType extends AbstractType
                 'attr' => ['placeholder' => '', 'rows' => 6],
                 'help' => t(''),
             ])
-            // ->add('author', UserAutocompleteField::class, ['label' => t('Author')])
-            // ->add('isVisible', SwitchType::class, ['label' => t('Online')])
             ->addEventListener(FormEvents::PRE_SUBMIT, $this->formListenerFactory->slug('name'))
             ->addEventListener(FormEvents::POST_SUBMIT, $this->formListenerFactory->timestamps())
         ;
