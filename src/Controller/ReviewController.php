@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
+use App\Entity\Shop\Product;
 use App\Service\SettingService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,9 +11,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[Route('/shop', name: 'shop_')]
 class ReviewController extends BaseController
 {
-    #[Route(path: '/product/{slug}/reviews', name: 'product_reviews', methods: ['GET'], requirements: ['slug' => Requirement::ASCII_SLUG])]
+    #[Route(path: '/products/{slug}/reviews', name: 'product_reviews', methods: ['GET'], requirements: ['slug' => Requirement::ASCII_SLUG])]
     public function review(
         Request $request,
         PaginatorInterface $paginator,
@@ -28,7 +29,7 @@ class ReviewController extends BaseController
         if (!$product) {
             $this->addFlash('danger', $translator->trans('The product not be found'));
 
-            return $this->redirectToRoute('products', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('shop_index', [], Response::HTTP_SEE_OTHER);
         }
 
         $reviews = $paginator->paginate(
@@ -38,6 +39,6 @@ class ReviewController extends BaseController
             ['wrap-queries' => true]
         );
 
-        return $this->render('product/review.html.twig', compact('product', 'reviews'));
+        return $this->render('shop/review.html.twig', compact('product', 'reviews'));
     }
 }

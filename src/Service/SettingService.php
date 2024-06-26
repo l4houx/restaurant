@@ -336,9 +336,9 @@ class SettingService
         // $this->disableSofDeleteFilterForAdmin($this->em, $this->authChecker);
         $selecttags = array_key_exists('selecttags', $criterias) ? $criterias['selecttags'] : false;
         $isOnline = \array_key_exists('isOnline', $criterias) ? $criterias['isOnline'] : true;
-        $elapsed = array_key_exists('elapsed', $criterias) ? $criterias['elapsed'] : false;
         $keyword = array_key_exists('keyword', $criterias) ? $criterias['keyword'] : 'all';
         $id = array_key_exists('id', $criterias) ? $criterias['id'] : 'all';
+        $slug = array_key_exists('slug', $criterias) ? $criterias['slug'] : 'all';
         $addedtofavoritesby = array_key_exists('addedtofavoritesby', $criterias) ? $criterias['addedtofavoritesby'] : 'all';
         $isOnHomepageSlider = array_key_exists('isOnHomepageSlider', $criterias) ? $criterias['isOnHomepageSlider'] : 'all';
         $subCategories = array_key_exists('subCategories', $criterias) ? $criterias['subCategories'] : 'all';
@@ -349,7 +349,7 @@ class SettingService
         $order = array_key_exists('order', $criterias) ? $criterias['order'] : 'DESC';
         $count = array_key_exists('count', $criterias) ? $criterias['count'] : false;
 
-        return $this->em->getRepository("App\Entity\Product")->getProducts($selecttags, $isOnline, $elapsed, $keyword, $id, $addedtofavoritesby, $isOnHomepageSlider, $subCategories, $ref, $limit, $sort, $order, $otherthan, $count);
+        return $this->em->getRepository("App\Entity\Shop\Product")->getProducts($selecttags, $isOnline, $keyword, $slug, $id, $addedtofavoritesby, $isOnHomepageSlider, $subCategories, $ref, $limit, $sort, $order, $otherthan, $count);
     }
 
     // Returns the users after applying the specified search criterias

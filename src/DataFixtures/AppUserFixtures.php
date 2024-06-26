@@ -44,7 +44,7 @@ class AppUserFixtures extends Fixture implements DependentFixtureInterface
                 ->setLastName($this->faker()->lastName)
                 ->setFirstName($this->faker()->firstName($genre))
                 ->setUsername(sprintf('user+%d', $this->autoIncrement))
-                ->setEmail(sprintf('user+%d@email.com', $this->autoIncrement))
+                ->setEmail(sprintf('user+%d@yourdomain.com', $this->autoIncrement))
                 ->setLastLogin(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
                 ->setLastLoginIp($this->faker()->ipv4())
                 ->setCreatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))

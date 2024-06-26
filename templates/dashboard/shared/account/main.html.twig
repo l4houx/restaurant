@@ -46,7 +46,7 @@
                                 <div class="mb-4">
                                     <p class="heading-color fw-bold mb-0">{{ 'Registered the'|trans }} : 
                                         <span class="text-secondary">
-                                            {{ app.user.createdAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
+                                            {{ app.user.createdAt|localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
                                         </span>
                                     </p>
                                 </div>
@@ -59,6 +59,42 @@
                             <a href="{{ path("dashboard_account_change_password") }}" class="btn btn-primary mb-0">
                                 {{ 'Edit Password'|trans }}
                             </a>
+                        </div>
+                    </div>
+                    <div class="text-center my-5"><i class="fas fa-ellipsis"></i></div>
+                    <div class="card bg-transparent p-0">
+                        <div class="card-header bg-transparent border-bottom p-0 pb-3">
+                            <h6 class="mb-0">{{ 'Rule'|trans }}</h6>
+                        </div>
+                        <div class="list-group list-group-flush flex-grow-1 px-0" data-role="rules">
+                            {% for rules_agreement in app.user.rulesAgreements %}
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#modal-rules-{{ rules_agreement.rules.id }}" class="list-group-item d-flex flex-column">
+                                    <span class="fw-bold">
+                                        {{ 'Regulations published on'|trans }}
+                                        {{ rules_agreement.rules.publishedAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
+                                    </span>
+                                    <span class="text-muted">
+                                        {{ rules_agreement.accepted ? "Accepted"|trans : "Refused"|trans }} le 
+                                        {{ rules_agreement.agreedAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
+                                    </span>
+                                </a>
+                                <div class="modal fade" id="modal-rules-{{ rules_agreement.rules.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">
+                                                    {{ 'Regulations published on'|trans }}
+                                                    {{ rules_agreement.rules.publishedAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {{ rules_agreement.rules.content | html_markdown }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="text-center my-5"><i class="fas fa-ellipsis"></i></div>
@@ -101,14 +137,14 @@
                                         </p>
                                     </div>
                                 {% endif %}
-                                {% if is_granted("ROLE_MANAGER") and app.user.members|length == 1 %}
+                                {% if is_granted("ROLE_MANAGER") and is_granted('ROLE_TEAM') and app.user.members|length == 1 %}
                                     <div class="mb-4">
                                         <p class="heading-color fw-bold mb-0">{{ 'Member'|trans }} : 
                                             <span class="text-secondary">{{ app.user.member.name }}</span>
                                         </p>
                                     </div>
                                 {% endif %}
-                                {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                                {% if is_granted("ROLE_MANAGER") and is_granted('ROLE_TEAM') and app.user.members|length > 1 %}
                                     <div class="mb-4">
                                         <p class="heading-color fw-bold mb-0">{{ 'Main member'|trans }} : 
                                             <span class="text-secondary">{{ app.user.member.name }}</span>
@@ -128,8 +164,7 @@
                                         </p>
                                     </div>
                                 {% endif %}
-                                {#
-                                {% if not is_granted("ROLE_CUSTOMER") and app.user.member.address is not null %}
+                                {% if not is_granted("ROLE_CUSTOMER") and not is_granted('ROLE_TEAM') and app.user.member.address is not null %}
                                     <div class="mb-4">
                                         <p class="heading-color fw-bold mb-0">{{ 'Address'|trans }} :
                                             <span class="text-secondary">
@@ -142,11 +177,10 @@
                                         </p>
                                     </div>
                                 {% endif %}
-                                #}
                             </div>
                         </div>
                     </div>
-                    {% if is_granted("ROLE_MANAGER") and app.user.members|length > 1 %}
+                    {% if is_granted("ROLE_MANAGER") and is_granted('ROLE_TEAM') and app.user.members|length > 1 %}
                         <div class="card bg-transparent p-0">
                             <div class="card-header bg-transparent border-bottom p-0 pb-3">
                                 <h6 class="mb-0">
@@ -164,42 +198,6 @@
                         <a href="{{ path("contact") }}" class="btn btn-danger mb-0">
                             {{ 'Report an error'|trans }}
                         </a>
-                    </div>
-                    <div class="text-center my-5"><i class="fas fa-ellipsis"></i></div>
-                    <div class="card bg-transparent p-0">
-                        <div class="card-header bg-transparent border-bottom p-0 pb-3">
-                            <h6 class="mb-0">{{ 'Rule'|trans }}</h6>
-                        </div>
-                        <div class="list-group list-group-flush flex-grow-1 px-0" data-role="rules">
-                            {% for rules_agreement in app.user.rulesAgreements %}
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#modal-rules-{{ rules_agreement.rules.id }}" class="list-group-item d-flex flex-column">
-                                    <span class="fw-bold">
-                                        {{ 'Regulations published on'|trans }}
-                                        {{ rules_agreement.rules.publishedAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
-                                    </span>
-                                    <span class="text-muted">
-                                        {{ rules_agreement.accepted ? "Accepted"|trans : "Refused"|trans }} le 
-                                        {{ rules_agreement.agreedAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
-                                    </span>
-                                </a>
-                                <div class="modal fade" id="modal-rules-{{ rules_agreement.rules.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-xl">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">
-                                                    {{ 'Regulations published on'|trans }}
-                                                    {{ rules_agreement.rules.publishedAt | localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                {{ rules_agreement.rules.content | html_markdown }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
                     </div>
                 </div>
             </div>

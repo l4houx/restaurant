@@ -4,38 +4,41 @@ namespace App\Entity;
 
 use App\Entity\Data\Account;
 use App\Entity\Shop\Product;
-use App\Entity\User\Manager;
-use App\Entity\User\Customer;
-use Doctrine\DBAL\Types\Types;
-use App\Entity\Traits\HasRoles;
-use App\Entity\User\SalesPerson;
-use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\HasIdTrait;
-use App\Entity\User\Collaborator;
-use App\Repository\UserRepository;
-use App\Entity\Traits\HasIsTeamTrait;
-
-use App\Entity\User\SuperAdministrator;
+use App\Entity\Tickets\Ticket;
 use App\Entity\Traits\HasDeletedAtTrait;
-use function Symfony\Component\String\u;
-use Doctrine\Common\Collections\Collection;
-use App\Entity\Traits\HasTimestampableTrait;
-use App\Entity\Traits\HasRulesAgreementsTrait;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Entity\Traits\HasIdTrait;
+use App\Entity\Traits\HasIsTeamTrait;
 use App\Entity\Traits\HasRegistrationDetailsTrait;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\Traits\HasRoles;
+use App\Entity\Traits\HasRulesAgreementsTrait;
+use App\Entity\Traits\HasTimestampableTrait;
+use App\Entity\User\Collaborator;
+use App\Entity\User\Customer;
+use App\Entity\User\Manager;
+use App\Entity\User\SalesPerson;
+use App\Entity\User\SuperAdministrator;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
+use function Symfony\Component\String\u;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discr', type: 'string')]
 #[ORM\DiscriminatorMap(['superadministrator' => SuperAdministrator::class, 'manager' => Manager::class, 'customer' => Customer::class, 'collaborator' => Collaborator::class, 'sales_person' => SalesPerson::class])]
-//#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
     use HasIdTrait;
@@ -43,7 +46,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     use HasRulesAgreementsTrait;
     use HasIsTeamTrait;
     use HasTimestampableTrait;
-    //use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
     // use SoftDeleteableEntity;
 
@@ -117,6 +119,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[ORM\JoinColumn(nullable: false)]
     private ?Account $account = null;
 
+    /**
+     * @var Collection<int, Ticket>
+     */
+    #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'user', orphanRemoval: true, cascade: ['remove'])]
+    private Collection $tickets;
+
     public function __construct()
     {
         $this->isVerified = false;
@@ -126,6 +134,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->reviews = new ArrayCollection();
         $this->testimonials = new ArrayCollection();
         $this->account = new Account();
+        $this->tickets = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -274,6 +283,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
             return 'N/A';
         }
     }
+
     public function addRole(string $role): static
     {
         $role = strtoupper($role);
@@ -360,7 +370,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function __unserialize(array $data): void
     {
-        if (count($data) === 6) {
+        if (6 === count($data)) {
             [
                 $this->id,
                 $this->username,
@@ -514,4 +524,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         return $this;
     }
     */
+
+    /**
+     * @return Collection<int, Ticket>
+     */
+    public function getTickets(): Collection
+    {
+        return $this->tickets;
+    }
+
+    public function addTicket(Ticket $ticket): static
+    {
+        if (!$this->tickets->contains($ticket)) {
+            $this->tickets->add($ticket);
+            $ticket->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicket(Ticket $ticket): static
+    {
+        if ($this->tickets->removeElement($ticket)) {
+            // set the owning side to null (unless already changed)
+            if ($ticket->getUser() === $this) {
+                $ticket->setUser(null);
+            }
+        }
+
+        return $this;
+    }
 }

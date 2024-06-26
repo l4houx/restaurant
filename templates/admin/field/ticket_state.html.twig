@@ -1,0 +1,13 @@
+{% if field.value == "cart" %}
+	<span class="badge badge-secondary">{{ 'Basket not validated'|trans }}</span>
+{% elseif field.value == "pending" %}
+	<span class="badge badge-primary">{{ 'In process'|trans }}</span>
+{% elseif field.value == "on_delivery" %}
+	<span class="badge badge-info">{{ 'In transit'|trans }}</span>
+{% elseif field.value == "delivered" %}
+	<span class="badge badge-success">{{ 'Delivered'|trans }}</span>
+{% elseif field.value == "canceled" %}
+	<span class="badge badge-warning">{{ 'Canceled'|trans }}</span>
+{% else %}
+	<span class="badge badge-danger">{{ 'Delivery incident'|trans }}</span>
+{% endif %}

@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% set pagetitle = 'All products'|trans %}
+{% if category is not null %}
+	{% set pagetitle = category.name %}
+{% else %}
+	{% set pagetitle = 'All products'|trans %}
+{% endif %}
 {% block title pagetitle %}
 
 {% block breadcrumb %}
@@ -8,34 +12,106 @@
 	{% include "global/breadcrumb.html.twig" with breadcrumb %}
 {% endblock %}
 
-{% block body %}
-	{#  
+{% block body %} 
 	<section class="pt-0">
 		<div class="container">
 			<div class="row">
 				{% include "global/_sidebar.html.twig" %}
 				<div class="col-xl-9 ps-xl-6">
-					<form class="row g-2 g-xl-4 mb-4">
-						<div class="col-md-6">
-							<div class="rounded position-relative">
-								<input class="form-control bg-light pe-5" type="search" placeholder="{{ 'Search...'|trans }}" aria-label="Search">
-								<button class="btn bg-transparent border-0 px-2 py-0 position-absolute top-50 end-0 translate-middle-y" type="submit"><i class="fas fa-search"> </i></button>
+					<div class="row g-2 g-xl-4 mb-4">
+						<div class="col-12 mb-4 d-flex flex-column flex-md-row justify-content-md-between">
+							<div class="d-flex flex-grow-1 align-items-center mb-3 mb-md-0">
+								<h5 class="mb-0">
+									{% if category is not null %}
+										{{ pagetitle }}
+									{% else %}
+										{{ pagetitle }}
+									{% endif %}
+								</h5>
+							</div>
+							<div class="d-flex flex-column flex-sm-row">
+								<div class="dropdown me-0 me-sm-3 mb-3 mb-sm-0">
+									<button class="btn btn-light dropdown-toggle" type="button" id="dropdown-sort" data-bs-toggle="dropdown" aria-expanded="false">
+										{{ params.limit }} {{ "products per page"|trans }}
+									</button>
+									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-sort">
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 18})) }}">
+												{{ "18 products per page"|trans }}
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 36})) }}">
+												{{ "36 products per page"|trans }}
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 72})) }}">
+												{{ "72 products per page"|trans }}
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 98})) }}">
+												{{ "98 products per page"|trans }}
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 196})) }}">
+												{{ "196 produits par page"|trans }}
+											</a>
+										</li>
+									</ul>
+								</div>
+								<div class="dropdown">
+									<button class="btn btn-light dropdown-toggle" type="button" id="dropdown-sort" data-bs-toggle="dropdown" aria-expanded="false">
+										{% if params.sort == "new-products" %}
+											{{ "New"|trans }}
+										{% elseif params.sort == "amount-asc" %}
+											{{ "Growing Value"|trans }}
+										{% elseif params.sort == "amount-desc" %}
+											{{ "Descending Value"|trans }}
+										{% elseif params.sort == "name-asc" %}
+											{{ "Sort A -> Z"|trans }}
+										{% elseif params.sort == "name-desc" %}
+											{{ "Sort Z -> A"|trans }}
+										{% endif %}
+									</button>
+									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-sort">
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "new-products"})) }}">
+												{{ "New"|trans }}
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "amount-asc"})) }}">
+												{{ "Growing Value"|trans }}
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "amount-desc"})) }}">
+												{{ "Descending Value"|trans }}
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "name-asc"})) }}">
+												{{ "Sort A -> Z"|trans }}
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "name-desc"})) }}">
+												{{ "Sort Z -> A"|trans }}
+											</a>
+										</li>
+									</ul>
+								</div>
+								<div class="ms-0 ms-sm-3 mt-3 mt-sm-0 d-xl-none">
+									<button class="btn btn-dark mb-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+										<i class="fas fa-sliders-h me-1"></i> {{ "Show filter"|trans }}
+									</button>
+								</div>
 							</div>
 						</div>
-						<div class="col-sm-6 col-md-3 ms-auto">
-							<select class="form-select" aria-label="Default select example">
-								<option selected="">{{ "Sort by"|trans }}</option>
-								<option value="1">Name</option>
-								<option value="2">Low to High Price</option>
-								<option value="3">Heigh to Low Price</option>
-							</select>
-						</div>
-						<div class="col-sm-6 col-md-3 d-grid d-xl-none">
-							<button class="btn btn-dark mb-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
-								<i class="fas fa-sliders-h me-1"></i> {{ "Show filter"|trans }}
-							</button>
-						</div>
-					</form>
+					</div>
 					{% if products|length > 0 %}
 						<div class="row g-4 g-lg-5">
 							{% for product in products %}
@@ -46,7 +122,23 @@
 							<ul class="pagination pagination-primary-soft d-flex justify-content-end mb-0 mt-5">
 								<li>
 									<ul class="list-unstyled">
-
+										{% if params.page > 1 %}
+											<li class="page-item">
+												<a class="page-link" data-role="previous" href="{{ path("shop_index", params|merge({page: params.page - 1})) }}">{{ 'Prev'|trans }}
+												</a>
+											</li>
+										{% endif %}
+										{% for p in pageRange %}
+											<li class="page-item {{ p == params.page ? "active" }}">
+												<a class="page-link" href="{{ path("shop_index", params|merge({page: p})) }}">{{ p }}</a>
+											</li>
+										{% endfor %}
+										{% if params.page < pages %}
+											<li class="page-item">
+												<a class="page-link" data-role="next" href="{{ path("shop_index", params|merge({page: params.page + 1})) }}">{{ 'Next'|trans }}
+												</a>
+											</li>
+										{% endif %}
 									</ul>
 								</li>
 							</ul>
@@ -58,168 +150,4 @@
 			</div>
 		</div>
 	</section>
-	#}
-
-
-
-	<aside>
-		<nav class="section-nav">
-			<h1 class="text-center my-0 py-3 px-3 px-lg-0 text-uppercase border-bottom d-flex d-lg-block justify-content-between">
-				Boutique
-				<a href="#" class="sidebar-toggler d-lg-none" aria-expanded="false">
-					<span class="fas fa-times fa-md text-dark"></span>
-				</a>
-			</h1>
-			<ul class="nav flex-column" id="subcategorys">
-				<li class="nav-item">
-					<a class="nav-link" data-bs-toggle="collapse" href="#filter" role="button" aria-expanded="{{ form.vars.submitted ? "true" : "false" }}" aria-controls="filter">Recherche</a>
-					{{ form_start(form, {attr: {class: form.vars.attr.class ~ (form.vars.submitted ? " show")} }) }}
-						{{ form_widget(form._token) }}
-						{{ form_widget(form.min) }}
-						{{ form_widget(form.max) }}
-						<input type="hidden" name="page" value="1">
-						<div class="nav-item">
-							<div class="nav-link">
-								<span class="fw-bold">Rechercher un produit</span>
-								{{ form_row(form.keywords) }}
-							</div>
-						</div>
-						<div class="nav-item">
-							<div class="nav-link">
-								<span class="fw-bold">Prix</span>
-								<div class="slider" data-min="{{ min }}" data-max="{{ max }}" data-min-target="#filter_min" data-max-target="#filter_max"></div>
-							</div>
-						</div>
-						<div class="nav-item">
-							<div class="nav-link">
-								<span class="fw-bold">Marque</span>
-								{{ form_row(form.brand) }}
-							</div>
-						</div>
-						<div class="nav-item">
-							<div class="nav-link text-center">
-								<button type="submit" class="btn btn-primary">Rechercher</button>
-							</div>
-						</div>
-					{{ form_end(form) }}
-				</li>
-				{% for s in subcategories %}
-					{% if s.numberOfProducts > 0 %}
-						<li class="nav-item">
-							<a class="nav-link" data-bs-toggle="collapse" href="#subcategory-{{ s.id }}" role="button" aria-expanded="{{ not form.vars.submitted and subcategory is not null and subcategory == s ? "true" : "false" }}" aria-controls="subcategory-{{ s.id }}">{{ s.name }}</a>
-							<ul class="nav flex-column collapse {{ not form.vars.submitted and subcategory is not null and subcategory == s ? "show" }}" id="subcategory-{{ s.id }}" data-bs-parent="#subcategories">
-								{% for c in s.categories %}
-									{% if c.numberOfProducts > 0 %}
-										<li class="nav-item">
-											{% if c.children|length > 0 %}
-												<a class="nav-link" data-bs-toggle="collapse" href="#category-{{ c.id }}" role="button" aria-expanded="{{ not form.vars.submitted and category is not null and category.parent == c and subcategory is not null and subcategory == s ? "true" : "false" }}" aria-controls="category-{{ c.id }}">{{ c.name }} ({{ c.numberOfProducts }})</a>
-												<ul class="nav flex-column collapse {{ not form.vars.submitted and category is not null and category.parent == c and subcategory is not null and subcategory == s ? "show" }}" id="category-{{ c.id }}" data-bs-parent="#subcategory-{{ s.id }}">
-													{% for child in c.children %}
-														{% if child.numberOfProducts > 0 %}
-															<li class="nav-item">
-																<a href="{{ path("shop_index", {page: 1, category: child.slug, subcategory: s.slug}) }}" class="nav-link {{ category == child ? "active" }}">{{ child.name }} ({{ child.numberOfProducts }})</a>
-															</li>
-														{% endif %}
-													{% endfor %}
-												</ul>
-											{% else %}
-												<a href="{{ path("shop_index", {page: 1, category: c.slug, subcategory: s.slug}) }}" class="nav-link {{ category == c ? "active" }}">{{ c.name }} ({{ c.numberOfProducts }})</a>
-											{% endif %}
-										</li>
-									{% endif %}
-								{% endfor %}
-							</ul>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</nav>
-	</aside>
-    <main class="container-fluid">
-        <div class="row">
-            <div class="col-12 mb-4 d-flex flex-column flex-md-row justify-content-md-between">
-                <div class="d-flex flex-grow-1 align-items-center mb-3 mb-md-0">
-                    <a href="#" class="me-3 sidebar-toggler" aria-expanded="false">
-                        <span class="fas fa-lg text-white"></span>
-                    </a>
-                    <h1 class="text-white mb-0">
-                        {% if category is not null %}
-                            {{ category.name }}
-                        {% else %}
-                            Tous les produits
-                        {% endif %}
-                    </h1>
-                </div>
-                <div class="d-flex flex-column flex-sm-row">
-                    <div class="dropdown me-0 me-sm-3 mb-3 mb-sm-0">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdown-sort" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ params.limit }} produits par page
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-sort">
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 18})) }}">18 produits par page</a></li>
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 36})) }}">36 produits par page</a></li>
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 72})) }}">72 produits par page</a></li>
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 98})) }}">98 produits par page</a></li>
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, limit: 196})) }}">196 produits par page</a></li>
-                        </ul>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdown-sort" data-bs-toggle="dropdown" aria-expanded="false">
-                            {% if params.sort == "new-products" %}
-                                Nouveautés
-                            {% elseif params.sort == "amount-asc" %}
-                                Valeur croissante
-                            {% elseif params.sort == "amount-desc" %}
-                                Valeur décroissante
-                            {% elseif params.sort == "name-asc" %}
-                                Tri A -> Z
-                            {% elseif params.sort == "name-desc" %}
-                                Tri Z -> A
-                            {% endif %}
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-sort">
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "new-products"})) }}">Nouveautés</a></li>
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "amount-asc"})) }}">Valeur croissante</a></li>
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "amount-desc"})) }}">Valeur décroissante</a></li>
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "name-asc"})) }}">Tri A -> Z</a></li>
-                            <li><a class="dropdown-item" href="{{ path("shop_index", params|merge({page: 1, sort: "name-desc"})) }}">Tri Z -> A</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row align-items-stretch">
-            {% for product in products %}
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3 col-xxl-2 product">
-                    <a href="{{ path("shop_product", {slug: product.slug}) }}" class="card h-100">
-                        <img src="{{ product.imageName ? (product.getImagePath) : product.getImagePlaceholder }}" class="card-img-top" alt="{{ product.brand.name }} - {{ product.name }}">
-                        <div class="card-body flex-grow-1">
-                            <span class="fw-bold">{{ product.brand.name }} - {{ product.name }}</span>
-                            <p class="text-muted">{{ product.content|html_markdown_excerpt(100) }}</p>
-                        </div>
-                        <div class="card-footer bg-danger d-flex justify-content-center align-items-center text-white fs-4 fw-bold big">
-                            {{ product.amount }} <span class="ms-1 icon icon-lg icon-key"></span>
-                        </div>
-                    </a>
-                </div>
-            {% endfor %}
-        </div>
-        <div class="row">
-            {% if pages > 1 %}
-                <nav class="mb-3 mx-auto">
-                    <ul class="pagination justify-content-center mb-0">
-                        {% if params.page > 1 %}
-                            <li class="page-item"><a class="page-link" href="{{ path("shop_index", params|merge({page: params.page - 1})) }}">Précedent</a></li>
-                        {% endif %}
-                        {% for p in pageRange %}
-                            <li class="page-item {{ p == params.page ? "active" }}"><a class="page-link" href="{{ path("shop_index", params|merge({page: p})) }}">{{ p }}</a></li>
-                        {% endfor %}
-                        {% if params.page < pages %}
-                            <li class="page-item"><a class="page-link" href="{{ path("shop_index", params|merge({page: params.page + 1})) }}">Suivant</a></li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            {% endif %}
-        </div>
-    </main>
 {% endblock %}

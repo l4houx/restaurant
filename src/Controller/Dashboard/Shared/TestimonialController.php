@@ -34,7 +34,7 @@ class TestimonialController extends BaseController
     {
         return $this->render('dashboard/shared/testimonials/index.html.twig', [
             'user' => $user,
-            'testimonials' => $this->testimonialRepository->getLastByUser($user, 4),
+            'testimonials' => $this->testimonialRepository->getLastByUser($user),
         ]);
     }
 

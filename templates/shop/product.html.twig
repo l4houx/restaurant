@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% set pagetitle = 'Orders'|trans %}
+{% set pagetitle = 'Product'|trans %}
 {% block title pagetitle %}
 
 {% block breadcrumb %}
@@ -84,7 +84,7 @@
 					<div class="mb-4">{{ product.content|html_markdown_excerpt(164) }}</div>
 					<div class="d-grid">
 						{% if product.stock > 0 %}
-							<a href="{{ path("cart_add", {slug: product.slug}) }}" class="btn btn-primary mb-0 w-100">
+							<a href="{{ path("cart_add", { slug: product.slug }) }}" class="btn btn-primary mb-0 w-100">
 								<i class="fas fa-cart-shopping me-2"></i>
 								{{ 'Add to Cart'|trans }}
 							</a>

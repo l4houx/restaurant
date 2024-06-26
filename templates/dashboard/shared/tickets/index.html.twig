@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'My ticket'|trans %}
+{% block title pagetitle %}
+
+{% block body %}
+	<section class="pt-sm-7">
+		<div class="container pt-3 pt-xl-5">
+			<div class="row">
+				{% include "global/dashboard-items-navbar-vertical.html.twig" with {activerd: 'ticket_index'} %}
+				<div class="col-lg-8 col-xl-9 ps-lg-4 ps-xl-6">
+					<div class="d-flex justify-content-between align-items-center mb-5 mb-sm-6">
+						<h1 class="h3 mb-0">{{ pagetitle }}</h1>
+						<button class="btn btn-primary d-lg-none flex-shrink-0 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+							<i class="fas fa-sliders-h"></i>
+							{{ 'Menu'|trans }}
+						</button>
+					</div>
+					<div class="row g-3 align-items-center mb-5">
+						<div class="col-xl-5"></div>
+						<div class="col-sm-6 col-xl-2 ms-auto"></div>
+						{% if is_granted('ROLE_VERIFIED') and is_granted('ROLE_USER') %}
+							<div class="col-xl-5 text-end">
+                                <a href="{{ path('dashboard_account_ticket_new') }}" class="btn btn-primary mb-0">
+                                    <i class="fas fa-plus me-2"></i>
+                                    {{ "Add your ticket"|trans }}
+                                </a>
+							</div>
+						{% endif %}
+					</div>
+					{#
+                    <div class="accordion accordion-icon accordion-border" id="accordionTicket">
+                        {% include "dashboard/shared/tickets/manage-tickets.html.twig" with {tickets: tickets} %}
+                    </div>
+					#}
+					{% include "dashboard/shared/tickets/manage-tickets.html.twig" with {tickets: tickets} %}
+
+					{#{{ knp_pagination_render(tickets, null, {}, {'align': 'center'}) }}#}
+                    {% if pages > 1 %}
+                        <div class="text-end p-0">
+                            {{ include("global/pagination.html.twig", {
+                                class: "justify-content-center",
+                                route: "dashboard_account_ticket_index",
+                                current_page: app.request.get("page", 1),
+                                pages: pages
+                            }) }}
+                        </div>
+                    {% endif %}
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

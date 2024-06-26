@@ -2,12 +2,16 @@
 
 namespace App\Repository\Shop;
 
-use App\Entity\Shop\Category;
+use App\Entity\User;
 use App\Entity\Shop\Filter;
 use App\Entity\Shop\Product;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
+use App\Entity\Shop\Category;
+use Doctrine\ORM\QueryBuilder;
+use App\Entity\HomepageHeroSetting;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -17,6 +21,21 @@ class ProductRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
+    }
+
+    /**
+     * @return Paginator<Product>
+     */
+    public function getPaginatedFavorites(int $page, int $limit): Paginator
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->andWhere('p.isOnline = true')
+
+            ->setMaxResults($limit)
+            ->setFirstResult(($page - 1) * $limit)
+        ;
+
+        return new Paginator($qb);
     }
 
     /**
@@ -127,5 +146,85 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult()
         ;
+    }
+
+    /**
+     * Returns the products after applying the specified search criterias.
+     *
+     * @param string               $selecttags
+     * @param bool                 $isOnline
+     * @param string               $keyword
+     * @param int                  $id
+     * @param string               $slug
+     * @param Collection           $addedtofavoritesby
+     * @param ?HomepageHeroSetting $isOnHomepageSlider
+     * @param Collection           $subCategories
+     * @param string               $ref
+     * @param int                  $limit
+     * @param string               $sort
+     * @param string               $order
+     * @param string               $otherthan
+     *
+     * @return QueryBuilder<Product>
+     */
+    public function getProducts($selecttags, $isOnline, $keyword, $id, $slug, $addedtofavoritesby, $isOnHomepageSlider, $subCategories, $ref, $limit, $sort, $order, $otherthan, $count): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        if (!$selecttags) {
+            if ($count) {
+                $qb->select('COUNT(DISTINCT p)');
+            } else {
+                $qb->select('DISTINCT p');
+            }
+
+            if ('all' !== $isOnline) {
+                $qb->andWhere('p.isOnline = :isOnline')->setParameter('isOnline', $isOnline);
+            }
+
+            if ('all' !== $keyword) {
+                $qb->andWhere('p.name LIKE :keyword or :keyword LIKE p.name or :keyword LIKE p.content or p.content LIKE :keyword or :keyword LIKE p.tags or p.tags LIKE :keyword')->setParameter('keyword', '%'.$keyword.'%');
+            }
+
+            if ('all' !== $id) {
+                $qb->andWhere('p.id = :id')->setParameter('id', $id);
+            }
+
+            if ('all' !== $slug) {
+                $qb->andWhere('p.slug = :slug')->setParameter('slug', $slug);
+            }
+
+            if ('all' !== $addedtofavoritesby) {
+                $qb->andWhere(':addedtofavoritesbyuser MEMBER OF p.addedtofavoritesby')->setParameter('addedtofavoritesbyuser', $addedtofavoritesby);
+            }
+
+            if (true === $isOnHomepageSlider) {
+                $qb->andWhere('p.isonhomepageslider IS NOT NULL');
+            }
+
+            if ('all' !== $subCategories) {
+                $qb->leftJoin('p.subCategories', 'subCategories');
+                $qb->andWhere('subCategories.id = :subCategories')->setParameter('subCategories', $subCategories);
+            }
+
+            if ('all' !== $ref) {
+                $qb->andWhere('p.ref = :ref')->setParameter('ref', $ref);
+            }
+
+            if ('all' !== $limit) {
+                $qb->setMaxResults($limit);
+            }
+
+            if ('all' !== $otherthan) {
+                $qb->andWhere('p.id != :otherthan')->setParameter('otherthan', $otherthan);
+                $qb->andWhere('p.id = :otherthan')->setParameter('otherthan', $otherthan);
+            }
+
+            $qb->orderBy('p.'.$sort, $order);
+        } else {
+            $qb->select("SUBSTRING_INDEX(GROUP_CONCAT(p.tags SEPARATOR ','), ',', 8)");
+        }
+
+        return $qb;
     }
 }

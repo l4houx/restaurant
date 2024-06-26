@@ -21,6 +21,7 @@
         "jdenticon/jdenticon": "^1.0",
         "knplabs/knp-paginator-bundle": "^6.4",
         "knplabs/knp-time-bundle": "^2.4",
+        "league/csv": "^9.16",
         "liip/imagine-bundle": "^2.12",
         "phpdocumentor/reflection-docblock": "^5.4",
         "phpoffice/phpspreadsheet": "^2.1",

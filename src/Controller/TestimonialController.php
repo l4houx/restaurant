@@ -22,10 +22,8 @@ class TestimonialController extends BaseController
             $form->get('keywords')->getData()
         );
 
-        return $this->render('testimonial/testimonial-detail.html.twig', [
-            'testimonials' => $testimonials,
-            'pages' => ceil(count($testimonials) / HasLimit::TESTIMONIAL_LIMIT),
-            'form' => $form,
-        ]);
+        $pages = ceil(count($testimonials) / $request->query->getInt("limit", HasLimit::TESTIMONIAL_LIMIT));
+
+        return $this->render('testimonial/testimonial-detail.html.twig', compact("form","pages","testimonials"));
     }
 }

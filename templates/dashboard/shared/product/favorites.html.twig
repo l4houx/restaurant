@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'Wishlist'|trans %}
+{% block title pagetitle %}
+
+{% block body %}
+    <section class="pt-sm-7">
+        <div class="container pt-3 pt-xl-5">
+            <div class="row">
+                {% include "global/dashboard-items-navbar-vertical.html.twig" with {activerd: 'favorites_index'} %}
+                <div class="col-lg-8 col-xl-9 ps-lg-4 ps-xl-6">
+                    <div class="d-flex justify-content-between align-items-center mb-5 mb-sm-6">
+                        <h1 class="h3 mb-0">{{ pagetitle }}</h1>
+                        <button class="btn btn-primary d-lg-none flex-shrink-0 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                            <i class="fas fa-sliders-h"></i> {{ 'Menu'|trans }}
+                        </button>
+                    </div>
+                    {# {% if products|length > 0 %} #}
+                    <div class="card bg-transparent">
+                        <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center p-0 pb-3">
+                            <h6 class="card-title mb-0">{{ 'Recently added'|trans }}</h6>
+                            <span>
+                            {{ products|length }}
+                            {{ products|length > 1 ? "Items"|trans : "Item"|trans }}
+                            </span>
+                        </div>
+                        <div class="card-body p-0 pt-5">
+                            {% for product in products %}
+                                <div class="row align-items-xl-center">
+                                    <div class="col-5 col-md-2">
+                                        <div class="bg-light p-2 rounded-2">
+                                            <img src="{{ product.imageName ? (product.getImagePath) : product.getImagePlaceholder }}" alt="{{ product.brand.name }} - {{ product.name }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-7 col-md-10">
+                                        <div class="row g-4">
+                                            <div class="col-xl-6">
+                                                <h6 class="mb-1">
+                                                    <a href="{{ path("shop_product", { slug: product.slug }) }}">
+                                                        {{ product.name }}
+                                                    </a>
+                                                </h6>
+                                                {% if product.stock > 0 %}
+                                                    <small class="text-primary">{{ 'In Stock'|trans }}</small>
+                                                {% else %}
+                                                    <small class="text-danger">{{ 'Not in stock'|trans }}</small>
+                                                {% endif %}
+                                                <ul class="nav nav-divider small align-items-center mt-1">
+                                                    <li class="nav-item">{{ 'Category'|trans }}: {{ product.category.name }}</li>
+                                                    <li class="nav-item">{{ 'Brand'|trans }}: {{ product.brand.name }}</li>
+                                                </ul>
+                                            </div>
+                                            <!-- Select -->
+                                            <div class="col-md-6 col-xl-3">
+                                                <select class="form-select form-select-sm" aria-label="Default select example">
+                                                    <option value="1">01</option>
+                                                    <option value="2">02</option>
+                                                    <option value="3">03</option>
+                                                </select>
+                                                
+                                                <!-- Buttons -->
+                                                <div class="hstack gap-1 flex-wrap text-primary-hover mt-2 justify-content-md-end">
+                                                    <a href="#" class="text-reset small"><i class="bi bi-trash3 me-2"></i>Remove</a>
+                                                    <a href="#" class="text-reset small"><i class="bi bi-heart me-2"></i>Save for later</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xl-3 text-md-end">
+                                                <h5 class="mb-2">
+                                                    {{ product.amount }}
+                                                    <i class="fas fa-key me-2"></i>
+                                                </h5>
+                                                {% if product.stock > 0 %}
+                                                    <a href="{{ path("cart_add", { slug: product.slug }) }}" class="btn btn-sm btn-dark mb-0">
+                                                        <i class="fas fa-cart-shopping me-2"></i>{{ 'Add to cart'|trans }}
+                                                    </a>
+                                                {% else %}
+                                                    <p class="fw-bold text-danger mb-0">{{ 'Temporarily out of stock'|trans }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>	
+                                <hr class="my-5">
+                            {% else %}
+                                {{ 'Add products to your favorites by clicking the heart button'|trans }}
+                            {% endfor %}
+                        </div>
+                        <div class="card-footer bg-transparent text-end p-0">
+                            <a href="{{ path("shop_index") }}" class="btn btn-light border mb-0">
+                                {{ 'Continue shopping'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                    {# {% endif %} #}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -22,13 +22,13 @@ final class RequestListener
         private readonly TokenStorageInterface $tokenStorage,
         private readonly RulesRepository $rulesRepository,
         private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $em
     ) {
     }
 
     public function onRequest(RequestEvent $event): void
     {
-        $this->entityManager->getFilters()->enable("softdeleteable");
+        $this->em->getFilters()->enable("softdeleteable");
 
         if (!$this->tokenStorage->getToken()?->getUser() instanceof User) {
             return;

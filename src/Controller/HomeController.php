@@ -20,7 +20,7 @@ class HomeController extends AbstractController
         return $this->render('home/home.html.twig', [
             'herosettings' => $em->getRepository(HomepageHeroSetting::class)->find(1),
             'homepageCategories' => $em->getRepository(Category::class)->getLastCategories(6),
-            'homepageProducts' => $em->getRepository(Product::class)->getLastProducts(4),
+            'homepageProducts' => $em->getRepository(Product::class)->getLastProducts(6),
             'homepagePosts' => $em->getRepository(Post::class)->getLastPosts(3),
             'homepageTestimonials' => $em->getRepository(Testimonial::class)->getRand(3),
         ]);

@@ -85,6 +85,8 @@ class CartController extends BaseController
     #[Route(path: '/add/{slug}', name: 'add', methods: ['GET'], requirements: ['slug' => Requirement::ASCII_SLUG])]
     public function add(Product $product): RedirectResponse
     {
+        //$product = new Product();
+
         $user = $this->getUserOrThrow();
 
         /** @var ?Order $order */
@@ -100,7 +102,7 @@ class CartController extends BaseController
 
         $order->addProduct($product);
 
-        $this->em->flush();
+        //$this->em->flush();
 
         return $this->redirectToRoute('shop_product', ['slug' => $product->getSlug(), 'cart' => true]);
     }

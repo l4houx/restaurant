@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(path: '/%website_dashboard_path%/account/my-favorites', name: 'dashboard_account_favorites_')]
+#[Route(path: '/%website_dashboard_path%/account', name: 'dashboard_account_')]
 #[IsGranted(HasRoles::DEFAULT)]
 class FavoritesController extends BaseController
 {
@@ -29,42 +29,53 @@ class FavoritesController extends BaseController
     ) {
     }
 
-    #[Route(path: '', name: 'index', methods: ['GET'])]
+    #[Route(path: '/my-favorites', name: 'favorites_index', methods: ['GET'])]
     public function index(Request $request, PaginatorInterface $paginator): Response
     {
         $user = $this->getUserOrThrow();
 
-        $rows = $paginator->paginate(
+        $products = $this->productRepository->getPaginatedFavorites(
+            //$addedtofavoritesby,
+            $request->query->getInt("page", 1),
+            $request->query->getInt("limit", 12),
+        );
+
+        $pages = ceil(count($products) / $request->query->getInt('limit', 12));
+
+
+        /*$products = $paginator->paginate(
             $this->settingService->getProducts(['addedtofavoritesby' => $this->getUser()])->getQuery(),
             $request->query->getInt('page', 1),
             12,
             ['wrap-queries' => true]
-        );
+        );*/
 
-        return $this->render('dashboard/shared/favorites.html.twig', compact('user', 'rows'));
+        return $this->render('dashboard/shared/product/favorites.html.twig', compact('pages', 'products', 'user'));
     }
 
-    #[Route(path: '/new/{id}', name: 'new', methods: ['GET'], condition: 'request.isXmlHttpRequest()', requirements: ['id' => Requirement::DIGITS])]
-    #[Route(path: '/remove/{id}', name: 'remove', methods: ['POST'], condition: 'request.isXmlHttpRequest()', requirements: ['id' => Requirement::DIGITS])]
-    public function newRemove(int $id): JsonResponse
+    #[Route(path: '/my-favorites/new/{slug}', name: 'favorites_new', requirements: ['slug' => Requirement::ASCII_SLUG])]
+    #[Route(path: '/my-favorites/remove/{slug}', name: 'favorites_remove', methods: ['POST'], requirements: ['slug' => Requirement::ASCII_SLUG])]
+    public function newRemove(string $slug): JsonResponse
     {
         /** @var Product $product */
-        $product = $this->settingService->getProducts(['id' => $id])->getQuery()->getOneOrNullResult();
+        //$product = $this->productRepository->find(['slug' => $slug]);
+        $product = $this->settingService->getProducts(['slug' => $slug])->getQuery()->getOneOrNullResult();
         if (!$product) {
             return new JsonResponse(['danger' => $this->translator->trans('The product can not be found')]);
         }
 
-        if ($product->isAddedToFavoritesBy($this->getUser())) {
-            $this->getUser()->removeFavorite($product);
+        $user = $this->getUserOrThrow();
+        if ($product->isAddedToFavoritesBy($user)) {
+            $user->removeFavorite($product);
 
-            $this->em->persist($this->getUser());
+            $this->em->persist($user);
             $this->em->flush();
 
             return new JsonResponse(['danger' => $this->translator->trans('The product has been removed from your favorites')]);
         } else {
             $this->getUser()->addFavorite($product);
 
-            $this->em->persist($this->getUser());
+            $this->em->persist($user);
             $this->em->flush();
 
             return new JsonResponse(['success' => $this->translator->trans('The product has been added to your favorites')]);

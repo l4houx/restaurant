@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% set pagetitle = 'My responses'|trans %}
+{% block title pagetitle %}
+
+{% block body %}
+	<section class="pt-sm-7">
+		<div class="container pt-3 pt-xl-5">
+			<div class="row">
+				{% include "global/dashboard-items-navbar-vertical.html.twig" with {activerd: 'response_index'} %}
+				<div class="col-lg-8 col-xl-9 ps-lg-4 ps-xl-6">
+					<div class="d-flex justify-content-between align-items-center mb-5 mb-sm-6">
+						<h1 class="h3 mb-0">{{ pagetitle }}</h1>
+						<button class="btn btn-primary d-lg-none flex-shrink-0 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+							<i class="fas fa-sliders-h"></i>
+							{{ 'Menu'|trans }}
+						</button>
+					</div>
+					<div class="row g-3 align-items-center mb-5">
+						<div class="col-xl-5"></div>
+						<div class="col-sm-6 col-xl-2 ms-auto"></div>
+						{% if is_granted('ROLE_VERIFIED') and is_granted('ROLE_USER') %}
+							<div class="col-xl-5 text-end">
+                                <a href="{{ path('dashboard_account_ticket_new') }}" class="btn btn-primary mb-0">
+                                    <i class="fas fa-plus me-2"></i>
+                                    {{ "Add your ticket"|trans }}
+                                </a>
+							</div>
+						{% endif %}
+					</div>
+                    {#  
+                    <div class="accordion accordion-icon accordion-border" id="accordionTicket">
+                        {% include "dashboard/shared/tickets/manage-tickets.html.twig" with {ticket: ticket} %}
+                    </div>
+                    #}
+                    {% include "dashboard/shared/tickets/manage-tickets.html.twig" with {ticket: ticket} %}
+                    {% if responses|length > 0 %}
+                        <div class="text-center my-5"><i class="fas fa-ellipsis"></i></div>
+                        <div class="card bg-transparent p-0">
+                            <div class="card-header bg-transparent border-bottom p-0 pb-3">
+                                <h6 class="mb-0">{{ 'Response'|trans }}: ({{ responses|length }})</h6>
+                            </div>
+                            <div class="card-body px-0">
+                                <div class="accordion accordion-icon accordion-border" id="accordionResponse">
+                                    {% for response in responses %}
+                                        <div class="accordion-item mb-3">
+                                            <div class="accordion-header font-base" id="heading-{{ response.id }}">
+                                                <button class="accordion-button fw-semibold rounded collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ response.id }}" aria-expanded="false" aria-controls="collapse-{{ response.id }}">
+                                                    {{ 'Subject'|trans }}: {{ response.ticket.subject }}?
+                                                </button>
+                                            </div>
+                                            <div id="collapse-{{ response.id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ response.id }}" data-bs-parent="#accordionResponse" style="">
+                                                <div class="accordion-body mt-3 pb-0 {{ response.user == app.user ? 'a-moi' }}">
+                                                    <div class="d-flex">
+                                                        {% include "global/user-avatar.html.twig" with { user: response.user, type: "md", class: "float-start me-3" } %}
+                                                        <div>
+                                                            <div class="d-sm-flex justify-content-between mb-2">
+                                                                <div>
+                                                                    <h6 class="m-0">
+                                                                        @{{ response.author ?? (response.user.getFullName|lower|capitalize) }}
+                                                                    </h6>
+                                                                    <span class="me-3 small">
+                                                                        {{ response.createdAt|localizeddate('full', 'short', app.request.locale, date_timezone, date_format) }}
+                                                                    </span>
+                                                                </div>
+                                                                <ul class="list-inline mb-0"></ul>
+                                                            </div>
+                                                            <div>{{ response.content|html_markdown }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <hr class="my-4">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="text-center my-5"><i class="fas fa-ellipsis"></i></div>
+					{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'} }) }}
+					{{ form_widget(form._token) }}
+					{{ form_errors(form) }}
+                    <div class="card bg-transparent p-0">
+                        <div class="card-header bg-transparent border-bottom p-0 pb-3">
+                            <h6 class="mb-0">{{ 'Write a responnse'|trans }}</h6>
+                        </div>
+                        <div class="card-body px-0">
+                            <div class="mb-3">
+                                {% include "global/message.html.twig" with { type: "info", icon: "fas fa-exclamation", message: ("The fields preceded with a red * are mandatory"|trans) } %}
+                            </div>
+                            {{ form_widget(form) }}
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-primary mb-0">
+                                    {{ 'Send'|trans }}
+                                    <i class="fa-fw fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {{ form_end(form, {'render_rest': false}) }}
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

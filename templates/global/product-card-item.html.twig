@@ -18,11 +18,11 @@
 			{% if (not is_granted('IS_AUTHENTICATED_REMEMBERED') or is_granted('ROLE_USER')) and hideFavoriteButton is not defined %}
 				{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 					{% if product.isAddedToFavoritesBy(app.user) %}
-						<button data-bs-target="{{ path('dashboard_user_favorites_remove', { id : product.id }) }}" class="btn btn-white btn-round border mb-0 ms-auto product-favorites-remove" bs-data-toggle="tooltip" title="{{ "Remove from favorites"|trans }}">
+						<button bs-data-target="{{ path('dashboard_account_favorites_remove', { slug : product.slug }) }}" class="btn btn-white btn-round border mb-0 ms-auto product-favorites-remove" bs-data-toggle="tooltip" title="{{ "Remove from favorites"|trans }}">
 							<i class="fas fa-heart"></i>
 						</button>
 					{% else %}
-						<button data-bs-target="{{ path('dashboard_user_favorites_new', { id : product.id }) }}" class="btn btn-white btn-round border mb-0 ms-auto product-favorites-new" bs-data-toggle="tooltip" title="{{ "Add to favorites"|trans }}">
+						<button bs-data-target="{{ path('dashboard_account_favorites_new', { slug : product.slug }) }}" class="btn btn-white btn-round border mb-0 ms-auto product-favorites-new" bs-data-toggle="tooltip" title="{{ "Add to favorites"|trans }}">
 							<i class="far fa-heart"></i>
 						</button>
 					{% endif %}
@@ -38,7 +38,7 @@
 		</div>
 		<div class="card-body pb-0">
 			<h6 class="card-title">
-				<a href="{{ link }}" class="stretched-link">{{ product.name }}</a>
+				<a href="{{ link }}" class="stretched-link">{{ product.name|html_markdown_excerpt(51) }}</a>
 			</h6>
 			<ul class="list-inline">
 				<li class="list-inline-item me-0 small">
@@ -64,7 +64,7 @@
 				<i class="fas fa-key ms-2"></i>
 			</p>
 			{% if product.stock > 0 %}
-				<a href="{{ path("cart_add", {slug: product.slug}) }}" class="btn btn-dark mb-0 z-index-2">
+				<a href="{{ path("cart_add", { slug: product.slug }) }}" class="btn btn-dark mb-0 z-index-2">
 					<i class="fas fa-cart-shopping"></i>
 				</a>
 			{% else %}

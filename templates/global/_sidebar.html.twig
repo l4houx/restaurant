@@ -4,25 +4,15 @@
             <h6 class="offcanvas-title" id="offcanvasSidebarLabel">{{ 'Advance Filter'|trans }}</h6>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body flex-column p-3 p-xl-0" id="subCategories">
-            <div class="accordion accordion-alt" id="accordionExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button fs-6 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#filter" aria-expanded="{{ form.vars.submitted ? "true" : "false" }}" aria-controls="filter">
+        <div class="offcanvas-body nav flex-column p-3 p-xl-0" id="subcategories">
+            {{ form_start(form) }}
+                <div class="accordion accordion-alt" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header fs-6 fw-semibold">
                             {{ 'Search'|trans }}
-                        </button>
-                    </h2>
-                    <div id="filter" class="accordion-collapse collapse show" data-bs-parent="#accordionExample" style="">
-                        <div class="accordion-body">
-                            {#  
-							<div class="rounded position-relative">
-								<input class="form-control bg-light pe-5" type="search" placeholder="{{ 'Search...'|trans }}" aria-label="Search">
-								<button class="btn bg-transparent border-0 px-2 py-0 position-absolute top-50 end-0 translate-middle-y" type="submit">
-                                    <i class="fas fa-search"> </i>
-                                </button>
-							</div>
-                            #}
-                            {{ form_start(form, {attr: {class: form.vars.attr.class ~ (form.vars.submitted ? " show")}}) }}
+                        </h2>
+                        <div id="filter" class="accordion-collapse" data-bs-parent="#accordionExample" style="">
+                            <div class="accordion-body">
                                 {{ form_widget(form._token) }}
                                 {{ form_widget(form.min) }}
                                 {{ form_widget(form.max) }}
@@ -34,202 +24,49 @@
                                     </button>
                                 </div>
                                 {{ form_row(form.brand) }}
-                            {{ form_end(form) }}
-                        </form>
+                            </div>
+                        </div>
                     </div>
+                    {% for s in subcategories %}
+                        {% if s.numberOfProducts > 0 %}
+							<div class="accordion-item">
+								<h2 class="accordion-header">
+									<button class="accordion-button fs-6 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subcategory-{{ s.id }}" aria-expanded="{{ not form.vars.submitted and subcategory is not null and subcategory == s ? "true" : "false" }}" aria-controls="subcategory-{{ s.id }}">
+										{{ s.name }}
+									</button>
+								</h2>
+								<div id="collapseFour" class="accordion-collapse collapse {{ not form.vars.submitted and subcategory is not null and subcategory == s ? "show" }}" id="subcategory-{{ s.id }}" data-bs-parent="#subcategories">
+									<div class="accordion-body">
+										<ul class="nav mb-0 g-3">
+                                            {% for c in s.categories %}
+                                                {% if c.numberOfProducts > 0 %}
+                                                    {% if c.children|length > 0 %}
+                                                        <li class="nav-item mb-0">
+                                                            <input type="checkbox" class="btn-check" id="btn-check-7">
+                                                            <label class="btn btn-sm btn-light btn-primary-soft-check" for="btn-check-7">2<i class="bi bi-star-fill"></i></label>
+                                                        </li>
+                                                    {% else %}
+                                                        <li class="nav-item mb-0">
+                                                            <a class="nav-link icon-link icon-link-hover py-2" href="{{ path("shop_index", {page: 1, category: c.slug, subcategory: s.slug}) }}" class="nav-link {{ category == c ? "active" }}">
+                                                                {{ c.name }} ({{ c.numberOfProducts }})
+                                                                <i class="fas fa-arrow-right ms-2"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+										</ul>
+									</div>
+								</div>
+							</div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button fs-6 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Availability
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample" style="">
-                        <form class="accordion-body">
-                            <!-- Availability group -->
-                            <div class="form-check">
-                                <input class="form-check-input focus-shadow-none" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    All
-                                </label>
-                            </div>
-                            <div class="form-check mt-2">
-                                <input class="form-check-input focus-shadow-none" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                                <label class="form-check-label" for="flexRadioDefault2">
-                                    New Arrival
-                                </label>
-                            </div>
-                            <div class="form-check mt-2">
-                                <input class="form-check-input focus-shadow-none" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
-                                <label class="form-check-label" for="flexRadioDefault3">
-                                    On Stock Only
-                                </label>
-                            </div>
-
-                        </form>
-                    </div>
+                <div class="d-flex justify-content-between p-2 p-xl-0 mt-xl-3">
+                    <a href="{{ path('shop_index') }}" class="btn btn-link text-primary-hover p-0 mb-0">{{ 'Clear all'|trans }}</a>
+                    <button type="submit" class="btn btn-primary mb-0">{{ 'Filter Result'|trans }}</button>
                 </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button fs-6 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Categories
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample" style="">
-                        <form class="accordion-body">
-                            
-                            <!-- Checkbox -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="category1">
-                                <label class="form-check-label heading-color" for="category1">Fashion</label>
-                                <span class="small float-end">(215)</span>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="category2">
-                                <label class="form-check-label heading-color" for="category2">Electronics</label>
-                                <span class="small float-end">(142)</span>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="category3">
-                                <label class="form-check-label heading-color" for="category3">Games</label>
-                                <span class="small float-end">(25)</span>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="category4">
-                                <label class="form-check-label heading-color" for="category4">Books</label>
-                                <span class="small float-end">(81)</span>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="category5">
-                                <label class="form-check-label heading-color" for="category5">Mobile</label>
-                                <span class="small float-end">(354)</span>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="category6">
-                                <label class="form-check-label heading-color" for="category6">Bags</label>
-                                <span class="small float-end">(41)</span>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="category7">
-                                <label class="form-check-label heading-color" for="category7">Beauty products</label>
-                                <span class="small float-end">(35)</span>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="category8">
-                                <label class="form-check-label heading-color" for="category8">Grocery</label>
-                                <span class="small float-end">(41)</span>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button fs-6 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            Price
-                        </button>
-                    </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <form class="accordion-body">
-                            
-                            <!-- Checkbox -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="price1">
-                                <label class="form-check-label heading-color" for="price1">$0 to $200</label>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="price2">
-                                <label class="form-check-label heading-color" for="price2">$200 to $500</label>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="price3">
-                                <label class="form-check-label heading-color" for="price3">$500 to $1500</label>
-                            </div>
-                            <!-- Checkbox -->
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" value="" id="price4">
-                                <label class="form-check-label heading-color" for="price4">$1500 to more</label>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button fs-6 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                            Color
-                        </button>
-                    </h2>
-                    <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <form class="accordion-body">
-                            <!-- Radio color tabs -->
-                            <div class="color-check-radio">
-                                <input class="form-check-input" type="radio" name="flexRadiocolor" id="flexRadiocolor1" style="background-color: #9a0a0a;">
-                                <label class="form-check-label" for="flexRadiocolor1"></label>
-            
-                                <input class="form-check-input" type="radio" name="flexRadiocolor" id="flexRadiocolor2" style="background-color: #32C7F5;">
-                                <label class="form-check-label" for="flexRadiocolor2"></label>
-            
-                                <input class="form-check-input" type="radio" name="flexRadiocolor" id="flexRadiocolor3" style="background-color: #F7C32E;">
-                                <label class="form-check-label" for="flexRadiocolor3"></label>
-            
-                                <input class="form-check-input" type="radio" name="flexRadiocolor" id="flexRadiocolor4" style="background-color: #333369;">
-                                <label class="form-check-label" for="flexRadiocolor4"></label>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button fs-6 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                            Rating star
-                        </button>
-                    </h2>
-                    <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <form class="accordion-body">
-                            <ul class="list-inline mb-0 g-3">
-                                <!-- Item -->
-                                <li class="list-inline-item mb-0">
-                                    <input type="checkbox" class="btn-check" id="btn-check-6">
-                                    <label class="btn btn-sm btn-light btn-primary-soft-check" for="btn-check-6">1<i class="bi bi-star-fill"></i></label>
-                                </li>
-                                <!-- Item -->
-                                <li class="list-inline-item mb-0">
-                                    <input type="checkbox" class="btn-check" id="btn-check-7">
-                                    <label class="btn btn-sm btn-light btn-primary-soft-check" for="btn-check-7">2<i class="bi bi-star-fill"></i></label>
-                                </li>
-                                <!-- Item -->
-                                <li class="list-inline-item mb-0">
-                                    <input type="checkbox" class="btn-check" id="btn-check-8">
-                                    <label class="btn btn-sm btn-light btn-primary-soft-check" for="btn-check-8">3<i class="bi bi-star-fill"></i></label>
-                                </li>
-                                <!-- Item -->
-                                <li class="list-inline-item mb-0">
-                                    <input type="checkbox" class="btn-check" id="btn-check-15">
-                                    <label class="btn btn-sm btn-light btn-primary-soft-check" for="btn-check-15">4<i class="bi bi-star-fill"></i></label>
-                                </li>
-                                <!-- Item -->
-                                <li class="list-inline-item mb-0">
-                                    <input type="checkbox" class="btn-check" id="btn-check-16">
-                                    <label class="btn btn-sm btn-light btn-primary-soft-check" for="btn-check-16">5<i class="bi bi-star-fill"></i></label>
-                                </li>
-                            </ul>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-between p-2 p-xl-0 mt-xl-3">
-                <button class="btn btn-link text-primary-hover p-0 mb-0">{{ 'Clear all'|trans }}</button>
-                <button class="btn btn-primary mb-0">{{ 'Filter Result'|trans }}</button>
-            </div>
+            {{ form_end(form) }}
         </div>
     </div>		
 </aside>

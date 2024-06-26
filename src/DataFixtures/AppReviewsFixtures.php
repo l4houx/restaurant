@@ -46,10 +46,10 @@ class AppReviewsFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
-        /** @var array<Customer> $customers */
-        $customers = $manager->getRepository(Customer::class)->findAll();
+        /** @var array<int, User> $users */
+        $users = $manager->getRepository(User::class)->findAll();
 
-        /** @var array<Product> $products */
+        /** @var array<int, Product> $products */
         $products = $manager->getRepository(Product::class)->findAll();
 
         $this->createTestimonials($manager);
@@ -59,7 +59,7 @@ class AppReviewsFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i <= 2000; ++$i) {
             $review = new Review();
             $review
-                ->setAuthor($this->faker()->randomElement($customers))
+                ->setAuthor($this->faker()->randomElement($users))
                 ->setProduct($this->faker()->randomElement($products))
                 ->setIsVisible($this->faker()->numberBetween(0, 1))
                 ->setRating($this->faker()->numberBetween(1, 5))
@@ -82,7 +82,7 @@ class AppReviewsFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            AppCustomerFixtures::class,
+            AppUserFixtures::class,
             AppShopFixtures::class,
         ];
     }

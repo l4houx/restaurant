@@ -2,18 +2,20 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\HomepageHeroSetting;
-use App\Entity\Shop\Brand;
-use App\Entity\Shop\Category;
-use App\Entity\Shop\Product;
-use App\Entity\Shop\SubCategory;
 use App\Entity\User;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Shop\Brand;
+use App\Entity\Shop\Product;
+use App\Entity\Shop\Category;
+use App\Entity\Shop\SubCategory;
+use App\Entity\Shop\ProductImage;
+use App\Entity\HomepageHeroSetting;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class AppShopFixtures extends Fixture
+class AppShopFixtures extends Fixture implements DependentFixtureInterface
 {
     use FakerTrait;
 
@@ -34,6 +36,11 @@ class AppShopFixtures extends Fixture
      */
     private array $brands = [];
 
+    /**
+     * @var array<int, ProductImage>
+     */
+    private array $productimages = [];
+
     public function __construct(
         private readonly SluggerInterface $slugger
     ) {
@@ -45,7 +52,7 @@ class AppShopFixtures extends Fixture
             $subCategory = (new SubCategory());
             $subCategory
                 ->setId($i)
-                ->setName($this->faker()->unique()->sentence(5, true))
+                ->setName($this->faker()->unique()->sentence(1, true))
                 ->setSlug($this->slugger->slug($subCategory->getName())->lower())
                 ->setColor($this->faker()->hexColor())
             ;
@@ -60,7 +67,7 @@ class AppShopFixtures extends Fixture
             $category = (new Category());
             $category
                 ->setId($this->categoryId)
-                ->setName($this->faker()->unique()->sentence(5, true))
+                ->setName($this->faker()->unique()->sentence(1, true))
                 ->setSlug($this->slugger->slug($category->getName())->lower())
                 ->setParent($category)
                 ->setNumberOfProducts(10)
@@ -74,7 +81,7 @@ class AppShopFixtures extends Fixture
                 $sub = (new Category());
                 $sub
                     ->setId($this->categoryId)
-                    ->setName($this->faker()->unique()->sentence(5, true))
+                    ->setName($this->faker()->unique()->sentence(1, true))
                     ->setSlug($this->slugger->slug($sub->getName())->lower())
                     ->setParent($category)
                     ->setNumberOfProducts(10)
@@ -105,6 +112,64 @@ class AppShopFixtures extends Fixture
         }
     }
 
+    private function createHomepageHeroSetting(ObjectManager $manager): void
+    {
+        // Hero Setting
+        $homepages = [
+            1 => [
+                'title' => 'Discover Product',
+                'paragraph' => 'Uncover the best products',
+                'content' => 'custom',
+                'custom_background_name' => 'hero-section.png',
+                'custom_block_one_name' => 'hero-block-1.svg',
+                'custom_block_two_name' => 'hero-block-2.svg',
+                'custom_block_three_name' => 'hero-block-3.svg',
+                'show_search_box' => 1,
+            ],
+        ];
+
+        foreach ($homepages as $key => $value) {
+            $homepage = (new HomepageHeroSetting())
+                ->setTitle($value['title'])
+                ->setParagraph($value['paragraph'])
+                ->setContent($value['content'])
+                ->setCustomBackgroundName($value['custom_background_name'])
+                ->setCustomBlockOneName($value['custom_block_one_name'])
+                ->setCustomBlockTwoName($value['custom_block_two_name'])
+                ->setCustomBlockThreeName($value['custom_block_three_name'])
+                ->setShowSearchBox((bool) $value['show_search_box'])
+                ->setCreatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
+                ->setUpdatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
+            ;
+
+            $manager->persist($homepage);
+        }
+    }
+
+    private function createProductImages(ObjectManager $manager): void
+    {
+        /** @var array<int, Product> $products */
+        $products = $manager->getRepository(Product::class)->findAll();
+
+        for ($i = 1; $i <= 2000; ++$i) {
+            /** @var ProductImage $productimage */
+            $productimage = (new ProductImage())
+                ->setId($i)
+                ->setProduct($this->faker()->randomElement($products))
+                ->setImageName('664e7be695487075513142.jpg')
+                ->setImageSize(70649)
+                ->setImageMimeType('image/jpeg')
+                ->setImageOriginalName('avatar-1.jpg')
+                ->setImageDimensions([256, 256])
+                ->setPosition(rand(1, 2000))
+                ->setCreatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
+                ->setUpdatedAt(\DateTimeImmutable::createFromInterface($this->faker()->dateTimeBetween('-50 days', '+10 days')))
+            ;
+            $this->productimages[$i] = $productimage;
+            $manager->persist($productimage);
+        }
+    }
+
     /**
      * @param EntityManagerInterface $manager
      */
@@ -118,7 +183,7 @@ class AppShopFixtures extends Fixture
             $categoryLevel1 = (new Category());
             $categoryLevel1
                 ->setId($this->categoryId)
-                ->setName($this->faker()->unique()->sentence(5, true))
+                ->setName($this->faker()->unique()->sentence(1, true))
                 ->setSlug($this->slugger->slug($categoryLevel1->getName())->lower())
                 ->setParent($category)
                 ->setNumberOfProducts(10)
@@ -143,7 +208,7 @@ class AppShopFixtures extends Fixture
         $this->createBrands($manager);
         $manager->flush();
 
-        /** @var array<HomepageHeroSetting> $homepages */
+        /** @var array<int, HomepageHeroSetting> $homepages */
         $homepages = $manager->getRepository(HomepageHeroSetting::class)->findAll();
 
         /** @var array<int, User> $users */
@@ -166,7 +231,7 @@ class AppShopFixtures extends Fixture
                 ->setTags($this->faker()->word())
                 ->setViews(rand(10, 2000))
                 ->setMetaTitle($product->getName())
-                ->setMetaDescription($this->faker()->realText(100))
+                ->setMetaDescription($product->getName())
                 ->setExternallink(1 === mt_rand(0, 1) ? $this->faker()->url() : null)
                 ->setWebsite(1 === mt_rand(0, 1) ? $this->faker()->url() : null)
                 ->setEmail(1 === mt_rand(0, 1) ? $this->faker()->email() : null)
@@ -194,6 +259,8 @@ class AppShopFixtures extends Fixture
 
             $manager->persist($product);
 
+            $this->createProductImages($manager);
+
             if ($p > 2000 - count($this->categories)) {
                 $this->categories[$p % count($this->categories)]->setLastProduct($product);
             }
@@ -202,5 +269,15 @@ class AppShopFixtures extends Fixture
                 $manager->flush();
             }
         }
+    }
+
+    /**
+     * @return array<array-key, class-string<Fixture>>
+     */
+    public function getDependencies(): array
+    {
+        return [
+            AppSettingsFixtures::class,
+        ];
     }
 }

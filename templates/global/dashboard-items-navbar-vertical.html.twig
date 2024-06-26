@@ -12,7 +12,7 @@
                         {% include "global/user-avatar.html.twig" with { user: app.user, type: "xl", class: "avatar-img border border-2 border-white" } %}
 					</div>
 					<h6 class="mb-0">
-						{{ 'Hello'|trans }} {{ app.user.getFullName | lower | capitalize }}
+						{{ 'Hello'|trans }} {{ app.user.getFullName|lower|capitalize }}
 					</h6>
 					<a href="javascript:void;" class="text-reset text-primary-hover small">
 						{{ 'Your keys :'|trans }} {{ app.user.account.balance }}
@@ -42,6 +42,16 @@
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="">
+								<i class="fas fa-star fa-fw me-2"></i>{{ 'Reviews'|trans }}
+                            </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% if activerd == 'ticket_index' or activerd == 'ticket_new' or activerd == 'response_index' %}active{% endif %}" href="{{ path('dashboard_account_ticket_index') }}">
+								<i class="fas fa-ticket fa-fw me-2"></i>{{ 'Ticket'|trans }}
+                            </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="">
 								<i class="fas fa-wallet fa-fw me-2"></i>{{ 'Payment Details'|trans }}
                             </a>
 						</li>
@@ -51,7 +61,7 @@
                             </a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="">
+							<a class="nav-link {% if activerd == 'favorites_index' or activerd == 'favorites_new' %}active{% endif %}" href="{{ path('dashboard_account_favorites_index') }}">
 								<i class="fas fa-heart fa-fw me-2"></i>{{ 'Wishlist'|trans }}
                             </a>
 						</li>

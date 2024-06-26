@@ -6,12 +6,11 @@ use App\Entity\HomepageHeroSetting;
 use App\Entity\Review;
 use App\Entity\Traits\HasContentTrait;
 use App\Entity\Traits\HasDeletedAtTrait;
-use App\Entity\Traits\HasGedmoTimestampTrait;
-use App\Entity\Traits\HasIdGedmoNameSlugAssertTrait;
 use App\Entity\Traits\HasIdNameSlugTrait;
 use App\Entity\Traits\HasIsOnlineTrait;
 use App\Entity\Traits\HasLimit;
 use App\Entity\Traits\HasMetaTrait;
+use App\Entity\Traits\HasPublishedAtTrait;
 use App\Entity\Traits\HasSocialNetworksTrait;
 use App\Entity\Traits\HasTagTrait;
 use App\Entity\Traits\HasTimestampableTrait;
@@ -22,6 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -32,21 +32,19 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[UniqueEntity('name')]
 #[UniqueEntity('slug')]
 #[Vich\Uploadable]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
 class Product
 {
     use HasIdNameSlugTrait;
-    // use HasIdGedmoNameSlugAssertTrait;
     use HasContentTrait;
-    use HasMetaTrait;
     use HasIsOnlineTrait;
     use HasViewsTrait;
     use HasTagTrait;
+    use HasMetaTrait;
+    // use HasPublishedAtTrait;
     use HasSocialNetworksTrait;
     use HasTimestampableTrait;
-    // use HasGedmoTimestampTrait;
     use HasDeletedAtTrait;
-
-    public const PRODUCT_LIMIT = HasLimit::PRODUCT_LIMIT;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
     #[Vich\UploadableField(mapping: 'product_image', fileNameProperty: 'imageName', size: 'imageSize', mimeType: 'imageMimeType', originalName: 'imageOriginalName', dimensions: 'imageDimensions')]
@@ -287,12 +285,6 @@ class Product
         $this->ref = $ref;
 
         return $this;
-    }
-
-    public function getFormattedAmount(): string
-    {
-        // return number_format(($this->amount / 100), 2, '.', ',');
-        return number_format($this->amount / 100, 0, '', ' ');
     }
 
     public function getAmount(): int
@@ -594,5 +586,23 @@ class Product
         }
 
         return $count;
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            $this->id,
+            $this->amount,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        if (6 === count($data)) {
+            [
+                $this->id,
+                $this->amount,
+            ] = $data;
+        }
     }
 }

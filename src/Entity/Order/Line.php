@@ -19,7 +19,7 @@ class Line
     #[ORM\Column(type: Types::INTEGER)]
     private int $quantity = 0;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private Product $product;
 

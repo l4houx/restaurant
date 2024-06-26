@@ -1,0 +1,114 @@
+{#  
+<div class="accordion-item mb-3 {{ hidden ? 'dropdown-ticket'}}">
+    <div class="accordion-header font-base" id="heading-{{ ticket.id }}">
+        <button class="accordion-button fw-semibold rounded collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ ticket.id }}" aria-expanded="false" aria-controls="collapse-{{ ticket.id }}">
+            {{ 'Subject'|trans }}: {{ ticket.subject }}?
+        </button>
+    </div>
+    <div id="collapse-{{ ticket.id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ ticket.id }}" data-bs-parent="#accordionTicket" style="">
+        <div class="accordion-body mt-3 pb-0">
+            <div class="d-flex {{ hidden ? 'dropdown-ticket'}}">
+                {% include "global/user-avatar.html.twig" with { user: ticket.user, type: "md", class: "float-start me-3" } %}
+                <div>
+                    <div class="d-sm-flex justify-content-between mb-2">
+                        <div>
+                            <h6 class="m-0">{{ ticket.author ?? (ticket.user.getFullName|lower|capitalize) }}</h6>
+                            <span class="me-3 small">
+                                {{ 'Answer'|trans }}: ({{ ticket.responses|length }})
+                            </span>
+                        </div>
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item small me-0">
+                                <span class="badge" style="background-color: {{ ticket.level.color }};">
+                                    {{ ticket.level.name|trans }}
+                                </span>
+                            </li>
+                            <li class="list-inline-item small me-0">
+                                <span class="badge" style="background-color: {{ ticket.status.color }};">
+                                    {{ ticket.status.name|trans }}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>{{ ticket.content|html_markdown }}</div>
+                    <div class="d-sm-flex justify-content-between mb-2">
+                        <div>
+                            {% if ticket.status.close %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary">{{ 'Ticket closed'|trans }}</span>
+                            {% else %}
+                                {% if is_granted('ROLE_USER') %}
+                                    <a class="text-body-secondary text-primary-hover small" href="{{ path('dashboard_account_ticket_close', {id: ticket.id}) }}">
+                                        {{ 'Closed'|trans }}
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div>
+							{% if hidden %}
+								{% if is_granted('ROLE_TEAM') %}
+									<a class="heading-color text-primary-hover fw-semibold small" href="{{ path('dashboard_account_response_index', {id: ticket.id}) }}">
+										<i class="fas fa-reply"></i>
+										{{ 'Reply'|trans }}
+									</a>
+								{% endif %}
+							{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+        </div>
+    </div>
+</div>
+#}
+
+<div class="d-flex {{ hidden ? 'dropdown-ticket'}}">
+    {% include "global/user-avatar.html.twig" with { user: ticket.user, type: "md", class: "float-start me-3" } %}
+    <div>
+        <div class="d-sm-flex justify-content-between mb-2">
+            <div>
+                <h6 class="m-0">{{ ticket.author ?? (ticket.user.getFullName|lower|capitalize) }}</h6>
+                <span class="me-3 small">
+                    {{ 'Answer'|trans }}: ({{ ticket.responses|length }})
+                </span>
+            </div>
+            <ul class="list-inline mb-0">
+                <li class="list-inline-item small me-0">
+                    <span class="badge" style="background-color: {{ ticket.level.color }};">
+                        {{ ticket.level.name|trans }}
+                    </span>
+                </li>
+                <li class="list-inline-item small me-0">
+                    <span class="badge" style="background-color: {{ ticket.status.color }};">
+                        {{ ticket.status.name|trans }}
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <div>{{ ticket.content|html_markdown }}</div>
+        <div class="d-sm-flex justify-content-between mb-2">
+            <div>
+                {% if ticket.status.close %}
+                    <span class="badge bg-primary bg-opacity-10 text-primary">{{ 'Ticket closed'|trans }}</span>
+                {% else %}
+                    {% if is_granted('ROLE_USER') %}
+                        <a class="text-body-secondary text-primary-hover small" href="{{ path('dashboard_account_ticket_close', {id: ticket.id}) }}">
+                            {{ 'Closed'|trans }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div>
+                {% if hidden %}
+                    {% if is_granted('ROLE_TEAM') %}
+                        <a class="heading-color text-primary-hover fw-semibold small" href="{{ path('dashboard_account_response_index', {id: ticket.id}) }}">
+                            <i class="fas fa-reply"></i>
+                            {{ 'Reply'|trans }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<hr class="my-4">

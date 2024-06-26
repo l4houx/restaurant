@@ -122,6 +122,22 @@ sf-mf: ## Make symfony Form
 	$(SYMFONY_CONSOLE) make:form
 .PHONY: sf-mf
 
+sf-twig-component: ## Make symfony Twig component
+	$(SYMFONY_CONSOLE) make:twig-component
+.PHONY: sf-twig-component
+
+sf-twig-extension: ## Make symfony Twig extension
+	$(SYMFONY_CONSOLE) make:twig-extension
+.PHONY: sf-twig-extension
+
+sf-ux-auto: ## Make symfony Ajax-autocomplete
+	$(SYMFONY_CONSOLE) make:autocomplete-field
+.PHONY: sf-ux-auto
+
+sf-command: ## Make symfony Command
+	$(SYMFONY_CONSOLE) make:command
+.PHONY: sf-command
+
 sf-public: ## Fix permissions public.
 	chmod -R 777 public
 .PHONY: sf-public
