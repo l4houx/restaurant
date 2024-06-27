@@ -21,8 +21,18 @@
 				<div class="card-body p-0 mt-4">
 					<ul class="nav nav-pills-primary-border-start flex-column">
 						<li class="nav-item">
-							<a class="nav-link {% if activerd == 'account_main' %}active{% endif %}" href="{{ path('dashboard_account_main') }}">
-								<i class="fas fa-user-check fa-fw me-2"></i>{{ 'My Account'|trans }}
+							<a class="nav-link {% if activerd == 'account_index' %}active{% endif %}" href="{{ path('dashboard_account_index') }}">
+								<i class="fas fa-gauge fa-fw me-2"></i>
+								{% if is_granted("ROLE_TEAM") %}
+									{{ 'Dashboard'|trans }}
+								{% else %}
+									{{ 'My Dashboard'|trans }}
+								{% endif %}
+                            </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% if activerd == 'account_profile' %}active{% endif %}" href="{{ path('dashboard_account_profile') }}">
+								<i class="fas fa-user-check fa-fw me-2"></i>{{ 'My Profile'|trans }}
                             </a>
 						</li>
 						<li class="nav-item">
@@ -41,7 +51,7 @@
                             </a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="">
+							<a class="nav-link {% if activerd == 'review_index' or activerd == 'review_new' %}active{% endif %}" href="{{ path('dashboard_account_review_index') }}">
 								<i class="fas fa-star fa-fw me-2"></i>{{ 'Reviews'|trans }}
                             </a>
 						</li>

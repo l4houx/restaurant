@@ -25502,4 +25502,60 @@ notyf {
     display: none;
 }
 
+.label-rating {
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle
+}
+
+.stars-simple {
+    margin-bottom: 7px
+}
+
+.stars-simple i {
+    color: #f59e0b !important
+}
+
+.stars-simple small {
+    color: #999;
+    margin-left: 5px
+}
+
+.rating-stars {
+    display: inline-block;
+    vertical-align: middle;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    line-height: 1;
+    white-space: nowrap;
+    clear: both
+}
+
+.rating-stars i {
+    font-size: 14px;
+    color: #ccc;
+    display: inline
+}
+
+.rating-stars li {
+    display: block;
+    text-overflow: clip;
+    white-space: nowrap;
+    z-index: 1
+}
+
+.rating-stars li.stars-active {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden
+}
+
+.rating-stars li.stars-active i {
+    color: #f59e0b !important
+}
+
 /*User CSS*/

@@ -24,7 +24,7 @@ class ReviewRepository extends ServiceEntityRepository
      *
      * @return Review[] Returns an array of Review objects
      */
-    public function getLastByUser(User $user, int $limit): array //  (UserController)
+    public function getLastByUser(User $user, int $limit): array //  (UserController, ReviewController)
     {
         return $this->createQueryBuilder('r')
             ->andWhere('r.author = :user')

@@ -11,6 +11,8 @@ final class AlertComponent
 {
     public string $type;
 
+    public bool $closeButton = true;
+
     public function getIcon(): string
     {
         return match ($this->type) {

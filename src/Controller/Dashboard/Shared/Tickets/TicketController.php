@@ -71,7 +71,13 @@ class TicketController extends BaseController
                 $this->em->persist($ticket);
                 $this->em->flush();
 
-                $this->addFlash('success', $this->translator->trans('Ticket was created successfully.'));
+                $this->addFlash(
+                    'success',
+                    sprintf(
+                        $this->translator->trans('Ticket %s was created successfully.'),
+                        $ticket->getSubject()
+                    )
+                );
 
                 return $this->redirectToRoute('dashboard_account_response_index', ['id' => $ticket->getId()]);
             } else {
@@ -132,6 +138,16 @@ class TicketController extends BaseController
         $ticket->setStatus($status);
 
         $this->em->flush();
+
+        $this->addFlash('success', $this->translator->trans('Ticket was closed successfully.'));
+
+        $this->addFlash(
+            'success',
+            sprintf(
+                $this->translator->trans('Ticket %s was closed successfully.'),
+                $ticket->getSubject()
+            )
+        );
 
         return $this->redirectToRoute('dashboard_account_index', [], Response::HTTP_SEE_OTHER);
     }

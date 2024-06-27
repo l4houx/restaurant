@@ -1,0 +1,8 @@
+<{{ tag }} class="dropdown {{ class }}">
+    <{{ toggle }} class="{{ toggleClass }} dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+        {% block toggle '' %}
+    </{{ toggle }}>
+    <ul class="dropdown-menu dropdown-menu-{{ direction }}">
+        {% block items '' %}
+    </ul>
+</{{ tag }}>

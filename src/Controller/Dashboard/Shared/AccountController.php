@@ -26,13 +26,13 @@ class AccountController extends BaseController
     ) {
     }
 
-    #[Route(path: '/', name: 'main', methods: ['GET'])]
-    public function main(): Response
+    #[Route(path: '/profile', name: 'profile', methods: ['GET'])]
+    public function accountProfile(): Response
     {
-        return $this->render('dashboard/shared/account/main.html.twig');
+        return $this->render('dashboard/shared/account/profile.html.twig');
     }
 
-    #[Route(path: '/profile', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function accountEdit(Request $request): Response
     {
         $user = $this->getUserOrThrow();
@@ -50,7 +50,7 @@ class AccountController extends BaseController
             }
         }
 
-        return $this->render('dashboard/shared/account/profile.html.twig', compact('form', 'user'));
+        return $this->render('dashboard/shared/account/edit.html.twig', compact('form', 'user'));
     }
 
     #[Route(path: '/change-password', name: 'change_password', methods: ['GET', 'POST'])]

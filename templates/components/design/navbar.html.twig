@@ -1,0 +1,28 @@
+<header class="header-sticky header-absolute">
+    {% include "global/user-isverified.html.twig" with { user: app.user } %}
+    <nav class="navbar navbar-expand-xl">
+        <div class="container">
+            <a href="{{ path('home') }}" class="navbar-brand me-5">
+                {% block brand '' %}
+            </a>
+            <div class="navbar-collapse collapse" id="navbarCollapse">
+                <ul class="navbar-nav navbar-nav-scroll dropdown-hover mx-auto">
+                    {% block nav '' %}
+                </ul>
+            </div>
+			<ul class="nav align-items-center dropdown-hover ms-sm-2">
+                {% include "global/dropdown-item-bs-theme-text.html.twig" %}
+                {% block auth '' %}
+				<li class="nav-item">
+					<button class="navbar-toggler ms-sm-3 p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-animation">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</button>
+				</li>	
+			</ul>
+        </div>
+    </nav>
+</header>

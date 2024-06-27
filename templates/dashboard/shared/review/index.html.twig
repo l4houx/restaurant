@@ -1,9 +1,69 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    <section class="pt-0">
-        <div class="container">
+{% set pagetitle = 'My review'|trans %}
+{% block title pagetitle %}
 
+{% block body %}
+    <section class="pt-sm-7">
+        <div class="container pt-3 pt-xl-5">
+            <div class="row">
+                {% include "global/dashboard-items-navbar-vertical.html.twig" with {activerd: 'review_index'} %}
+                <div class="col-lg-8 col-xl-9 ps-lg-4 ps-xl-6">
+                    <div class="d-flex justify-content-between align-items-center mb-5 mb-sm-6">
+                        <h1 class="h3 mb-0">{{ pagetitle }}</h1>
+                        <button class="btn btn-primary d-lg-none flex-shrink-0 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                            <i class="fas fa-sliders-h"></i> {{ 'Menu'|trans }}
+                        </button>
+                    </div>
+                    <div class="row g-3 align-items-center mb-5">
+                        <div class="col-xl-5"></div>
+                        <div class="col-sm-6 col-xl-2 ms-auto"></div>
+                        {#  
+                        {% if is_granted('ROLE_VERIFIED') and is_granted('ROLE_USER') %}
+                            <div class="col-xl-5 text-end">
+                                {% if app.user.isRatedBy(app.user) %}
+                                    <a href="{{ path('review') }}" class="btn btn-primary mb-0">
+                                        <i class="fas fa-star me-2"></i>
+                                        {{ "All reviews"|trans }}
+                                    </a>
+                                {% else %}
+                                    <a href="{{ path('dashboard_account_review_new') }}" class="btn btn-primary mb-0">
+                                        <i class="fas fa-plus me-2"></i>
+                                        {{ "Add your review"|trans }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        #}
+                    </div>
+                    {% if reviews|length > 0 %}
+                        <div class="card bg-transparent p-0">
+                            <div class="card-body px-0">
+                                {% for review in reviews %}
+                                    {% include "global/user-review.html.twig" with {review: review, showuser: 1} %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        {% include "global/message.html.twig" with { type: "dark", message: ('No reviews found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </section>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		$(document).ready(function () {
+			if (getURLParameter('isVisible') != "null") {
+				$('input[type="radio"][name="isVisible"][value="' + getURLParameter('isVisible') + '"]').attr("checked", "checked");
+			}
+
+			if (getURLParameter('rating') != "null") {
+				$('input[type="radio"][name="rating"][value="' + getURLParameter('rating') + '"]').attr("checked", "checked");
+			}
+		});
+	</script>
 {% endblock %}

@@ -1,3 +1,50 @@
 {% if review.isVisible %}
-
+	<div class="d-flex">
+        {% if showuser is defined %}
+            {% include "global/user-avatar.html.twig" with { user: review.author, type: "md", class: "float-start me-3" } %}
+        {% endif %}
+		<div>
+			<div class="d-sm-flex justify-content-between mb-2">
+				<div>
+                    {% if showuser is defined %}
+                        <h6 class="m-0">{{ review.author.getFullName|lower|capitalize }}</h6>
+                    {% endif %}
+                    <span class="me-3 small">
+                        {{ 'Published the'|trans }}
+                        {{ review.createdAt|format_date('long') }}
+                    </span>
+				</div>
+                {% if showproduct is defined %}
+                    <h6 class="mb-0">
+                        <a href="{{ path('product', { slug : review.product.slug }) }}" class="text-body-secondary text-primary-hover small">{{ review.product.name }}
+                        </a>
+                    </h6>
+                {% endif %}
+			</div>
+            <span class="h6">{{ review.name }}</span>
+			<div>{{ review.content|html_markdown }}</div>
+            <div class="d-lg-flex">
+                <div class="rating-wrap">
+                    <ul class="list-inline mb-0 rating-stars">
+                        <li style="width:{{review.getRatingPercentage}}%" class="stars-active">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </li>
+                        <li>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </li>
+                    </ul>
+                    <div class="label-rating">{{ review.getRating }} {{"out of 5 stars"|trans|lower}}</div>
+                </div>
+            </div>
+		</div>
+	</div>
+	<hr class="my-4">
 {% endif %}

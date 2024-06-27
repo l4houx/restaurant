@@ -3,96 +3,85 @@
 {% set pagetitle = 'My dashboard'|trans %}
 {% block title pagetitle %}
 
-{% block breadcrumb %}
-	{% set breadcrumb = [{ "current":(pagetitle) }] %}
-	{% include "global/breadcrumb.html.twig" with breadcrumb %}
-{% endblock %}
-
 {% block body %}
-    {#  
-	{% if hasActivity %}
-		<div class="row">
-			<div class="col-xl-3 col-lg-6 col-md-12 col-12">
-				<div class="card mb-4">
-					<div class="p-4">
-						<span class="fs-6 text-uppercase fw-semibold">{{ 'Recipes Rating'|trans }}</span>
-						<h2 class="mt-4 fw-bold mb-1 d-flex align-items-center h1 lh-1">4.80</h2>
-						<span class="d-flex justify-content-between align-items-center">
-							<span>{{ 'Rating this month'|trans }}</span>
-							<span class="badge bg-primary ms-2">10+</span>
-						</span>
+    <section class="pt-sm-7">
+        <div class="container pt-3 pt-xl-5">
+            <div class="row">
+                {% include "global/dashboard-items-navbar-vertical.html.twig" with {activerd: 'account_index'} %}
+                <div class="col-lg-8 col-xl-9 ps-lg-4 ps-xl-6">
+                    <div class="d-flex justify-content-between align-items-center mb-5 mb-sm-6">
+                        <h1 class="h3 mb-0">{{ 'Dashboard'|trans }}</h1>
+                        <button class="btn btn-primary d-lg-none flex-shrink-0 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                            <i class="fas fa-sliders-h"></i> {{ 'Menu'|trans }}
+                        </button>
+                    </div>
+					<div class="card bg-transparent mb-5 mb-sm-6">
+                        <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center p-0 pb-3">
+                            <h6 class="card-title mb-0">{{ 'Recently added'|trans }}</h6>
+                            <span>
+								{{ tickets|length }}
+								{{ tickets|length > 1 ? "Tickets"|trans : "Ticket"|trans }}
+                            </span>
+                        </div>
 					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-lg-6 col-md-12 col-12">
-				<div class="card mb-4">
-					<div class="p-4">
-						<span class="fs-6 text-uppercase fw-semibold">{{ 'Invoices'|trans }}</span>
-						<h2 class="mt-4 fw-bold mb-1 d-flex align-items-center h1 lh-1">4.80</h2>
-						<span class="d-flex justify-content-between align-items-center">
-							<span>{{ 'Rating this month'|trans }}</span>
-							<span class="badge bg-dark-info ms-2">10+</span>
-						</span>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-lg-6 col-md-12 col-12">
-				<div class="card mb-4">
-					<div class="p-4">
-						<span class="fs-6 text-uppercase fw-semibold">{{ 'Recipes'|trans }}</span>
-						<h2 class="mt-4 fw-bold mb-1 d-flex align-items-center h1 lh-1">4.80</h2>
-						<span class="d-flex justify-content-between align-items-center">
-							<span>{{ 'Rating this month'|trans }}</span>
-							<span class="badge bg-secondary ms-2">10+</span>
-						</span>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-
-		</div>
-	{% else %}
-		<div class="row">
-			<div class="col-xl-4 col-lg-12 col-md-12 col-12 mb-4">
-				<div class="card border-0 h-100">
-					<div class="card-body p-10">
-						<div class="text-center">
-							<img src="{{ asset('images/svg/survey-img.svg') }}" alt="welcome" class="img-fluid">
-							<div class="px-lg-8">
-								<h1>{{ 'Welcome !'|trans }} {{ user.username }}</h1>
-								<p class="mb-0">
-									{{ 'Post all your favorite recipes here, so that as many people as possible can benefit from them.'|trans }}
-								</p>
-								<a href="" class="btn btn-primary mt-4">{{ 'Create'|trans }}</a>
-							</div>
+					{% if hasActivity %}
+						<div class="row g-4">
+							{% for status in statuses %}
+								<div class="col-md-6 col-lg-4">
+									<div class="card card-body border p-4 h-100">
+										<h6 class="mb-4">
+											<i class="fa-solid fa-circle fa-2xs me-2" style="color: {{ status.color }};"></i>
+											{{ status.name|trans }}
+										</h6>
+										<h5>{{ 'Status'|trans }}</h5>
+										<p class="mb-0">
+											{{ 'Ticket(s)'|trans }}:
+											{{ tickets|filter(t => t.status is same as(status))|length }}
+										</p>
+									</div>
+								</div>
+							{% endfor %}
+							{% for level in levels %}
+								<div class="col-md-6 col-lg-4">
+									<div class="card card-body border p-4 h-100">
+										<h6 class="mb-4">
+											<i class="fa-solid fa-circle fa-2xs me-2" style="color: {{ level.color }};"></i>
+											{{ level.name|trans }}
+										</h6>
+										<h5>{{ 'Level'|trans }}</h5>
+										<p class="mb-0">
+											{{ 'Ticket(s)'|trans }}:
+											{{ tickets|filter(t => t.level is same as(level) and t.status.id != 3)|length }}
+										</p>
+									</div>
+								</div>
+							{% endfor %}
 						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	{% endif %}
-    #}
-    <section class="pt-0">
-        <div class="container">
-			<div class="row">
-				<div class="col-xl-6 offset-xl-3 mb-4">
-					<div class="card border-0 h-100">
-						<div class="card-body p-10">
-							<div class="text-center">
-								<img src="{{ asset('images/svg/survey-img.svg') }}" alt="welcome" class="img-fluid">
-								<div class="px-lg-8">
-									<h1>{{ 'Welcome !'|trans }} {{ user.username }}</h1>
-									<p class="mb-0">
-										{{ 'Post all your favorite recipes here, so that as many people as possible can benefit from them.'|trans }}
-									</p>
-									<a href="" class="btn btn-primary mt-4">{{ 'Create'|trans }}</a>
+						<div class="row g-4">
+
+						</div>
+					{% else %}
+						<div class="row">
+							<div class="col-xl-6 offset-xl-3 mb-4">
+								<div class="card border-0 h-100">
+									<div class="card-body p-10">
+										<div class="text-center">
+											<img src="{{ asset('images/svg/survey-img.svg') }}" alt="welcome" class="img-fluid">
+											<div class="px-lg-8">
+												<h1>{{ 'Welcome !'|trans }} {{ user.username }}</h1>
+												<p class="mb-0">
+													{{ 'Post all your favorite products here, so that as many people as possible can benefit from them.'|trans }}
+												</p>
+												<a href="" class="btn btn-primary mt-4">{{ 'Create'|trans }}</a>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				</div>
-			</div>
+					{% endif %}
+                </div>
+            </div>
         </div>
     </section>
 {% endblock %}

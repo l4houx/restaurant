@@ -1,0 +1,29 @@
+<div class="col-lg-4 col-xl-3">
+	<div class="offcanvas-lg offcanvas-start h-100" tabindex="-1" id="offcanvasSidebar">
+		<div class="offcanvas-header bg-light">
+			<h5 class="offcanvas-title" id="offcanvasNavbarLabel">{{ 'My profile'|trans }}</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close">
+            </button>
+		</div>
+		<div class="offcanvas-body p-0">
+			<div class="card border p-3 w-100">
+				<div class="card-header text-center border-bottom">
+					<div class="avatar avatar-xl mb-2">
+                        {% include "global/user-avatar.html.twig" with { user: app.user, type: "xl", class: "avatar-img border border-2 border-white" } %}
+					</div>
+					<h6 class="mb-0">
+						{{ 'Hello'|trans }} {{ app.user.getFullName|lower|capitalize }}
+					</h6>
+					<a href="javascript:void;" class="text-reset text-primary-hover small">
+						{{ 'Your keys :'|trans }} {{ app.user.account.balance }}
+					</a>
+				</div>
+				<div class="card-body p-0 mt-4">
+					<ul class="nav nav-pills-primary-border-start flex-column">
+						{% block nav '' %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

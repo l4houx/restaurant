@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% set pagetitle = 'Add a new ticket'|trans %}
+{% set pagetitle = 'Support'|trans %}
 {% block title pagetitle %}
 
 {% block body %}
@@ -11,7 +11,7 @@
 				<div class="col-lg-8 col-xl-9 ps-lg-4 ps-xl-6">
 					<div class="d-flex justify-content-between align-items-center mb-5 mb-sm-6">
 						<h1 class="h3 mb-0">
-							{{ 'Ticket'|trans }}
+							{{ 'Add a new ticket'|trans }}
 						</h1>
 						<button class="btn btn-primary d-lg-none flex-shrink-0 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
 							<i class="fas fa-sliders-h"></i>
@@ -23,11 +23,20 @@
 					{{ form_errors(form) }}
 					<div class="card bg-transparent p-0">
 						<div class="card-header bg-transparent border-bottom px-0">
-							<h6 class="mb-0">{{ pagetitle }}</h6>
+							<h6 class="mb-3">{{ 'Need Help? Open a Ticket'|trans  }}</h6>
+							<p class="mb-0">{{ 'Submit Your Support Ticket, We will be with you as soon as we are able.'|trans }}</p>
 						</div>
 						<div class="card-body px-0">
 							<div class="mb-3">
 								{% include "global/message.html.twig" with { type: "info", icon: "fas fa-exclamation", message: ("The fields preceded with a red * are mandatory"|trans) } %}
+
+
+								{% component alert with {type: 'info', closeButton: false} %}
+									{% block content %}
+										{{ 'The fields preceded with a red * are mandatory'|trans }}
+									{% endblock %}
+								{% endcomponent %}
+
 							</div>
 							{{ form_widget(form) }}
 							<div class="d-flex justify-content-end mt-4">

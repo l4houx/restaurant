@@ -1,0 +1,19 @@
+{% component navbar_vertical %}
+    {% block nav %}
+        {% if is_granted("ROLE_TEAM") %}
+            {{ component('nav_item', {label: 'Dashboard'|trans, route: 'dashboard_account_index', icon: 'fas fa-gauge'}) }}
+        {% else %}
+            {{ component('nav_item', {label: 'My Dashboard'|trans, route: 'dashboard_account_index', icon: 'fas fa-gauge'}) }}
+        {% endif %}
+        {{ component('nav_item', {label: 'My Profile'|trans, route: 'dashboard_account_profile', icon: 'fas fa-user-check'}) }}
+        {{ component('nav_item', {label: 'Edit Profile'|trans, route: 'dashboard_account_edit', icon: 'fas fa-edit'}) }}
+        {{ component('nav_item', {label: 'Change Password'|trans, route: 'dashboard_account_change_password', icon: 'fas fa-user-lock'}) }}
+        {{ component('nav_item', {label: 'Testimonial'|trans, route: 'dashboard_account_testimonial_index', icon: 'fas fa-star'}) }}
+        {{ component('nav_item', {label: 'Reviews'|trans, route: 'dashboard_account_review_index', icon: 'fas fa-star'}) }}
+        {{ component('nav_item', {label: 'Ticket'|trans, route: 'dashboard_account_ticket_index', icon: 'fas fa-ticket'}) }}
+        {# {{ component('nav_item', {label: 'Payment Details'|trans, route: '#', icon: 'fas fa-wallet'}) }} #}
+        {# {{ component('nav_item', {label: 'Order History'|trans, route: '#', icon: 'fas fa-basket-shopping'}) }} #}
+        {{ component('nav_item', {label: 'Wishlist'|trans, route: 'dashboard_account_favorites_index', icon: 'fas fa-heart'}) }}
+        {{ component('nav_item', {label: 'Sign Out'|trans, route: 'signout', icon: 'fas fa-sign-out-alt'}) }}
+    {% endblock %}
+{% endcomponent %}

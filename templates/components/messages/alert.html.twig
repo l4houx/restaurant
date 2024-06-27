@@ -1,4 +1,15 @@
-<div {{ attributes.defaults({class: 'd-flex alert-icon alert alert-' ~ type})}} role="alert">
-    <i class="fas fa-{{ this.icon}} me-2"></i>
+<div {{ attributes.defaults({class: 'd-flex align-items-center alert-dismissible fade show alert-icon alert alert-' ~ type})}} role="alert">
+    <i class="fas fa-{{ this.icon}} fs-xl pe-1 me-2"></i>
     {% block content %}{% endblock %}
+    {% if closeButton %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'Close'|trans }}"></button>
+    {% endif %}
 </div>
+
+{#  
+{% component alert with {type: 'info', closeButton: false} %}
+    {% block content %}
+        {{ 'The fields preceded with a red * are mandatory'|trans }}
+    {% endblock %}
+{% endcomponent %}
+#}

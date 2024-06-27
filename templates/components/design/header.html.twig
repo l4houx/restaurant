@@ -1,0 +1,55 @@
+{% component navbar %}
+    {% block brand %}
+        {# <img class="navbar-brand-item" src="{{ asset('images/logo-light.svg') }}" alt="logo"> #}
+        {{ website_name }}
+    {% endblock %}
+    {% block nav %}
+        {{ component('nav_item', {label: 'Blog'|trans, route: 'posts'}) }}
+        {{ component('nav_item', {label: 'Contact'|trans, route: 'contact'}) }}
+        {% if is_granted('ROLE_USER') %}
+            {% if not is_granted("ROLE_DATA_PURCHASE") %}
+                {{ component('nav_item', {label: 'Key account'|trans, route: 'data_index'}) }}
+            {% else %}
+                {% component dropdown with {class: 'nav-item', tag: 'li', toggle: 'a', toggleClass: 'nav-link'} %}
+                    {% block toggle %}
+                        {{ 'Key account'|trans }}
+                    {% endblock %}
+                    {% block items %}
+                        {{ component('dropdown_item', {label: 'Key Dashboard'|trans, route: 'data_index'}) }}
+                        {{ component('dropdown_item', {label: 'Buy keys'|trans, route: 'data_purchase'}) }}
+                    {% endblock %}
+                {% endcomponent %}
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+    {% block auth %}
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            {% if not is_granted('IS_IMPERSONATOR') %}
+                <li class="nav-item me-2">
+                    <a href="{{ path('signout') }}" class="btn btn-sm btn-danger mb-0">
+                        <i class="fas fa-sign-out-alt me-1"></i>{{ 'Sign Out'|trans }}
+                    </a>
+                </li>
+            {% else %}
+                <li class="nav-item me-2">
+                    <a href="{{ impersonation_exit_path(path('home')) }}" class="btn btn-sm btn-danger mb-0">
+                        <i class="fas fa-sign-out-alt me-1"></i>{{ 'Back to my access'|trans }}
+                    </a>
+                </li>
+            {% endif %}
+        {% else %}
+            <li class="nav-item me-2">
+                <a href="{{ path('signin', {redirect: app.request.pathInfo}) }}" class="btn btn-sm btn-light mb-0">
+                    <i class="fas fa-user me-1"></i>{{ 'Sign In'|trans }}
+                </a>
+            </li>
+            {% if '1' == settings['users_can_register'] %}
+                <li class="nav-item d-none d-sm-block">
+                    <a href="{{ path('signup') }}" class="btn btn-sm btn-primary mb-0">
+                        <i class="fas fa-user-plus me-1"></i>{{ 'Sign Up'|trans }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+{% endcomponent %}

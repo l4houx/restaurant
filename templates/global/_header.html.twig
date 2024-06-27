@@ -163,8 +163,8 @@
                     {% endif %}
                     {% if is_granted('ROLE_USER') %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {% if routename == "dashboard_main" or routename == "dashboard_account_main" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
-                                {{ 'Hello'|trans }} {{ app.user.getFullName | lower | capitalize }}
+                            <a class="nav-link dropdown-toggle {% if routename == "dashboard_main" or routename == "dashboard_account_profile" %}active{% endif %}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                                {{ 'Hello'|trans }} {{ app.user.getFullName|lower|capitalize }}
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
@@ -177,8 +177,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item {% if routename == "dashboard_account_main" %}active{% endif %}" href="{{ path('dashboard_account_main') }}">
-                                        {{ 'My Account'|trans }}
+                                    <a class="dropdown-item {% if routename == "dashboard_account_profile" %}active{% endif %}" href="{{ path('dashboard_account_profile') }}">
+                                        {{ 'My Profile'|trans }}
                                     </a>
                                 </li>
                                 {% if not is_granted('IS_IMPERSONATOR') %}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<section class="pt-sm-7">
+		<div class="container pt-3 pt-xl-5">
+			<div class="row">
+                {{ component('sidebar') }}
+                <div class="col-lg-8 col-xl-9 ps-lg-4 ps-xl-6">
+                    {% block content '' %}
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
