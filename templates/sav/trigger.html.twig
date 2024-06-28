@@ -26,7 +26,11 @@
                             <div class="card-body p-0">
                                 {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'row g-3 needs-validation'} }) }}
                                     <div>
-                                        {% include "global/message.html.twig" with { type: "info", icon: "fas fa-exclamation", message: ("The fields preceded with a red * are mandatory"|trans) } %}
+                                        {% component alert with {type: 'info', closeButton: false} %}
+                                            {% block content %}
+                                                {{ 'The fields preceded with a red * are mandatory'|trans }}
+                                            {% endblock %}
+                                        {% endcomponent %}
                                     </div>
                                     {{ form_errors(form) }}
                                     {{ form_widget(form._token) }}

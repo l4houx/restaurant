@@ -38,7 +38,11 @@
                     </div>
                 </div>
             {% else %}
-                {% include "global/message.html.twig" with { type: "dark", message: ('No posts found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+                {% component alert with {type: 'info', closeButton: false, class: 'my-2'} %}
+                    {% block content %}
+                        {{ 'No posts found'|trans }}
+                    {% endblock %}
+                {% endcomponent %}
             {% endif %}
         </div>
     </section>

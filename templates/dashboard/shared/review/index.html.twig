@@ -45,7 +45,11 @@
                             </div>
                         </div>
                     {% else %}
-                        {% include "global/message.html.twig" with { type: "dark", message: ('No reviews found'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+                        {% component alert with {type: 'info', closeButton: false, class: 'my-2'} %}
+                            {% block content %}
+                                {{ 'No reviews found'|trans }}
+                            {% endblock %}
+                        {% endcomponent %}
                     {% endif %}
                 </div>
             </div>

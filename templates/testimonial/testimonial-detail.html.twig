@@ -32,7 +32,11 @@
                     </div>
                 {% endif %}
             {% else %}
-                {% include "global/message.html.twig" with { type: "info", message: ('No testimonials found'|trans), icon: "fas fa-exclamation" } %}
+                {% component alert with {type: 'info', closeButton: false, class: 'my-2'} %}
+                    {% block content %}
+                        {{ 'No testimonials found'|trans }}
+                    {% endblock %}
+                {% endcomponent %}
             {% endif %}
         </div>
     </section>

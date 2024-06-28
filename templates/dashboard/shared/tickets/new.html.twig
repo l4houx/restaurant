@@ -28,15 +28,11 @@
 						</div>
 						<div class="card-body px-0">
 							<div class="mb-3">
-								{% include "global/message.html.twig" with { type: "info", icon: "fas fa-exclamation", message: ("The fields preceded with a red * are mandatory"|trans) } %}
-
-
 								{% component alert with {type: 'info', closeButton: false} %}
 									{% block content %}
 										{{ 'The fields preceded with a red * are mandatory'|trans }}
 									{% endblock %}
 								{% endcomponent %}
-
 							</div>
 							{{ form_widget(form) }}
 							<div class="d-flex justify-content-end mt-4">

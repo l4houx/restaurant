@@ -43,7 +43,11 @@
                             {% include "dashboard/client/manage-customers-table.html.twig" with {customers: customers} %}
                         {% else %}
                             <div class="card-footer bg-transparent p-0">
-                                {% include "global/message.html.twig" with { type: "dark", message: ('No result'|trans), icon: "fas fa-exclamation", class: "my-2" } %}
+                                {% component alert with {type: 'info', closeButton: false, class: 'my-2'} %}
+                                    {% block content %}
+                                        {{ 'No clients found'|trans }}
+                                    {% endblock %}
+                                {% endcomponent %}
                             </div>
                         {% endif %}
                     </div>

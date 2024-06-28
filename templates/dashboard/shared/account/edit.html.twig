@@ -50,7 +50,11 @@
                             <div class="card-body px-0">
                                 <div class="row g-4">
                                     <div class="col-12">
-                                        {% include "global/message.html.twig" with { type: "info", icon: "fas fa-exclamation", message: ("The fields preceded with a red * are mandatory"|trans) } %}
+                                        {% component alert with {type: 'info', closeButton: false} %}
+                                            {% block content %}
+                                                {{ 'The fields preceded with a red * are mandatory'|trans }}
+                                            {% endblock %}
+                                        {% endcomponent %}
                                     </div>
                                     <div class="mb-3 col-12 col-md-4">
                                         {{ form_row(form.username) }}

@@ -12,7 +12,7 @@
 						<h1>{{ pagetitle }}</h1>
 						<p class="lead mb-0">{{ 'Last update on'|trans }} {{ page.updatedAt | date('m/Y') }}</p>
 					</div>
-					{{ page.content | html_markdown }}
+					{{ page.content|html_markdown }}
 					<h6 class="mb-3 mt-5">{{ 'Views'|trans }}</h6>
 					<p>{{ page.views }}</p>
 				</div>
